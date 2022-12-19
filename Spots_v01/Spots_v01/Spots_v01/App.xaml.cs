@@ -10,7 +10,7 @@ namespace Spots_v01
         {
             InitializeComponent();
 
-            MainPage = new MainPage();
+            MainPage = new Views.vwLogin();
         }
 
         protected override void OnStart()
