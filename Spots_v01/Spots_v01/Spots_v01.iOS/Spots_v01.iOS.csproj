@@ -5,13 +5,13 @@
     <Platform Condition=" '$(Platform)' == '' ">iPhoneSimulator</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{6EAA3C1E-4934-48FB-99A8-4E5C1B86E1B0}</ProjectGuid>
+    <ProjectGuid>{11454729-81F2-43F2-AE94-868E900861D9}</ProjectGuid>
     <ProjectTypeGuids>{FEACFBD2-3405-455C-9665-78FE426C6842};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <TemplateGuid>{6143fdea-f3c2-4a09-aafa-6e230626515e}</TemplateGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>Spots_v0._1.iOS</RootNamespace>
+    <RootNamespace>Spots_v01.iOS</RootNamespace>
     <IPhoneResourcePrefix>Resources</IPhoneResourcePrefix>
-    <AssemblyName>Spots_v0.1.iOS</AssemblyName>
+    <AssemblyName>Spots_v01.iOS</AssemblyName>
     <MtouchEnableSGenConc>true</MtouchEnableSGenConc>
     <MtouchHttpClientHandler>NSUrlSessionHandler</MtouchHttpClientHandler>
     <ProvisioningType>automatic</ProvisioningType>
@@ -128,9 +128,9 @@
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
   <ItemGroup>
-    <ProjectReference Include="..\Spots_v0.1\Spots_v0.1.csproj">
-      <Project>{5212CE92-9FC1-449D-93E2-4CF0CAA69428}</Project>
-      <Name>Spots_v0.1</Name>
+    <ProjectReference Include="..\Spots_v01\Spots_v01.csproj">
+      <Project>{BA676C41-46D8-4BA4-BC33-C5DBE3EAFC4D}</Project>
+      <Name>Spots_v01</Name>
     </ProjectReference>
   </ItemGroup>
 </Project>

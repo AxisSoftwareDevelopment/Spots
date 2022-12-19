@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 
-namespace Spots_v0._1
+namespace Spots_v01
 {
     public partial class MainPage : ContentPage
     {

@@ -5,7 +5,7 @@ using System.Linq;
 using Foundation;
 using UIKit;
 
-namespace Spots_v0._1.iOS
+namespace Spots_v01.iOS
 {
     public class Application
     {

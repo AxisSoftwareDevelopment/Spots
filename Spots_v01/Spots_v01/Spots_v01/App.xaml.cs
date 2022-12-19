@@ -2,7 +2,7 @@
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
-namespace Spots_v0._1
+namespace Spots_v01
 {
     public partial class App : Application
     {
