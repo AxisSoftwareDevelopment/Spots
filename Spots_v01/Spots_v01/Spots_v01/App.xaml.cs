@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Spots_v01.Recursos;
+using System;
+using Xamarin.CommunityToolkit.Helpers;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -8,6 +10,8 @@ namespace Spots_v01
     {
         public App()
         {
+            LocalizationResourceManager.Current.Init(AppResources.ResourceManager);
+
             InitializeComponent();
 
             MainPage = new Views.vwLogin();
