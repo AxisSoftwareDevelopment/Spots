@@ -121,9 +121,17 @@
     <value>Or</value>
     <comment>label de alternativa (esto 'o' esto)</comment>
   </data>
+  <data name="lbl_eMailPlaceHolder" xml:space="preserve">
+    <value>example@mail.com</value>
+    <comment>Placeholder de correo de usuario</comment>
+  </data>
   <data name="lbl_IniciarSesion" xml:space="preserve">
     <value>Log In</value>
     <comment>label de iniciar sesion</comment>
+  </data>
+  <data name="lbl_PwdPlaceHolder" xml:space="preserve">
+    <value>Password</value>
+    <comment>Placeholder de contrasena</comment>
   </data>
   <data name="lbl_Registrarse" xml:space="preserve">
     <value>Register</value>
@@ -132,5 +140,9 @@
   <data name="txt_Bienvenido" xml:space="preserve">
     <value>Welcome!</value>
     <comment>Texto de bienvenido</comment>
+  </data>
+  <data name="txt_IniciarSesion" xml:space="preserve">
+    <value>Log in to your account</value>
+    <comment>Texto de inicio de sesion</comment>
   </data>
 </root>

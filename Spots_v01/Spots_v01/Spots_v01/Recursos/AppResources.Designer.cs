@@ -70,11 +70,29 @@ namespace Spots_v01.Recursos {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a example@mail.com.
+        /// </summary>
+        internal static string lbl_eMailPlaceHolder {
+            get {
+                return ResourceManager.GetString("lbl_eMailPlaceHolder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a Log In.
         /// </summary>
         internal static string lbl_IniciarSesion {
             get {
                 return ResourceManager.GetString("lbl_IniciarSesion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Password.
+        /// </summary>
+        internal static string lbl_PwdPlaceHolder {
+            get {
+                return ResourceManager.GetString("lbl_PwdPlaceHolder", resourceCulture);
             }
         }
         
@@ -93,6 +111,15 @@ namespace Spots_v01.Recursos {
         internal static string txt_Bienvenido {
             get {
                 return ResourceManager.GetString("txt_Bienvenido", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Log in to your account.
+        /// </summary>
+        internal static string txt_IniciarSesion {
+            get {
+                return ResourceManager.GetString("txt_IniciarSesion", resourceCulture);
             }
         }
     }

@@ -2,12 +2,42 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:xct="http://xamarin.com/schemas/2020/toolkit"
-             x:Class="Spots_v01.Views.vwLogin">
+             x:Class="Spots_v01.Views.vwLogin"
+             Shell.NavBarIsVisible="False"
+             NavigationPage.HasNavigationBar="False"
+             BackgroundColor="#282828">
     <ContentPage.Content>
-        <StackLayout>
-            <Label Text="{xct:Translate txt_Bienvenido}"
-                VerticalOptions="CenterAndExpand" 
-                HorizontalOptions="CenterAndExpand" />
-        </StackLayout>
+
+        <Grid HorizontalOptions="Fill"
+              VerticalOptions="Fill">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+            </Grid.RowDefinitions>
+            <Image Grid.Row="0" Margin="0,20,0,20" Aspect="AspectFit" HeightRequest="180" WidthRequest="80"></Image>
+            <Frame Grid.Row="1" Margin="20,30" HasShadow="True" CornerRadius="50" BackgroundColor="#B97800">
+                <Grid HorizontalOptions="Fill" 
+                    VerticalOptions="CenterAndExpand"
+                    Margin="20,0,20,0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <Label Grid.Row="0" Text="{xct:Translate txt_Bienvenido}" TextColor="White" FontSize="24" FontAttributes="Bold" HorizontalOptions="CenterAndExpand"></Label>
+                    <Label Grid.Row="1" Margin="0,0,0,0" Text="{xct:Translate txt_IniciarSesion}" TextColor="White" HorizontalOptions="CenterAndExpand"></Label>
+                    <Entry Grid.Row="2" Placeholder="{xct:Translate lbl_eMailPlaceHolder}" HorizontalOptions="FillAndExpand" Margin="0,20,0,0" TextColor="White" ></Entry>
+                    <Entry Grid.Row="3" Placeholder="{xct:Translate lbl_PwdPlaceHolder}" HorizontalOptions="FillAndExpand" ></Entry>
+                    <Button Grid.Row="4" Text="Login" BackgroundColor="#282828" CornerRadius="20" TextColor="White"></Button>
+                </Grid>
+            </Frame>
+        </Grid>
+        
     </ContentPage.Content>
 </ContentPage>
