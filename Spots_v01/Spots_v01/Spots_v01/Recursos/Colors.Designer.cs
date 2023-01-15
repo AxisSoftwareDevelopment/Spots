@@ -22,14 +22,14 @@ namespace Spots_v01.Recursos {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class AppResources {
+    internal class Colors {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal AppResources() {
+        internal Colors() {
         }
         
         /// <summary>
@@ -39,7 +39,7 @@ namespace Spots_v01.Recursos {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Spots_v01.Recursos.AppResources", typeof(AppResources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Spots_v01.Recursos.Colors", typeof(Colors).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -61,65 +61,47 @@ namespace Spots_v01.Recursos {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a example@mail.com.
+        ///   Busca una cadena traducida similar a #FFFFFF.
         /// </summary>
-        internal static string lbl_eMailPlaceHolder {
+        internal static string cl_BackGround {
             get {
-                return ResourceManager.GetString("lbl_eMailPlaceHolder", resourceCulture);
+                return ResourceManager.GetString("cl_BackGround", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a Log In.
+        ///   Busca una cadena traducida similar a #FFA500.
         /// </summary>
-        internal static string lbl_LogIn {
+        internal static string cl_MainBrand {
             get {
-                return ResourceManager.GetString("lbl_LogIn", resourceCulture);
+                return ResourceManager.GetString("cl_MainBrand", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a Or.
+        ///   Busca una cadena traducida similar a #FF0000.
         /// </summary>
-        internal static string lbl_Or {
+        internal static string cl_TextError {
             get {
-                return ResourceManager.GetString("lbl_Or", resourceCulture);
+                return ResourceManager.GetString("cl_TextError", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a **********.
+        ///   Busca una cadena traducida similar a #202020.
         /// </summary>
-        internal static string lbl_PwdPlaceHolder {
+        internal static string cl_TextOnBG {
             get {
-                return ResourceManager.GetString("lbl_PwdPlaceHolder", resourceCulture);
+                return ResourceManager.GetString("cl_TextOnBG", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a Register.
+        ///   Busca una cadena traducida similar a #FFFFFF.
         /// </summary>
-        internal static string lbl_Register {
+        internal static string cl_TextOnElse {
             get {
-                return ResourceManager.GetString("lbl_Register", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Busca una cadena traducida similar a Log in to your account.
-        /// </summary>
-        internal static string txt_LogIn {
-            get {
-                return ResourceManager.GetString("txt_LogIn", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Busca una cadena traducida similar a One or both fields are empty. Please fill the data entrys correctly..
-        /// </summary>
-        internal static string txt_LogInError_EmptyEntry {
-            get {
-                return ResourceManager.GetString("txt_LogInError_EmptyEntry", resourceCulture);
+                return ResourceManager.GetString("cl_TextOnElse", resourceCulture);
             }
         }
     }

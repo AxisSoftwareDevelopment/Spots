@@ -117,32 +117,24 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="lbl_eMailPlaceHolder" xml:space="preserve">
-    <value>example@mail.com</value>
-    <comment>User eMail placeholder</comment>
+  <data name="cl_BackGround" xml:space="preserve">
+    <value>#FFFFFF</value>
+    <comment>White Background</comment>
   </data>
-  <data name="lbl_LogIn" xml:space="preserve">
-    <value>Log In</value>
-    <comment>Log in label</comment>
+  <data name="cl_MainBrand" xml:space="preserve">
+    <value>#FFA500</value>
+    <comment>Main Brand Color</comment>
   </data>
-  <data name="lbl_Or" xml:space="preserve">
-    <value>Or</value>
-    <comment>Alternative label 'or'</comment>
+  <data name="cl_TextError" xml:space="preserve">
+    <value>#FF0000</value>
+    <comment>Text Error color</comment>
   </data>
-  <data name="lbl_PwdPlaceHolder" xml:space="preserve">
-    <value>**********</value>
-    <comment>User password placeholder</comment>
+  <data name="cl_TextOnBG" xml:space="preserve">
+    <value>#202020</value>
+    <comment>Text on background color</comment>
   </data>
-  <data name="lbl_Register" xml:space="preserve">
-    <value>Register</value>
-    <comment>Register label</comment>
-  </data>
-  <data name="txt_LogIn" xml:space="preserve">
-    <value>Log in to your account</value>
-    <comment>Log in text</comment>
-  </data>
-  <data name="txt_LogInError_EmptyEntry" xml:space="preserve">
-    <value>One or both fields are empty. Please fill the data entrys correctly.</value>
-    <comment>Error message displayed when one or both LogIn entry fields are empty</comment>
+  <data name="cl_TextOnElse" xml:space="preserve">
+    <value>#FFFFFF</value>
+    <comment>Text on mainBrand color</comment>
   </data>
 </root>
