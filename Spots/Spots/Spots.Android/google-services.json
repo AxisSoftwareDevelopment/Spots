@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "443931860533",
+    "project_id": "spotsv01",
+    "storage_bucket": "spotsv01.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:443931860533:android:63d4321abb68531ab69b7c",
+        "android_client_info": {
+          "package_name": "com.axissoftwaredevelopment.Spots"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "443931860533-lvbmdbnge1tdc2dmqpvmqg511ag25cv5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDwbPpTlNP3qKEb3U2guZfFZeoww9EMwBY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "443931860533-lvbmdbnge1tdc2dmqpvmqg511ag25cv5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,5 +1,4 @@
-﻿using Firebase.Auth;
-using Spots.Models;
+﻿using Spots.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,6 +6,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Xamarin.Essentials;
 //using Xamarin.CommunityToolkit.Helpers;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -34,6 +34,7 @@ namespace Spots.Views
         #endregion
 
         #region Model Attributes
+        private IAuth auth;
         #endregion
 
         public vwLogin()//Librerias.Preferencias _AppSettings, Librerias.Traductor _Traductor)
@@ -55,36 +56,38 @@ namespace Spots.Views
             cl_MainGray = RsrcManager.GetColor("cl_MainGray");
             #endregion
 
-            btnLogIn.Clicked += (object sender, EventArgs e) => AttempLogin(sender, e);
-
             BindingContext = this;
+
+            auth = DependencyService.Get<IAuth>();
         }
 
-        private void AttempLogin(object sender, EventArgs e)
+        private async void AttempLogin(object sender, EventArgs e)
         {
-            if(entryEmail.Text.Length > 0 && entryPassword.Text.Length > 0)
+            string email = _entryEmail.Text;
+            string password = _entryPassword.Text;
+            if (EmailIsValid(email) && PasswordIsValid(password))
             {
                 HideErrorSection();
                 // Look for user in database
-
-                //Temp functionality ->
                 try
                 {
-                    Task<UserCredential> signIn = FireBaseManager.SignInAsync(entryEmail.Text, entryPassword.Text);
-                    signIn.Wait();
-
-                    if (signIn != null)
+                    string usrId = await auth.LogInWithEmailAndPasswordAsync(email, password);
+                    
+                    if (usrId != null)
                     {
-                        Application.Current.MainPage.DisplayAlert("", signIn.Result.User.Credential.ToString(), "OK");
-                    }
-                    else
-                    {
-                        Application.Current.MainPage.DisplayAlert("UserCrd is null", "Es nullo", "OK");
+                        if (usrId.Length == 0)
+                        {
+                            await Application.Current.MainPage.DisplayAlert("Nada", "nada", "OK");
+                        }
+                        else
+                        {
+                            await Application.Current.MainPage.DisplayAlert("dio algo", usrId, "OK");
+                        }
                     }
                 }
                 catch (Exception ex)
                 {
-                    Application.Current.MainPage.DisplayAlert("Tiro excepcion", ex.Message.ToString(), "OK");
+                    await Application.Current.MainPage.DisplayAlert("Tiro excepcion", ex.Message.ToString(), "OK");
                 }
             }
             else
@@ -94,20 +97,32 @@ namespace Spots.Views
             }
         }
 
-        private void OpenRegisterView()
+        private void OpenRegisterView(object sender, EventArgs e)
         {
             Application.Current.MainPage.DisplayAlert("Register view", "Register view.", "Ok");
         }
 
         private void DisplayErrorSection(string errorID)
         {
-            lblSignInError.Text = RsrcManager.GetText(errorID);
-            lblSignInError.IsVisible = true;
+            _lblSignInError.Text = RsrcManager.GetText(errorID);
+            _lblSignInError.IsVisible = true;
         }
 
         private void HideErrorSection()
         {
-            lblSignInError.IsVisible = false;
+            _lblSignInError.IsVisible = false;
+        }
+
+        private bool EmailIsValid(string email)
+        {
+            bool isNotEmpty = email.Length > 0;
+            return isNotEmpty;
+        }
+
+        private bool PasswordIsValid(string password)
+        {
+            bool isNotEmpty = password.Length > 0;
+            return isNotEmpty;
         }
     }
 }

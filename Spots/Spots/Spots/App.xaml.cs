@@ -13,14 +13,7 @@ namespace Spots
         {
             InitializeComponent();
 
-            bool appStatus = FireBaseManager.StartConnection(FIREBASE_APIKEY);
-
             MainPage = new vwLogin();
-
-            if (appStatus != true)
-            {
-                Application.Current.MainPage.DisplayAlert("No Internet Connection", "No Internet Connection.", "Ok");
-            }
         }
 
         protected override void OnStart()
