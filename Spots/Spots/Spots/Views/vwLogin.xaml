@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Spots.Views.vwLogin"
+             Shell.NavBarIsVisible="False"
+             NavigationPage.HasNavigationBar="False"
+             BackgroundColor="{Binding cl_MainBrand}">
+    <ContentPage.Content>
+
+        <Grid HorizontalOptions="Fill"
+              VerticalOptions="Fill">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+            </Grid.RowDefinitions>
+            <Image Grid.Row="0" Margin="0,20,0,20" Aspect="AspectFit" HeightRequest="180" WidthRequest="80"></Image>
+            <Frame Grid.Row="1" Margin="20,30" HasShadow="True" CornerRadius="50" BackgroundColor="{Binding cl_BackGround}">
+                <Grid HorizontalOptions="Fill" 
+                    VerticalOptions="CenterAndExpand"
+                    Margin="20,0,20,0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height= "Auto"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <Label Grid.Row="0" Text="{Binding lbl_LogIn}" TextColor="{Binding cl_TextOnBG}" FontSize="24" FontAttributes="Bold" HorizontalOptions="CenterAndExpand"></Label>
+                    <Label Grid.Row="1" Margin="0,0,0,0" Text="{Binding txt_LogIn}" TextColor="{Binding cl_TextOnBG}"  HorizontalOptions="CenterAndExpand"></Label>
+                    <Label Grid.Row="2" x:Name="lblSignInError" Margin="0,0,0,0" Text="" TextColor="{Binding cl_TextError}"  HorizontalOptions="CenterAndExpand" IsVisible="False"></Label>
+                    <Entry Grid.Row="3" x:Name="entryEmail" Text="" Placeholder="{Binding lbl_eMailPlaceHolder}" HorizontalOptions="FillAndExpand" Margin="0,20,0,0" 
+                           Keyboard="Email" ReturnType="Next"></Entry>
+                    <Entry Grid.Row="4" x:Name="entryPassword" Text="" Placeholder="{Binding lbl_PwdPlaceHolder}" HorizontalOptions="FillAndExpand" 
+                           IsPassword="True" ReturnType="Go" ReturnCommand="{Binding LoginCommand}"></Entry>
+                    <Button Grid.Row="5" x:Name="btnLogIn" Text="{Binding lbl_LogIn}" CornerRadius="20" BackgroundColor="{Binding cl_MainBrand}" TextColor="{Binding cl_TextOnElse}" ></Button>
+                    <Button Grid.Row="6" x:Name="btnRegister" Text="{Binding lbl_Register}" Scale="0.85" CornerRadius="20" BackgroundColor="{Binding cl_MainGray}" TextColor="{Binding cl_TextOnElse}" ></Button>
+                </Grid>
+            </Frame>
+        </Grid>
+        
+    </ContentPage.Content>
+</ContentPage>
