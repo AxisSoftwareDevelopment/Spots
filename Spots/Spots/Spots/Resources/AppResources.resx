@@ -121,6 +121,14 @@
     <value>example@mail.com</value>
     <comment>User eMail placeholder</comment>
   </data>
+  <data name="lbl_FirstNamePlaceHolder" xml:space="preserve">
+    <value>First Name</value>
+    <comment>First name field placeholder</comment>
+  </data>
+  <data name="lbl_LastNamePlaceHolder" xml:space="preserve">
+    <value>Last Name</value>
+    <comment>Last name field placeholder</comment>
+  </data>
   <data name="lbl_LogIn" xml:space="preserve">
     <value>Log In</value>
     <comment>Log in label</comment>
@@ -136,6 +144,26 @@
   <data name="lbl_Register" xml:space="preserve">
     <value>Register</value>
     <comment>Register label</comment>
+  </data>
+  <data name="lbl_RegisterConfirmPasswordField" xml:space="preserve">
+    <value>Confirm Password:</value>
+    <comment>Label that indicates the input field of the password confirmation</comment>
+  </data>
+  <data name="lbl_RegisterEmailField" xml:space="preserve">
+    <value>User Email:</value>
+    <comment>Label that indicates the input field for user email</comment>
+  </data>
+  <data name="lbl_RegisterFirstName" xml:space="preserve">
+    <value>First Name:</value>
+    <comment>Label that indicates the input field of the user's first name</comment>
+  </data>
+  <data name="lbl_RegisterLastName" xml:space="preserve">
+    <value>Last Name:</value>
+    <comment>Label that indicates the input field of the user's last name</comment>
+  </data>
+  <data name="lbl_RegisterPasswordField" xml:space="preserve">
+    <value>User Password:</value>
+    <comment>Label that indicates the input field for user password</comment>
   </data>
   <data name="TEST" xml:space="preserve">
     <value>-</value>

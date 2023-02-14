@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Spots.Views.vwRegister"
+             BackgroundColor="{Binding cl_MainBrand}">
+    <NavigationPage.TitleView>
+        <Label Text="{Binding lbl_Register}" TextColor="{Binding cl_TextOnElse}" FontSize="24" FontAttributes="Bold" HorizontalOptions="Start"></Label>
+    </NavigationPage.TitleView>
+    <ContentPage.Content>
+
+        <Frame x:Name="_frameRegisterForm" Margin="20, 30" HasShadow="True" CornerRadius="50" BackgroundColor="{Binding cl_BackGround}">
+            <StackLayout>
+                <Label Text="{Binding lbl_RegisterFirstName}" TextColor="{Binding cl_TextOnBG}" HorizontalOptions="FillAndExpand" HorizontalTextAlignment="Center"
+                       Margin="0,20,0,0"></Label>
+                <Entry x:Name="_entryFirstName" Placeholder="{Binding lbl_FirstNamePlaceHolder}" HorizontalOptions="FillAndExpand" 
+                        Keyboard="Email" ReturnType="Next"></Entry>
+                <Label Text="{Binding lbl_RegisterLastName}" TextColor="{Binding cl_TextOnBG}" HorizontalOptions="FillAndExpand" HorizontalTextAlignment="Center"></Label>
+                <Entry x:Name="_entryLastName" Placeholder="{Binding lbl_LastNamePlaceHolder}" HorizontalOptions="FillAndExpand" 
+                        Keyboard="Email" ReturnType="Next"></Entry>
+                <Label Text="{Binding lbl_RegisterEmailField}" TextColor="{Binding cl_TextOnBG}" HorizontalOptions="FillAndExpand" HorizontalTextAlignment="Center"></Label>
+                <Entry x:Name="_entryEmail" Placeholder="{Binding lbl_eMailPlaceHolder}" HorizontalOptions="FillAndExpand" 
+                        Keyboard="Email" ReturnType="Next"></Entry>
+                <Label Text="{Binding lbl_RegisterPasswordField}" TextColor="{Binding cl_TextOnBG}" HorizontalOptions="FillAndExpand" HorizontalTextAlignment="Center"></Label>
+                <Entry x:Name="_entryPassword" Placeholder="{Binding lbl_PwdPlaceHolder}" HorizontalOptions="FillAndExpand" 
+                        Keyboard="Email" ReturnType="Next" IsPassword="True"></Entry>
+                <Label Text="{Binding lbl_RegisterConfirmPasswordField}" TextColor="{Binding cl_TextOnBG}" HorizontalOptions="FillAndExpand" HorizontalTextAlignment="Center"></Label>
+                <Entry x:Name="_entryConfirmPassword" Placeholder="{Binding lbl_PwdPlaceHolder}" HorizontalOptions="FillAndExpand" 
+                                   Keyboard="Email" ReturnType="Next" IsPassword="True"></Entry>
+            </StackLayout>
+        </Frame>
+        
+    </ContentPage.Content>
+</ContentPage>

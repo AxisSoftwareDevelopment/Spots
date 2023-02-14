@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Spots.Recursos {
+namespace Spots.Resources {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace Spots.Recursos {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Spots.Recursos.AppResources", typeof(AppResources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Spots.Resources.AppResources", typeof(AppResources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -66,6 +66,24 @@ namespace Spots.Recursos {
         internal static string lbl_eMailPlaceHolder {
             get {
                 return ResourceManager.GetString("lbl_eMailPlaceHolder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a First Name.
+        /// </summary>
+        internal static string lbl_FirstNamePlaceHolder {
+            get {
+                return ResourceManager.GetString("lbl_FirstNamePlaceHolder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Last Name.
+        /// </summary>
+        internal static string lbl_LastNamePlaceHolder {
+            get {
+                return ResourceManager.GetString("lbl_LastNamePlaceHolder", resourceCulture);
             }
         }
         
@@ -102,6 +120,51 @@ namespace Spots.Recursos {
         internal static string lbl_Register {
             get {
                 return ResourceManager.GetString("lbl_Register", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Confirm Password:.
+        /// </summary>
+        internal static string lbl_RegisterConfirmPasswordField {
+            get {
+                return ResourceManager.GetString("lbl_RegisterConfirmPasswordField", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a User Email:.
+        /// </summary>
+        internal static string lbl_RegisterEmailField {
+            get {
+                return ResourceManager.GetString("lbl_RegisterEmailField", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a First Name:.
+        /// </summary>
+        internal static string lbl_RegisterFirstName {
+            get {
+                return ResourceManager.GetString("lbl_RegisterFirstName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Last Name:.
+        /// </summary>
+        internal static string lbl_RegisterLastName {
+            get {
+                return ResourceManager.GetString("lbl_RegisterLastName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a User Password:.
+        /// </summary>
+        internal static string lbl_RegisterPasswordField {
+            get {
+                return ResourceManager.GetString("lbl_RegisterPasswordField", resourceCulture);
             }
         }
         

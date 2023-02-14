@@ -1,4 +1,4 @@
-﻿using Spots.Recursos;
+﻿using Spots.Resources;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -11,6 +11,7 @@ namespace Spots.Models
 {
     static class RsrcManager
     {
+        private static ResourceManager imageManager;
         private static Dictionary<string, ResourceManager> Dict;
         private static string Language { get; set; }
         private static int Theme { get; set; }
@@ -27,9 +28,10 @@ namespace Spots.Models
                 { "1", Colors_dark.ResourceManager },
                 // Lang Resx
                 { "en", AppResources.ResourceManager },
-                { "es", AppResources_es.ResourceManager },
-
+                { "es", AppResources_es.ResourceManager }
             };
+            imageManager = AppImages.ResourceManager;
+
             UpdateLangaje();
             UpdateTheme();
         }
@@ -39,9 +41,14 @@ namespace Spots.Models
             return Dict[Language].GetString(_id);
         }
 
-        public static string GetColor(string _id)
+        public static string GetColorHexCode(string _id)
         {
             return Dict[Theme.ToString()].GetString(_id);
+        }
+
+        public static string GetImagePath(string _id)
+        {
+            return imageManager.GetString(_id);
         }
 
         public static void UpdateLangaje()

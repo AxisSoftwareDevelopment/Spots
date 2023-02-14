@@ -8,12 +8,16 @@ namespace Spots
 {
     public partial class App : Application
     {
-        private protected string FIREBASE_APIKEY = "AIzaSyBsmEji5qtAuiCk_llFUgZ8OBY1WLvtifA";
+        public string cl_MainBrand { get; set; }
         public App()
         {
             InitializeComponent();
 
-            MainPage = new vwLogin();
+            cl_MainBrand = RsrcManager.GetColorHexCode("cl_MainBrand");
+
+            BindingContext = this;
+
+            MainPage = new NavigationPage(new vwLogin());
         }
 
         protected override void OnStart()

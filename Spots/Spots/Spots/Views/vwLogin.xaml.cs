@@ -31,10 +31,16 @@ namespace Spots.Views
         public string cl_TextOnElse { get; set; }
         public string cl_TextError { get; set; }
         public string cl_MainGray { get; set; }
+        // Images
+        public string img_Logo { get; set; }
         #endregion
 
         #region Model Attributes
         private IAuth auth;
+        #endregion
+
+        #region Constants
+        private const uint MILISECONDS_STARTUP_ANIMATION = 600;
         #endregion
 
         public vwLogin()//Librerias.Preferencias _AppSettings, Librerias.Traductor _Traductor)
@@ -48,23 +54,31 @@ namespace Spots.Views
             lbl_PwdPlaceHolder = RsrcManager.GetText("lbl_PwdPlaceHolder");
             lbl_Register = RsrcManager.GetText("lbl_Register");
             txt_LogIn = RsrcManager.GetText("txt_LogIn");
-            cl_MainBrand = RsrcManager.GetColor("cl_MainBrand");
-            cl_BackGround = RsrcManager.GetColor("cl_BackGround");
-            cl_TextOnBG = RsrcManager.GetColor("cl_TextOnBG");
-            cl_TextOnElse = RsrcManager.GetColor("cl_TextOnElse");
-            cl_TextError = RsrcManager.GetColor("cl_TextError");
-            cl_MainGray = RsrcManager.GetColor("cl_MainGray");
+            cl_MainBrand = RsrcManager.GetColorHexCode("cl_MainBrand");
+            cl_BackGround = RsrcManager.GetColorHexCode("cl_BackGround");
+            cl_TextOnBG = RsrcManager.GetColorHexCode("cl_TextOnBG");
+            cl_TextOnElse = RsrcManager.GetColorHexCode("cl_TextOnElse");
+            cl_TextError = RsrcManager.GetColorHexCode("cl_TextError");
+            cl_MainGray = RsrcManager.GetColorHexCode("cl_MainGray");
+            img_Logo = RsrcManager.GetImagePath("img_Logo");
             #endregion
 
             BindingContext = this;
 
             auth = DependencyService.Get<IAuth>();
+
+            #region Animations
+            RunAnimationsAsync();
+            #endregion
         }
 
         private async void AttempLogin(object sender, EventArgs e)
         {
+            SwitchLockViewState();
+
             string email = _entryEmail.Text;
             string password = _entryPassword.Text;
+
             if (EmailIsValid(email) && PasswordIsValid(password))
             {
                 HideErrorSection();
@@ -75,13 +89,13 @@ namespace Spots.Views
                     
                     if (usrId != null)
                     {
-                        if (usrId.Length == 0)
+                        if (usrId.Length > 0)
                         {
-                            await Application.Current.MainPage.DisplayAlert("Nada", "nada", "OK");
+                            await Application.Current.MainPage.DisplayAlert("dio algo", usrId, "OK");
                         }
                         else
                         {
-                            await Application.Current.MainPage.DisplayAlert("dio algo", usrId, "OK");
+                            await Application.Current.MainPage.DisplayAlert("Nada", "nada", "OK");
                         }
                     }
                 }
@@ -95,11 +109,38 @@ namespace Spots.Views
                 // Raise "No enough data" exception
                 DisplayErrorSection("txt_LogInError_EmptyEntry");
             }
+
+            SwitchLockViewState();
         }
 
         private void OpenRegisterView(object sender, EventArgs e)
         {
-            Application.Current.MainPage.DisplayAlert("Register view", "Register view.", "Ok");
+            Navigation.PushAsync(new vwRegister());
+        }
+
+        private void SwitchLockViewState()
+        {
+            _btnLogIn.IsEnabled = ! _btnLogIn.IsEnabled;
+            _btnRegister.IsEnabled = ! _btnRegister.IsEnabled;
+        }
+
+        private async void RunAnimationsAsync()
+        {
+            await Task.WhenAll(
+                AnimateTranslateTo(_imgLogo, offset_X: 0, offset_Y: 900),
+                AnimateTranslateTo(_frameEntries, offset_X: 0, offset_Y: 700)
+            );
+            await Task.WhenAll(
+                AnimateTranslateTo(_imgLogo, offset_X: 0, offset_Y: - 900, MILISECONDS_STARTUP_ANIMATION),
+                AnimateTranslateTo(_frameEntries, offset_X: 0, offset_Y: - 700, MILISECONDS_STARTUP_ANIMATION)
+            );
+
+            SwitchLockViewState();
+        }
+
+        private async Task<bool> AnimateTranslateTo(VisualElement obj, double offset_X, double offset_Y, uint length = 0)
+        {
+            return await obj.TranslateTo(obj.TranslationX + offset_X, obj.TranslationY + offset_Y, length);
         }
 
         private void DisplayErrorSection(string errorID)

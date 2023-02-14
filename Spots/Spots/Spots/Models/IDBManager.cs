@@ -4,8 +4,8 @@ using System.Text;
 
 namespace Spots.Models
 {
-    internal interface IDBManager
+    public interface IDBManager
     {
-        bool StartConnectionAsync(string apiKey);
+        bool StartConnection();
     }
 }

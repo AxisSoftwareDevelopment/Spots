@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Spots.Recursos {
+namespace Spots.Resources {
     using System;
     
     
@@ -22,14 +22,14 @@ namespace Spots.Recursos {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class Colors {
+    internal class Colors_dark {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal Colors() {
+        internal Colors_dark() {
         }
         
         /// <summary>
@@ -39,7 +39,7 @@ namespace Spots.Recursos {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Spots.Recursos.Colors", typeof(Colors).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Spots.Resources.Colors_dark", typeof(Colors_dark).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -57,60 +57,6 @@ namespace Spots.Recursos {
             }
             set {
                 resourceCulture = value;
-            }
-        }
-        
-        /// <summary>
-        ///   Busca una cadena traducida similar a #FFFFFF.
-        /// </summary>
-        internal static string cl_BackGround {
-            get {
-                return ResourceManager.GetString("cl_BackGround", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Busca una cadena traducida similar a #FFA500.
-        /// </summary>
-        internal static string cl_MainBrand {
-            get {
-                return ResourceManager.GetString("cl_MainBrand", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Busca una cadena traducida similar a #757575.
-        /// </summary>
-        internal static string cl_MainGray {
-            get {
-                return ResourceManager.GetString("cl_MainGray", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Busca una cadena traducida similar a #FF0000.
-        /// </summary>
-        internal static string cl_TextError {
-            get {
-                return ResourceManager.GetString("cl_TextError", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Busca una cadena traducida similar a #202020.
-        /// </summary>
-        internal static string cl_TextOnBG {
-            get {
-                return ResourceManager.GetString("cl_TextOnBG", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Busca una cadena traducida similar a #FFFFFF.
-        /// </summary>
-        internal static string cl_TextOnElse {
-            get {
-                return ResourceManager.GetString("cl_TextOnElse", resourceCulture);
             }
         }
     }

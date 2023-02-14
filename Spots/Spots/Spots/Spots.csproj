@@ -17,22 +17,27 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Recursos\AppResources.Designer.cs">
+    <Compile Update="Resources\AppImages.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>AppImages.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\AppResources.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>AppResources.resx</DependentUpon>
     </Compile>
-    <Compile Update="Recursos\AppResources_es.Designer.cs">
+    <Compile Update="Resources\AppResources_es.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>AppResources_es.resx</DependentUpon>
     </Compile>
-    <Compile Update="Recursos\Colors.Designer.cs">
+    <Compile Update="Resources\Colors.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>Colors.resx</DependentUpon>
     </Compile>
-    <Compile Update="Recursos\Colors_dark.Designer.cs">
+    <Compile Update="Resources\Colors_dark.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>Colors_dark.resx</DependentUpon>
@@ -40,24 +45,31 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Update="Recursos\AppResources.resx">
+    <EmbeddedResource Update="Resources\AppImages.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>AppImages.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\AppResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>AppResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Update="Recursos\AppResources_es.resx">
+    <EmbeddedResource Update="Resources\AppResources_es.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>AppResources_es.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Update="Recursos\Colors.resx">
+    <EmbeddedResource Update="Resources\Colors.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Colors.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Update="Recursos\Colors_dark.resx">
+    <EmbeddedResource Update="Resources\Colors_dark.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Colors_dark.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Views\vwLogin.xaml">
       <Generator>MSBuild:Compile</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\vwRegister.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
   </ItemGroup>
 </Project>
