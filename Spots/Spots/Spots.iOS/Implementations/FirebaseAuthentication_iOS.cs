@@ -12,29 +12,15 @@ namespace Spots.iOS.Implementations
     {
         public async Task<string> LogInWithEmailAndPasswordAsync(string email, string password)
         {
-            try
-            {
-                var sesion = await Auth.DefaultInstance.SignInWithPasswordAsync(email, password);
-                return sesion.User.Uid;
-            }
-            catch (Exception ex)
-            {
-                return "";
-            }
+            var sesion = await Auth.DefaultInstance.SignInWithPasswordAsync(email, password);
+            return sesion.User.Uid;
         }
 
         public async Task<string> RegisterWithEmailAndPasswordAsync(string email, string password)
         {
-            try
-            {
-                var sesion = await Auth.DefaultInstance.CreateUserAsync(email, password);
-                //var verification = sesion.User.SendEmailVerificationAsync(); -> This is for Android, have to adapt.
-                return sesion.User.Uid;
-            }
-            catch (Exception ex)
-            {
-                return "";
-            }
+            var sesion = await Auth.DefaultInstance.CreateUserAsync(email, password);
+            //var verification = sesion.User.SendEmailVerificationAsync(); //-> This is for Android, have to adapt.
+            return sesion.User.Uid;
         }
     }
 }

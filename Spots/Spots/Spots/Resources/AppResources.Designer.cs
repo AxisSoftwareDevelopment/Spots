@@ -124,6 +124,15 @@ namespace Spots.Resources {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a Confirm email:.
+        /// </summary>
+        internal static string lbl_RegisterConfirmEmailField {
+            get {
+                return ResourceManager.GetString("lbl_RegisterConfirmEmailField", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a Confirm Password:.
         /// </summary>
         internal static string lbl_RegisterConfirmPasswordField {
@@ -169,7 +178,7 @@ namespace Spots.Resources {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a -.
+        ///   Busca una cadena traducida similar a --Placeholder--.
         /// </summary>
         internal static string TEST {
             get {
@@ -187,11 +196,56 @@ namespace Spots.Resources {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a One or both fields are empty. Please fill the data entrys correctly..
+        ///   Busca una cadena traducida similar a One or both fields are empty. Please fill the information correctly..
         /// </summary>
         internal static string txt_LogInError_EmptyEntry {
             get {
                 return ResourceManager.GetString("txt_LogInError_EmptyEntry", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a The email provided in the &apos;Email&apos; and &apos;Confirm Email&apos; fields must be the same. Please fill the information correctly..
+        /// </summary>
+        internal static string txt_RegisterError_EmailsDontMatch {
+            get {
+                return ResourceManager.GetString("txt_RegisterError_EmailsDontMatch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a One or more fields are empty. Please fill the information correctly..
+        /// </summary>
+        internal static string txt_RegisterError_EmptyFields {
+            get {
+                return ResourceManager.GetString("txt_RegisterError_EmptyFields", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a The eMail provided is invalid. Please fill the information correctly..
+        /// </summary>
+        internal static string txt_RegisterError_InvalidEmail {
+            get {
+                return ResourceManager.GetString("txt_RegisterError_InvalidEmail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Your password must be at least 8 characters long..
+        /// </summary>
+        internal static string txt_RegisterError_InvalidPasswordLength {
+            get {
+                return ResourceManager.GetString("txt_RegisterError_InvalidPasswordLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a The passwords provided in the &apos;Password&apos; and &apos;Confirm Password&apos; fields must be the same. Please fill the information correctly..
+        /// </summary>
+        internal static string txt_RegisterError_PasswordsDontMatch {
+            get {
+                return ResourceManager.GetString("txt_RegisterError_PasswordsDontMatch", resourceCulture);
             }
         }
     }

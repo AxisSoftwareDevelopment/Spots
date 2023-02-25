@@ -72,14 +72,15 @@ namespace Spots.Views
             #endregion
         }
 
-        private async void AttempLogin(object sender, EventArgs e)
+        private async void BtnLogInOnClick(object sender, EventArgs e)
         {
             SwitchLockViewState();
 
             string email = _entryEmail.Text;
             string password = _entryPassword.Text;
+            string errorMsg = string.Empty;
 
-            if (EmailIsValid(email) && PasswordIsValid(password))
+            if (CredentialsAreValid(email, password, out errorMsg))
             {
                 HideErrorSection();
                 // Look for user in database
@@ -101,21 +102,20 @@ namespace Spots.Views
                 }
                 catch (Exception ex)
                 {
-                    await Application.Current.MainPage.DisplayAlert("Tiro excepcion", ex.Message.ToString(), "OK");
+                    await Application.Current.MainPage.DisplayAlert("Invalid Credentials", ex.Message.ToString(), "OK");
                 }
             }
             else
             {
-                // Raise "No enough data" exception
-                DisplayErrorSection("txt_LogInError_EmptyEntry");
+                DisplayErrorSection(errorMsg);
             }
 
             SwitchLockViewState();
         }
 
-        private void OpenRegisterView(object sender, EventArgs e)
+        private void BtnRegisterOnClick(object sender, EventArgs e)
         {
-            Navigation.PushAsync(new vwRegister());
+            Navigation.PushAsync(new vwRegister(auth));
         }
 
         private void SwitchLockViewState()
@@ -126,10 +126,13 @@ namespace Spots.Views
 
         private async void RunAnimationsAsync()
         {
+            // Hide elements
             await Task.WhenAll(
                 AnimateTranslateTo(_imgLogo, offset_X: 0, offset_Y: 900),
                 AnimateTranslateTo(_frameEntries, offset_X: 0, offset_Y: 700)
             );
+
+            // Bring elements up
             await Task.WhenAll(
                 AnimateTranslateTo(_imgLogo, offset_X: 0, offset_Y: - 900, MILISECONDS_STARTUP_ANIMATION),
                 AnimateTranslateTo(_frameEntries, offset_X: 0, offset_Y: - 700, MILISECONDS_STARTUP_ANIMATION)
@@ -154,16 +157,16 @@ namespace Spots.Views
             _lblSignInError.IsVisible = false;
         }
 
-        private bool EmailIsValid(string email)
+        private bool CredentialsAreValid(string email, string password, out string errorMessage)
         {
-            bool isNotEmpty = email.Length > 0;
-            return isNotEmpty;
-        }
-
-        private bool PasswordIsValid(string password)
-        {
-            bool isNotEmpty = password.Length > 0;
-            return isNotEmpty;
+            bool credentialsAreValid = true;
+            errorMessage = "";
+            if (email.Length == 0 || password.Length == 0)
+            {
+                credentialsAreValid = false;
+                errorMessage = "txt_LogInError_EmptyEntry";
+            }
+            return credentialsAreValid;
         }
     }
 }

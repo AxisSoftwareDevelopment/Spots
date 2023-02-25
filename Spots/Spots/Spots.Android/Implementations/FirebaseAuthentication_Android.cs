@@ -12,29 +12,15 @@ namespace Spots.Droid.Implementations
     {
         public async Task<string> LogInWithEmailAndPasswordAsync(string email, string password)
         {
-            try
-            {
-                var sesion = await FirebaseAuth.Instance.SignInWithEmailAndPasswordAsync(email, password);
-                return sesion.User.Uid;
-            }
-            catch(Exception ex)
-            {
-                return "";
-            }
+            var sesion = await FirebaseAuth.Instance.SignInWithEmailAndPasswordAsync(email, password);
+            return sesion.User.Uid;
         }
 
         public async Task<string> RegisterWithEmailAndPasswordAsync(string email, string password)
         {
-            try
-            {
-                var sesion = await FirebaseAuth.Instance.CreateUserWithEmailAndPasswordAsync(email, password);
-                //var verification = sesion.User.SendEmailVerificationAsync();
-                return sesion.User.Uid;
-            }
-            catch (Exception ex)
-            {
-                return "";
-            }
+            var sesion = await FirebaseAuth.Instance.CreateUserWithEmailAndPasswordAsync(email, password);
+            //var verification = sesion.User.SendEmailVerificationAsync();
+            return sesion.User.Uid;
         }
     }
 }

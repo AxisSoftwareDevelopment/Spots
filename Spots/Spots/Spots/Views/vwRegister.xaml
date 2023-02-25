@@ -10,6 +10,7 @@
 
         <Frame x:Name="_frameRegisterForm" Margin="20, 30" HasShadow="True" CornerRadius="50" BackgroundColor="{Binding cl_BackGround}">
             <StackLayout>
+                <Label x:Name="_lblRegisterError" Text="" IsVisible="False" TextColor="{Binding cl_TextError}"></Label>
                 <Label Text="{Binding lbl_RegisterFirstName}" TextColor="{Binding cl_TextOnBG}" HorizontalOptions="FillAndExpand" HorizontalTextAlignment="Center"
                        Margin="0,20,0,0"></Label>
                 <Entry x:Name="_entryFirstName" Placeholder="{Binding lbl_FirstNamePlaceHolder}" HorizontalOptions="FillAndExpand" 
@@ -20,12 +21,17 @@
                 <Label Text="{Binding lbl_RegisterEmailField}" TextColor="{Binding cl_TextOnBG}" HorizontalOptions="FillAndExpand" HorizontalTextAlignment="Center"></Label>
                 <Entry x:Name="_entryEmail" Placeholder="{Binding lbl_eMailPlaceHolder}" HorizontalOptions="FillAndExpand" 
                         Keyboard="Email" ReturnType="Next"></Entry>
+                <Label Text="{Binding lbl_RegisterConfirmEmailField}" TextColor="{Binding cl_TextOnBG}" HorizontalOptions="FillAndExpand" HorizontalTextAlignment="Center"></Label>
+                <Entry x:Name="_entryConfirmEmail" Placeholder="{Binding lbl_eMailPlaceHolder}" HorizontalOptions="FillAndExpand" 
+                        Keyboard="Email" ReturnType="Next"></Entry>
                 <Label Text="{Binding lbl_RegisterPasswordField}" TextColor="{Binding cl_TextOnBG}" HorizontalOptions="FillAndExpand" HorizontalTextAlignment="Center"></Label>
-                <Entry x:Name="_entryPassword" Placeholder="{Binding lbl_PwdPlaceHolder}" HorizontalOptions="FillAndExpand" 
-                        Keyboard="Email" ReturnType="Next" IsPassword="True"></Entry>
+                <Entry x:Name="_entryPassword" Placeholder="{Binding lbl_PwdPlaceHolder}" HorizontalOptions="FillAndExpand" ReturnType="Next" 
+                       IsPassword="True"></Entry>
                 <Label Text="{Binding lbl_RegisterConfirmPasswordField}" TextColor="{Binding cl_TextOnBG}" HorizontalOptions="FillAndExpand" HorizontalTextAlignment="Center"></Label>
-                <Entry x:Name="_entryConfirmPassword" Placeholder="{Binding lbl_PwdPlaceHolder}" HorizontalOptions="FillAndExpand" 
-                                   Keyboard="Email" ReturnType="Next" IsPassword="True"></Entry>
+                <Entry x:Name="_entryConfirmPassword" Placeholder="{Binding lbl_PwdPlaceHolder}" HorizontalOptions="FillAndExpand" ReturnType="Done" 
+                       IsPassword="True"></Entry>
+                <Button x:Name="_btnRegister" Text="{Binding lbl_Register}" CornerRadius="20" BackgroundColor="{Binding cl_MainBrand}" TextColor="{Binding cl_TextOnElse}"
+                        Margin="0,20,0,0" VerticalOptions="CenterAndExpand" Clicked="BtnRegisterOnClick"></Button>
             </StackLayout>
         </Frame>
         

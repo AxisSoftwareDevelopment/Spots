@@ -145,6 +145,10 @@
     <value>Register</value>
     <comment>Register label</comment>
   </data>
+  <data name="lbl_RegisterConfirmEmailField" xml:space="preserve">
+    <value>Confirm email:</value>
+    <comment>Label that indicates the input field for the confirmation of the user email</comment>
+  </data>
   <data name="lbl_RegisterConfirmPasswordField" xml:space="preserve">
     <value>Confirm Password:</value>
     <comment>Label that indicates the input field of the password confirmation</comment>
@@ -166,7 +170,7 @@
     <comment>Label that indicates the input field for user password</comment>
   </data>
   <data name="TEST" xml:space="preserve">
-    <value>-</value>
+    <value>--Placeholder--</value>
     <comment>-</comment>
   </data>
   <data name="txt_LogIn" xml:space="preserve">
@@ -174,7 +178,27 @@
     <comment>Log in text</comment>
   </data>
   <data name="txt_LogInError_EmptyEntry" xml:space="preserve">
-    <value>One or both fields are empty. Please fill the data entrys correctly.</value>
+    <value>One or both fields are empty. Please fill the information correctly.</value>
     <comment>Error message displayed when one or both LogIn entry fields are empty</comment>
+  </data>
+  <data name="txt_RegisterError_EmailsDontMatch" xml:space="preserve">
+    <value>The email provided in the 'Email' and 'Confirm Email' fields must be the same. Please fill the information correctly.</value>
+    <comment>Error message displayed when the emails provided in the Register form dont match.</comment>
+  </data>
+  <data name="txt_RegisterError_EmptyFields" xml:space="preserve">
+    <value>One or more fields are empty. Please fill the information correctly.</value>
+    <comment>Error message displayed when one or more Register entry fields are empty</comment>
+  </data>
+  <data name="txt_RegisterError_InvalidEmail" xml:space="preserve">
+    <value>The eMail provided is invalid. Please fill the information correctly.</value>
+    <comment>Error message displayed when the email provided in the Register form has an invalid format.</comment>
+  </data>
+  <data name="txt_RegisterError_InvalidPasswordLength" xml:space="preserve">
+    <value>Your password must be at least 8 characters long.</value>
+    <comment>Error message displayed when the password providad is not of the valid length</comment>
+  </data>
+  <data name="txt_RegisterError_PasswordsDontMatch" xml:space="preserve">
+    <value>The passwords provided in the 'Password' and 'Confirm Password' fields must be the same. Please fill the information correctly.</value>
+    <comment>Error message displayed when the passwords provided in the Register form dont match.</comment>
   </data>
 </root>
