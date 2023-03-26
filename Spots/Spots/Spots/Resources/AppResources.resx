@@ -117,6 +117,10 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="lbl_BirthdateField" xml:space="preserve">
+    <value>Birthdate:</value>
+    <comment>Label that indicates the input field for the user's birthdate</comment>
+  </data>
   <data name="lbl_eMailPlaceHolder" xml:space="preserve">
     <value>example@mail.com</value>
     <comment>User eMail placeholder</comment>
@@ -132,6 +136,10 @@
   <data name="lbl_LogIn" xml:space="preserve">
     <value>Log In</value>
     <comment>Log in label</comment>
+  </data>
+  <data name="lbl_Next" xml:space="preserve">
+    <value>Next</value>
+    <comment>Label that indicates the next item</comment>
   </data>
   <data name="lbl_Or" xml:space="preserve">
     <value>Or</value>
@@ -169,6 +177,14 @@
     <value>User Password:</value>
     <comment>Label that indicates the input field for user password</comment>
   </data>
+  <data name="lbl_Save" xml:space="preserve">
+    <value>Save</value>
+    <comment>Label that indicates save</comment>
+  </data>
+  <data name="lbl_UserData" xml:space="preserve">
+    <value>User Information</value>
+    <comment>Label that indicates user information</comment>
+  </data>
   <data name="TEST" xml:space="preserve">
     <value>--Placeholder--</value>
     <comment>-</comment>
@@ -188,6 +204,10 @@
   <data name="txt_RegisterError_EmptyFields" xml:space="preserve">
     <value>One or more fields are empty. Please fill the information correctly.</value>
     <comment>Error message displayed when one or more Register entry fields are empty</comment>
+  </data>
+  <data name="txt_RegisterError_InvalidBirthdate" xml:space="preserve">
+    <value>The birthdate provided is not valid. Make sure you are above 12 years of age.</value>
+    <comment>Error message displayed when the birthdate provided in the Register form is not valid</comment>
   </data>
   <data name="txt_RegisterError_InvalidEmail" xml:space="preserve">
     <value>The eMail provided is invalid. Please fill the information correctly.</value>

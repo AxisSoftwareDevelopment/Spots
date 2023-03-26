@@ -61,6 +61,15 @@ namespace Spots.Resources {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a Birthdate:.
+        /// </summary>
+        internal static string lbl_BirthdateField {
+            get {
+                return ResourceManager.GetString("lbl_BirthdateField", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a example@mail.com.
         /// </summary>
         internal static string lbl_eMailPlaceHolder {
@@ -93,6 +102,15 @@ namespace Spots.Resources {
         internal static string lbl_LogIn {
             get {
                 return ResourceManager.GetString("lbl_LogIn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Next.
+        /// </summary>
+        internal static string lbl_Next {
+            get {
+                return ResourceManager.GetString("lbl_Next", resourceCulture);
             }
         }
         
@@ -178,6 +196,24 @@ namespace Spots.Resources {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a Save.
+        /// </summary>
+        internal static string lbl_Save {
+            get {
+                return ResourceManager.GetString("lbl_Save", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a User Information.
+        /// </summary>
+        internal static string lbl_UserData {
+            get {
+                return ResourceManager.GetString("lbl_UserData", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a --Placeholder--.
         /// </summary>
         internal static string TEST {
@@ -219,6 +255,15 @@ namespace Spots.Resources {
         internal static string txt_RegisterError_EmptyFields {
             get {
                 return ResourceManager.GetString("txt_RegisterError_EmptyFields", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a The birthdate provided is not valid. Make sure you are above 12 years of age..
+        /// </summary>
+        internal static string txt_RegisterError_InvalidBirthdate {
+            get {
+                return ResourceManager.GetString("txt_RegisterError_InvalidBirthdate", resourceCulture);
             }
         }
         

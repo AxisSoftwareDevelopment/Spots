@@ -1,4 +1,5 @@
 ﻿using Firebase.Auth;
+using Foundation;
 using Spots.iOS.Implementations;
 using Spots.Models;
 using System;

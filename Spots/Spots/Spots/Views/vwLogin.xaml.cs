@@ -35,10 +35,6 @@ namespace Spots.Views
         public string img_Logo { get; set; }
         #endregion
 
-        #region Model Attributes
-        private IAuth auth;
-        #endregion
-
         #region Constants
         private const uint MILISECONDS_STARTUP_ANIMATION = 600;
         #endregion
@@ -65,8 +61,6 @@ namespace Spots.Views
 
             BindingContext = this;
 
-            auth = DependencyService.Get<IAuth>();
-
             #region Animations
             RunAnimationsAsync();
             #endregion
@@ -86,7 +80,7 @@ namespace Spots.Views
                 // Look for user in database
                 try
                 {
-                    string usrId = await auth.LogInWithEmailAndPasswordAsync(email, password);
+                    string usrId = await DatabaseManager.LogInAsync(email, password);
                     
                     if (usrId != null)
                     {
@@ -115,7 +109,7 @@ namespace Spots.Views
 
         private void BtnRegisterOnClick(object sender, EventArgs e)
         {
-            Navigation.PushAsync(new vwRegister(auth));
+            Navigation.PushAsync(new vwRegister_UserData());
         }
 
         private void SwitchLockViewState()

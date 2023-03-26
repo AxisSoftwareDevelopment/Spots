@@ -1,5 +1,6 @@
-﻿using Spots.Models;
+using Spots.Models;
 using Spots.Views;
+using Spots.Views.vwHomePage;
 using System;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -16,6 +17,7 @@ namespace Spots
             cl_MainBrand = RsrcManager.GetColorHexCode("cl_MainBrand");
 
             BindingContext = this;
+            DatabaseManager.Load();
 
             MainPage = new NavigationPage(new vwLogin());
         }

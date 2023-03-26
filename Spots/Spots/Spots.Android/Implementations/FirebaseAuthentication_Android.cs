@@ -1,7 +1,10 @@
-﻿using Firebase.Auth;
+﻿using Android.Gms.Extensions;
+using Firebase.Auth;
+using Java.Util;
 using Spots.Droid.Implementations;
 using Spots.Models;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 
