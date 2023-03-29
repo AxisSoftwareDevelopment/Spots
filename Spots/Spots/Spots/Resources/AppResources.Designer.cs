@@ -70,11 +70,29 @@ namespace Spots.Resources {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a Discovery.
+        /// </summary>
+        internal static string lbl_Discovery {
+            get {
+                return ResourceManager.GetString("lbl_Discovery", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a example@mail.com.
         /// </summary>
         internal static string lbl_eMailPlaceHolder {
             get {
                 return ResourceManager.GetString("lbl_eMailPlaceHolder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Feed.
+        /// </summary>
+        internal static string lbl_Feed {
+            get {
+                return ResourceManager.GetString("lbl_Feed", resourceCulture);
             }
         }
         
@@ -102,6 +120,15 @@ namespace Spots.Resources {
         internal static string lbl_LogIn {
             get {
                 return ResourceManager.GetString("lbl_LogIn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a My Praises.
+        /// </summary>
+        internal static string lbl_MyPraises {
+            get {
+                return ResourceManager.GetString("lbl_MyPraises", resourceCulture);
             }
         }
         

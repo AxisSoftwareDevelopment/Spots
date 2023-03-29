@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentView xmlns="http://xamarin.com/schemas/2014/forms" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Spots.Views.vwHomePage.vwMainView"
+             xmlns:xct="clr-namespace:Xamarin.CommunityToolkit.UI.Views;assembly=Xamarin.CommunityToolkit">
+  <ContentView.Content>
+        <xct:TabView
+            TabStripPlacement="Top"
+            TabStripBackgroundColor="{Binding cl_BackGround}"
+            TabStripHeight="50"
+            TabIndicatorColor="{Binding cl_MainBrand}">
+            <xct:TabViewItem
+                x:Name="_TabButton1"
+                Text="{Binding lbl_Menu_1}"
+                TextColor="{Binding cl_TextOnBG}"
+                TextColorSelected="{Binding cl_MainBrand}"
+                FontSize="13"
+                FontSizeSelected="15"/>
+            <xct:TabViewItem
+                x:Name="_TabButton2"
+                Text="{Binding lbl_Menu_2}"
+                TextColor="{Binding cl_TextOnBG}"
+                TextColorSelected="{Binding cl_MainBrand}"
+                FontSize="13"
+                FontSizeSelected="15"/>
+            <xct:TabViewItem
+                x:Name="_TabButton3"
+                Text="{Binding lbl_Menu_3}"
+                TextColor="{Binding cl_TextOnBG}"
+                TextColorSelected="{Binding cl_MainBrand}"
+                FontSize="13"
+                FontSizeSelected="15"/>
+        </xct:TabView>
+    </ContentView.Content>
+</ContentView>

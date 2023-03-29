@@ -19,7 +19,8 @@ namespace Spots
             BindingContext = this;
             DatabaseManager.Load();
 
-            MainPage = new NavigationPage(new vwLogin());
+            //MainPage = new NavigationPage(new vwLogin());
+            MainPage = new NavigationPage(new vwHomePage());
         }
 
         protected override void OnStart()

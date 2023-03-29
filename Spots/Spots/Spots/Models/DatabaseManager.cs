@@ -30,7 +30,7 @@ namespace Spots.Models
         public static async Task<bool> CreateUserAsync(string firstName, string lastName, string email, string password, string birthDate)
         {
             string id = await authorizator.RegisterWithEmailAndPasswordAsync(email, password);
-            authorizator.LogOut();
+            //authorizator.LogOut();
             Dictionary<string, string> userData = new Dictionary<string, string>
             {
                 { "firstName", firstName },

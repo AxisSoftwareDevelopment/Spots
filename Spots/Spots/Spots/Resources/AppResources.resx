@@ -121,9 +121,17 @@
     <value>Birthdate:</value>
     <comment>Label that indicates the input field for the user's birthdate</comment>
   </data>
+  <data name="lbl_Discovery" xml:space="preserve">
+    <value>Discovery</value>
+    <comment>Label that indicates the Discovery section</comment>
+  </data>
   <data name="lbl_eMailPlaceHolder" xml:space="preserve">
     <value>example@mail.com</value>
     <comment>User eMail placeholder</comment>
+  </data>
+  <data name="lbl_Feed" xml:space="preserve">
+    <value>Feed</value>
+    <comment>Label that indicates the Feed section</comment>
   </data>
   <data name="lbl_FirstNamePlaceHolder" xml:space="preserve">
     <value>First Name</value>
@@ -136,6 +144,10 @@
   <data name="lbl_LogIn" xml:space="preserve">
     <value>Log In</value>
     <comment>Log in label</comment>
+  </data>
+  <data name="lbl_MyPraises" xml:space="preserve">
+    <value>My Praises</value>
+    <comment>Label that indicates the My Praises section</comment>
   </data>
   <data name="lbl_Next" xml:space="preserve">
     <value>Next</value>
