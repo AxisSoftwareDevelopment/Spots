@@ -19,6 +19,11 @@ namespace Spots.Droid.Implementations
             return sesion.User.Uid;
         }
 
+        public void LogOut()
+        {
+            FirebaseAuth.Instance.SignOut();
+        }
+
         public async Task<string> RegisterWithEmailAndPasswordAsync(string email, string password)
         {
             var sesion = await FirebaseAuth.Instance.CreateUserWithEmailAndPasswordAsync(email, password);

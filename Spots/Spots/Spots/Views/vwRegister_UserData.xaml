@@ -19,7 +19,7 @@
                     <Entry x:Name="_entryLastName" Placeholder="{Binding lbl_LastNamePlaceHolder}" HorizontalOptions="FillAndExpand" 
                             Keyboard="Email" ReturnType="Next"></Entry>
                     <Label Text="{Binding lbl_BirthdateField}" TextColor="{Binding cl_TextOnBG}" HorizontalOptions="FillAndExpand" HorizontalTextAlignment="Center"></Label>
-                    <DatePicker x:Name="_dateBirthdate" Format="Pick a date..." TextColor="#AFAFAF"></DatePicker>
+                    <DatePicker x:Name="_dateBirthdate" TextColor="#AFAFAF"></DatePicker>
                     <Button x:Name="_btnRegister" Text="{Binding lbl_Next}" CornerRadius="20" BackgroundColor="{Binding cl_MainBrand}" TextColor="{Binding cl_TextOnElse}"
                             Margin="0,20,0,0" VerticalOptions="CenterAndExpand" Clicked="BtnRegisterOnClick"></Button>
                 </StackLayout>

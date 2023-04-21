@@ -1,6 +1,6 @@
 using Spots.Models;
 using Spots.Views;
-using Spots.Views.vwHomePage;
+using Spots.Views.HomePage;
 using System;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -19,8 +19,8 @@ namespace Spots
             BindingContext = this;
             DatabaseManager.Load();
 
-            //MainPage = new NavigationPage(new vwLogin());
-            MainPage = new NavigationPage(new vwHomePage());
+            MainPage = new NavigationPage(new vwLogin());
+            //MainPage = new NavigationPage(new vwHomePage());
         }
 
         protected override void OnStart()

@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Xamarin.Essentials;
 using Xamarin.Forms;
@@ -63,6 +64,8 @@ namespace Spots.Views
 
         public async void BtnRegisterOnClick(Object sender, EventArgs e)
         {
+            LockInputs();
+
             string email = _entryEmail.Text is null ? "" : _entryEmail.Text;
             string confirmEmail = _entryConfirmEmail is null ? "" : _entryConfirmEmail.Text;
             string password = _entryPassword.Text is null ? "" : _entryPassword.Text;
@@ -84,17 +87,17 @@ namespace Spots.Views
                 {
                     if (await DatabaseManager.CreateUserAsync(firstName, lastName, email, password, birthDate))
                     {
-                        await Application.Current.MainPage.DisplayAlert("User created successfully", "placeholder", "OK");
+                        await Application.Current.MainPage.DisplayAlert("Success", "User created successfully.", "OK");
                         await Navigation.PopToRootAsync();
                     }
                     else
                     {
-                        await Application.Current.MainPage.DisplayAlert("Error", "Please, try again.", "OK");
+                        DisplayErrorSection("txt_RegisterError_RegisterError");
                     }
                 }
                 catch (Exception ex)
                 {
-                    await Application.Current.MainPage.DisplayAlert("Invalid Credentials", ex.Message.ToString(), "OK");
+                    await Application.Current.MainPage.DisplayAlert("Error", ex.Message.ToString(), "OK");
                 }
             }
             else
@@ -126,28 +129,15 @@ namespace Spots.Views
 
                 DisplayErrorSection(errorMessageID);
             }
+
+            UnlockInputs();
         }
 
         private bool ValidateEmail(string email)
         {
-            bool eMailIsValid;
-            var trimmedEmail = email.Trim();
+            Match eMailIsValid = Regex.Match(email, @"^([a-zA-Z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,5})$");
 
-            if (trimmedEmail.EndsWith("."))
-            {
-                return false;
-            }
-            try
-            {
-                var addr = new System.Net.Mail.MailAddress(email);
-                eMailIsValid = addr.Address == trimmedEmail;
-            }
-            catch
-            {
-                return false;
-            }
-
-            return eMailIsValid;
+            return eMailIsValid.Success;
         }
 
         private void DisplayErrorSection(string errorID)
@@ -159,6 +149,24 @@ namespace Spots.Views
         private void HideErrorSection()
         {
             _lblRegisterError.IsVisible = false;
+        }
+
+        private void LockInputs()
+        {
+            _btnRegister.IsEnabled = false;
+            _entryEmail.IsEnabled = false;
+            _entryConfirmEmail.IsEnabled = false;
+            _entryPassword.IsEnabled = false;
+            _entryConfirmPassword.IsEnabled = false;
+        }
+
+        private void UnlockInputs()
+        {
+            _btnRegister.IsEnabled = true;
+            _entryEmail.IsEnabled = true;
+            _entryConfirmEmail.IsEnabled = true;
+            _entryPassword.IsEnabled = true;
+            _entryConfirmPassword.IsEnabled = true;
         }
     }
 }

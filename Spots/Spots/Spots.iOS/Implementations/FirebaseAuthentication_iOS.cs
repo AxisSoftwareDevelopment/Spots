@@ -17,6 +17,11 @@ namespace Spots.iOS.Implementations
             return sesion.User.Uid;
         }
 
+        public void LogOut()
+        {
+            Auth.DefaultInstance.SignOut(out NSError error);
+        }
+
         public async Task<string> RegisterWithEmailAndPasswordAsync(string email, string password)
         {
             var sesion = await Auth.DefaultInstance.CreateUserAsync(email, password);

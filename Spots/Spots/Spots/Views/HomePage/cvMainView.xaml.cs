@@ -8,10 +8,10 @@ using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
-namespace Spots.Views.vwHomePage
+namespace Spots.Views.HomePage
 {
 	[XamlCompilation(XamlCompilationOptions.Compile)]
-	public partial class vwMainView : ContentView
+	public partial class cvMainView : ContentView
 	{
         #region Binding Attributes
         // Labels
@@ -23,10 +23,10 @@ namespace Spots.Views.vwHomePage
         public string cl_BackGround { get; set; } = RsrcManager.GetColorHexCode("cl_BackGround");
         public string cl_TextOnBG { get; set; } = RsrcManager.GetColorHexCode("cl_TextOnBG");
         #endregion
-        public vwMainView ()
+        public cvMainView ()
 		{
 			BindingContext = this;
-			InitializeComponent ();
+			InitializeComponent();
 		}
 	}
 }

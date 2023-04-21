@@ -209,6 +209,10 @@
     <value>One or both fields are empty. Please fill the information correctly.</value>
     <comment>Error message displayed when one or both LogIn entry fields are empty</comment>
   </data>
+  <data name="txt_LogInError_WrongCredentials" xml:space="preserve">
+    <value>The email and password provided do not match with any user registered.</value>
+    <comment>Error message displayerd when the credentials provided dont match any user on database.</comment>
+  </data>
   <data name="txt_RegisterError_EmailsDontMatch" xml:space="preserve">
     <value>The email provided in the 'Email' and 'Confirm Email' fields must be the same. Please fill the information correctly.</value>
     <comment>Error message displayed when the emails provided in the Register form dont match.</comment>
@@ -232,5 +236,9 @@
   <data name="txt_RegisterError_PasswordsDontMatch" xml:space="preserve">
     <value>The passwords provided in the 'Password' and 'Confirm Password' fields must be the same. Please fill the information correctly.</value>
     <comment>Error message displayed when the passwords provided in the Register form dont match.</comment>
+  </data>
+  <data name="txt_RegisterError_RegisterError" xml:space="preserve">
+    <value>There was an error while trying to register your account, please verify your information and tray again later.</value>
+    <comment>Error message displayed when the CreateUser method returns false, indicating there was an error trying to register the account</comment>
   </data>
 </root>

@@ -26,6 +26,14 @@ namespace Spots.iOS.Implementations
             }
         }
 
+        public async Task<Dictionary<string, string>> GetUserDataAsync(string userID)
+        {
+            DocumentSnapshot DS_UserData = await Firestore.SharedInstance.GetCollection("UserData").GetDocument(userID).GetDocumentAsync();
+
+            return DocumentSnapshotToDictionary(DS_UserData);
+        }
+
+        #region Utilites
         private NSDictionary<NSString, NSObject> DictionaryToNSDictionary(Dictionary<string, string> dict)
         {
             NSDictionary<NSString, NSObject> nsDict = new NSDictionary<NSString, NSObject>();
@@ -50,5 +58,6 @@ namespace Spots.iOS.Implementations
 
             return dict;
         }
+        #endregion
     }
 }

@@ -18,46 +18,30 @@ namespace Spots.Views
     {
         #region Binding atttributes
         // Labels
-        public string lbl_LogIn { get; set; }
-        public string lbl_Register { get; set; }
-        public string lbl_eMailPlaceHolder { get; set; }
-        public string lbl_PwdPlaceHolder { get; set; }
+        public string lbl_LogIn { get; set; } = RsrcManager.GetText("lbl_LogIn");
+        public string lbl_Register { get; set; } = RsrcManager.GetText("lbl_Register");
+        public string lbl_eMailPlaceHolder { get; set; } = RsrcManager.GetText("lbl_eMailPlaceHolder");
+        public string lbl_PwdPlaceHolder { get; set; } = RsrcManager.GetText("lbl_PwdPlaceHolder");
         // Texts
-        public string txt_LogIn { get; set; }
+        public string txt_LogIn { get; set; } = RsrcManager.GetText("txt_LogIn");
         // Colors
-        public string cl_MainBrand { get; set; }
-        public string cl_BackGround { get; set; }
-        public string cl_TextOnBG { get; set; }
-        public string cl_TextOnElse { get; set; }
-        public string cl_TextError { get; set; }
-        public string cl_MainGray { get; set; }
+        public string cl_MainBrand { get; set; } = RsrcManager.GetColorHexCode("cl_MainBrand");
+        public string cl_BackGround { get; set; } = RsrcManager.GetColorHexCode("cl_BackGround");
+        public string cl_TextOnBG { get; set; } = RsrcManager.GetColorHexCode("cl_TextOnBG");
+        public string cl_TextOnElse { get; set; } = RsrcManager.GetColorHexCode("cl_TextOnElse");
+        public string cl_TextError { get; set; } = RsrcManager.GetColorHexCode("cl_TextError");
+        public string cl_MainGray { get; set; } = RsrcManager.GetColorHexCode("cl_MainGray");
         // Images
-        public string img_Logo { get; set; }
+        public string img_Logo { get; set; } = RsrcManager.GetImagePath("img_Logo");
         #endregion
 
         #region Constants
         private const uint MILISECONDS_STARTUP_ANIMATION = 600;
         #endregion
 
-        public vwLogin()//Librerias.Preferencias _AppSettings, Librerias.Traductor _Traductor)
+        public vwLogin()
         {
             InitializeComponent();
-
-            #region Resource Manager Setup
-            // Load Reosurces
-            lbl_LogIn = RsrcManager.GetText("lbl_LogIn");
-            lbl_eMailPlaceHolder = RsrcManager.GetText("lbl_eMailPlaceHolder");
-            lbl_PwdPlaceHolder = RsrcManager.GetText("lbl_PwdPlaceHolder");
-            lbl_Register = RsrcManager.GetText("lbl_Register");
-            txt_LogIn = RsrcManager.GetText("txt_LogIn");
-            cl_MainBrand = RsrcManager.GetColorHexCode("cl_MainBrand");
-            cl_BackGround = RsrcManager.GetColorHexCode("cl_BackGround");
-            cl_TextOnBG = RsrcManager.GetColorHexCode("cl_TextOnBG");
-            cl_TextOnElse = RsrcManager.GetColorHexCode("cl_TextOnElse");
-            cl_TextError = RsrcManager.GetColorHexCode("cl_TextError");
-            cl_MainGray = RsrcManager.GetColorHexCode("cl_MainGray");
-            img_Logo = RsrcManager.GetImagePath("img_Logo");
-            #endregion
 
             BindingContext = this;
 
@@ -72,7 +56,7 @@ namespace Spots.Views
 
             string email = _entryEmail.Text;
             string password = _entryPassword.Text;
-            string errorMsg = string.Empty;
+            string errorMsg;
 
             if (CredentialsAreValid(email, password, out errorMsg))
             {
@@ -80,23 +64,21 @@ namespace Spots.Views
                 // Look for user in database
                 try
                 {
-                    string usrId = await DatabaseManager.LogInAsync(email, password);
-                    
-                    if (usrId != null)
+                    User user = await DatabaseManager.LogInAsync(email, password);
+
+                    if (user.userID != null && user.userID.Length > 0)
                     {
-                        if (usrId.Length > 0)
-                        {
-                            await Application.Current.MainPage.DisplayAlert("dio algo", usrId, "OK");
-                        }
-                        else
-                        {
-                            await Application.Current.MainPage.DisplayAlert("Nada", "nada", "OK");
-                        }
+                        CurrentSession.StartSession(user);
+                        Application.Current.MainPage = new NavigationPage(new HomePage.vwHomePage());
+                    }
+                    else
+                    {
+                        DisplayErrorSection("txt_LogInError_WrongCredentials");
                     }
                 }
                 catch (Exception ex)
                 {
-                    await Application.Current.MainPage.DisplayAlert("Invalid Credentials", ex.Message.ToString(), "OK");
+                    await Application.Current.MainPage.DisplayAlert("Error", ex.Message.ToString(), "OK");
                 }
             }
             else

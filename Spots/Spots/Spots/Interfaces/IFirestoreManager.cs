@@ -10,5 +10,6 @@ namespace Spots.Models
     public interface IFirestoreManager
     {
         Task<bool> SaveNewUserDataAsync(string id, Dictionary<string, string> userData);
+        Task<Dictionary<string, string>> GetUserDataAsync(string id);
     }
 }

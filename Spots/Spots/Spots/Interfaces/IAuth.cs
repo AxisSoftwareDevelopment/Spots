@@ -9,5 +9,6 @@ namespace Spots.Models
     {
         Task<string> LogInWithEmailAndPasswordAsync(string email, string password);
         Task<string> RegisterWithEmailAndPasswordAsync(string email, string password);
+        void LogOut();
     }
 }

@@ -268,6 +268,15 @@ namespace Spots.Resources {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a The email and password provided do not match with any user registered..
+        /// </summary>
+        internal static string txt_LogInError_WrongCredentials {
+            get {
+                return ResourceManager.GetString("txt_LogInError_WrongCredentials", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a The email provided in the &apos;Email&apos; and &apos;Confirm Email&apos; fields must be the same. Please fill the information correctly..
         /// </summary>
         internal static string txt_RegisterError_EmailsDontMatch {
@@ -318,6 +327,15 @@ namespace Spots.Resources {
         internal static string txt_RegisterError_PasswordsDontMatch {
             get {
                 return ResourceManager.GetString("txt_RegisterError_PasswordsDontMatch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a There was an error while trying to register your account, please verify your information and tray again later..
+        /// </summary>
+        internal static string txt_RegisterError_RegisterError {
+            get {
+                return ResourceManager.GetString("txt_RegisterError_RegisterError", resourceCulture);
             }
         }
     }

@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="Spots.Views.vwHomePage.vwHomePage"
+             x:Class="Spots.Views.HomePage.vwHomePage"
              xmlns:xct="clr-namespace:Xamarin.CommunityToolkit.UI.Views;assembly=Xamarin.CommunityToolkit">
-    <xct:SideMenuView>
+    <xct:SideMenuView x:Name="_SideMenuView">
         <!-- Main View -->
         <StackLayout
             xct:SideMenuView.Position="MainView"
@@ -16,13 +16,13 @@
                 BackgroundColor="{Binding cl_MainBrand}"
                 Spacing="5">
 
-                <Image x:Name="_imgLogoLeft" Margin="5,0,0,0" HeightRequest="35" WidthRequest="35"
-                   Source="{Binding img_Logo}"/>
+                <ImageButton x:Name="_imgLogoLeft" Margin="5,0,0,0" HeightRequest="35" WidthRequest="35"
+                    Source="{Binding img_Logo}" Clicked="OpenLeftMenu"/>
 
                 <Label Text="----- Spots -----" VerticalOptions="Center" HorizontalOptions="CenterAndExpand"/>
 
-                <Image x:Name="_imgLogoRight" Margin="0,0,5,0" HeightRequest="35" WidthRequest="35"
-                   Source="{Binding img_Logo}"/>
+                <ImageButton x:Name="_imgLogoRight" Margin="0,0,5,0" HeightRequest="35" WidthRequest="35"
+                   Source="{Binding img_Logo}" Clicked="OpenRightMenu"/>
 
             </StackLayout>
             

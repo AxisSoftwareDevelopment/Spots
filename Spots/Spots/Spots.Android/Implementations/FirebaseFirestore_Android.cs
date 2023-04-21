@@ -1,7 +1,7 @@
 ﻿using Android.Gms.Extensions;
 using Android.Gms.Tasks;
+using Android.Runtime;
 using Firebase.Firestore;
-using Java.Interop;
 using Java.Util;
 using Spots.Droid.Implementations;
 using Spots.Models;
@@ -31,6 +31,14 @@ namespace Spots.Droid.Implementations
             }
         }
 
+        public async Task<Dictionary<string, string>> GetUserDataAsync(string userID)
+        {
+            var userData = await FirebaseFirestore.Instance.Collection("UserData").Document(userID).Get();
+
+            return SnapshotToDictionary((DocumentSnapshot) userData);
+        }
+
+        #region Utilities
         private HashMap DictionaryToHashMap(Dictionary<string, string> dict)
         {
             HashMap hasmap = new HashMap();
@@ -59,5 +67,6 @@ namespace Spots.Droid.Implementations
 
             return dict;
         }
+        #endregion
     }
 }

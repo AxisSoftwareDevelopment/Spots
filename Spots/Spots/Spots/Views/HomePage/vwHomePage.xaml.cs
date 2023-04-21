@@ -7,8 +7,9 @@ using System.Threading.Tasks;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
+using Xamarin.CommunityToolkit.UI.Views;
 
-namespace Spots.Views.vwHomePage
+namespace Spots.Views.HomePage
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class vwHomePage : ContentPage
@@ -30,7 +31,18 @@ namespace Spots.Views.vwHomePage
             InitializeComponent();
 
             NavigationPage.SetHasNavigationBar(this, false);
-            _MainView.Content = new vwMainView();
+            _MainView.Content = new cvMainView();
+            _LeftView.Content = new cvUserSideMenu();
+        }
+
+        public void OpenLeftMenu(Object sender, EventArgs e)
+        {
+            _SideMenuView.State = SideMenuState.LeftMenuShown;
+        }
+
+        public void OpenRightMenu(Object sender, EventArgs e)
+        {
+            _SideMenuView.State = SideMenuState.RightMenuShown;
         }
     }
 }

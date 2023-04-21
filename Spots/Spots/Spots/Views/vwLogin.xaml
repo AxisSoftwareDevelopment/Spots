@@ -14,7 +14,7 @@
                 <RowDefinition Height="*"></RowDefinition>
             </Grid.RowDefinitions>
             <Image Grid.Row="0" x:Name="_imgLogo" Margin="0,20,0,20" HeightRequest="180" WidthRequest="80"
-                   Source="{Binding img_Logo}" Background="{Binding img_Logo}"></Image>
+                   Source="{Binding img_Logo}"></Image>
             <Frame Grid.Row="1" x:Name="_frameEntries" Margin="20,30" HasShadow="True" CornerRadius="50" BackgroundColor="{Binding cl_BackGround}">
                 <Grid HorizontalOptions="Fill" 
                     VerticalOptions="CenterAndExpand"

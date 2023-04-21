@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>netstandard2.1</TargetFramework>
     <ProduceReferenceAssembly>true</ProduceReferenceAssembly>
   </PropertyGroup>
 
@@ -49,6 +49,9 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Colors_dark.resx</DependentUpon>
     </Compile>
+    <Compile Update="Views\HomePage\cvMainView.xaml.cs">
+      <DependentUpon>cvMainView.xaml</DependentUpon>
+    </Compile>
     <Compile Update="Views\vwRegister.xaml.cs">
       <DependentUpon>vwRegister.xaml</DependentUpon>
     </Compile>
@@ -75,10 +78,13 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Colors_dark.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Update="Views\vwHomePage\vwHomePage.xaml">
+    <EmbeddedResource Update="Views\HomePage\cvUserSideMenu.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Update="Views\vwHomePage\vwMainView.xaml">
+    <EmbeddedResource Update="Views\HomePage\vwHomePage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\HomePage\cvMainView.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Views\vwLogin.xaml">

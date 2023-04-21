@@ -15,45 +15,31 @@ namespace Spots.Views
     {
         #region Binding Attributes
         // Labels
-        public string lbl_Next { get; set; }
-        public string lbl_RegisterFirstName { get; set; }
-        public string lbl_RegisterLastName { get; set; }
-        public string lbl_FirstNamePlaceHolder { get; set; }
-        public string lbl_LastNamePlaceHolder { get; set; }
-        public string lbl_BirthdateField { get; set; }
-        public string lbl_UserData { get; set; }
+        public string lbl_Next { get; set; } = RsrcManager.GetText("lbl_Next");
+        public string lbl_RegisterFirstName { get; set; } = RsrcManager.GetText("lbl_RegisterFirstName");
+        public string lbl_RegisterLastName { get; set; } = RsrcManager.GetText("lbl_RegisterLastName");
+        public string lbl_FirstNamePlaceHolder { get; set; } = RsrcManager.GetText("lbl_FirstNamePlaceHolder");
+        public string lbl_LastNamePlaceHolder { get; set; } = RsrcManager.GetText("lbl_LastNamePlaceHolder");
+        public string lbl_BirthdateField { get; set; } = RsrcManager.GetText("lbl_BirthdateField");
+        public string lbl_UserData { get; set; } = RsrcManager.GetText("lbl_UserData");
         // Colors
-        public string cl_MainBrand { get; set; }
-        public string cl_BackGround { get; set; }
-        public string cl_TextOnBG { get; set; }
-        public string cl_TextOnElse { get; set; }
-        public string cl_TextError { get; set; }
+        public string cl_MainBrand { get; set; } = RsrcManager.GetColorHexCode("cl_MainBrand");
+        public string cl_BackGround { get; set; } = RsrcManager.GetColorHexCode("cl_BackGround");
+        public string cl_TextOnBG { get; set; } = RsrcManager.GetColorHexCode("cl_TextOnBG");
+        public string cl_TextOnElse { get; set; } = RsrcManager.GetColorHexCode("cl_TextOnElse");
+        public string cl_TextError { get; set; } = RsrcManager.GetColorHexCode("cl_TextError");
         #endregion
 
         private bool birhtdateSelected = false;
 
         public vwRegister_UserData()
         {
-            #region Resource Manager Setup
-            // Load Reosurces
-            lbl_Next = RsrcManager.GetText("lbl_Next");
-            lbl_RegisterFirstName = RsrcManager.GetText("lbl_RegisterFirstName");
-            lbl_RegisterLastName = RsrcManager.GetText("lbl_RegisterLastName");
-            lbl_FirstNamePlaceHolder = RsrcManager.GetText("lbl_FirstNamePlaceHolder");
-            lbl_LastNamePlaceHolder = RsrcManager.GetText("lbl_LastNamePlaceHolder");
-            lbl_BirthdateField = RsrcManager.GetText("lbl_BirthdateField");
-            lbl_UserData = RsrcManager.GetText("lbl_UserData");
-            cl_MainBrand = RsrcManager.GetColorHexCode("cl_MainBrand");
-            cl_BackGround = RsrcManager.GetColorHexCode("cl_BackGround");
-            cl_TextOnBG = RsrcManager.GetColorHexCode("cl_TextOnBG");
-            cl_TextOnElse = RsrcManager.GetColorHexCode("cl_TextOnElse");
-            cl_TextError = RsrcManager.GetColorHexCode("cl_TextError");
-            #endregion
-
             BindingContext = this;
 
             InitializeComponent();
 
+            // Initialize BirthDate field
+            _dateBirthdate.Format = "--/--/----";
             _dateBirthdate.MaximumDate = DateTime.Today;
             _dateBirthdate.DateSelected += (o, e) =>
             {
