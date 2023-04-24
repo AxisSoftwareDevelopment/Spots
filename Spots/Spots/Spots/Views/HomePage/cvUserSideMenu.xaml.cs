@@ -1,4 +1,5 @@
 ﻿using Spots.Models;
+using Spots.Models.DisplayManager;
 using System;
 using System.ComponentModel;
 
@@ -9,15 +10,14 @@ using Xamarin.Forms.Xaml;
 namespace Spots.Views.HomePage
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class cvUserSideMenu : ContentView, INotifyPropertyChanged
+    public partial class cvUserSideMenu : ContentView
     {
-        public event PropertyChangedEventHandler PropertyChanged;
-
         public cvUserSideMenu()
         {
             InitializeComponent();
 
             BindingContext = CurrentSession.currentUser;
+            _ButtonStack.BindingContext = RsrcManager.resourceCollection;
         }
 
         void ProfilePictureOnClicked(object sender, EventArgs e)

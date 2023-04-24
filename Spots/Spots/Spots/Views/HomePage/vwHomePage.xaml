@@ -16,8 +16,10 @@
                 BackgroundColor="{Binding cl_MainBrand}"
                 Spacing="5">
 
-                <ImageButton x:Name="_imgLogoLeft" Margin="5,0,0,0" HeightRequest="35" WidthRequest="35"
-                    Source="{Binding img_Logo}" Clicked="OpenLeftMenu"/>
+                <Frame x:Name="_FrameProfilePicture" Padding="0"
+                       Margin="5,5,5,5" CornerRadius="100" HorizontalOptions="Start" VerticalOptions="FillAndExpand">
+                    <ImageButton x:Name="_ProfileImage" Aspect="AspectFill" Source="{Binding profilePictureAddress}" Clicked="OpenLeftMenu"/>
+                </Frame>
 
                 <Label Text="----- Spots -----" VerticalOptions="Center" HorizontalOptions="CenterAndExpand"/>
 
@@ -37,14 +39,14 @@
         <ContentView
             x:Name="_LeftView"
             xct:SideMenuView.Position="LeftMenu"
-            xct:SideMenuView.MenuWidthPercentage=".7"
+            xct:SideMenuView.MenuWidthPercentage=".8"
             BackgroundColor="{Binding cl_MainBrand}"/>
 
         <!-- Right Menu -->
         <ContentView
             x:Name="_RightView"
             xct:SideMenuView.Position="RightMenu"
-            xct:SideMenuView.MenuWidthPercentage=".7"
+            xct:SideMenuView.MenuWidthPercentage=".8"
             BackgroundColor="{Binding cl_MainBrand}"/>
 
     </xct:SideMenuView>

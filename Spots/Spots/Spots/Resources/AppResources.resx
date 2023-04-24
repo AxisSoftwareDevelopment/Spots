@@ -145,9 +145,17 @@
     <value>Log In</value>
     <comment>Log in label</comment>
   </data>
+  <data name="lbl_LogOut" xml:space="preserve">
+    <value>Log Out</value>
+    <comment>Label that indicates Log Out function</comment>
+  </data>
   <data name="lbl_MyPraises" xml:space="preserve">
     <value>My Praises</value>
     <comment>Label that indicates the My Praises section</comment>
+  </data>
+  <data name="lbl_MyProfile" xml:space="preserve">
+    <value>My Profile</value>
+    <comment>Label that indicates My Profile window</comment>
   </data>
   <data name="lbl_Next" xml:space="preserve">
     <value>Next</value>
@@ -156,6 +164,10 @@
   <data name="lbl_Or" xml:space="preserve">
     <value>Or</value>
     <comment>Alternative label 'or'</comment>
+  </data>
+  <data name="lbl_Preferences" xml:space="preserve">
+    <value>Preferences</value>
+    <comment>Label that indicates the Preferences window</comment>
   </data>
   <data name="lbl_PwdPlaceHolder" xml:space="preserve">
     <value>**********</value>

@@ -10,40 +10,20 @@ using Xamarin.Essentials;
 //using Xamarin.CommunityToolkit.Helpers;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
+using Spots.Models.DisplayManager;
 
 namespace Spots.Views
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class vwLogin : ContentPage
     {
-        #region Binding atttributes
-        // Labels
-        public string lbl_LogIn { get; set; } = RsrcManager.GetText("lbl_LogIn");
-        public string lbl_Register { get; set; } = RsrcManager.GetText("lbl_Register");
-        public string lbl_eMailPlaceHolder { get; set; } = RsrcManager.GetText("lbl_eMailPlaceHolder");
-        public string lbl_PwdPlaceHolder { get; set; } = RsrcManager.GetText("lbl_PwdPlaceHolder");
-        // Texts
-        public string txt_LogIn { get; set; } = RsrcManager.GetText("txt_LogIn");
-        // Colors
-        public string cl_MainBrand { get; set; } = RsrcManager.GetColorHexCode("cl_MainBrand");
-        public string cl_BackGround { get; set; } = RsrcManager.GetColorHexCode("cl_BackGround");
-        public string cl_TextOnBG { get; set; } = RsrcManager.GetColorHexCode("cl_TextOnBG");
-        public string cl_TextOnElse { get; set; } = RsrcManager.GetColorHexCode("cl_TextOnElse");
-        public string cl_TextError { get; set; } = RsrcManager.GetColorHexCode("cl_TextError");
-        public string cl_MainGray { get; set; } = RsrcManager.GetColorHexCode("cl_MainGray");
-        // Images
-        public string img_Logo { get; set; } = RsrcManager.GetImagePath("img_Logo");
-        #endregion
-
-        #region Constants
         private const uint MILISECONDS_STARTUP_ANIMATION = 600;
-        #endregion
 
         public vwLogin()
         {
             InitializeComponent();
 
-            BindingContext = this;
+            BindingContext = RsrcManager.resourceCollection;
 
             #region Animations
             RunAnimationsAsync();

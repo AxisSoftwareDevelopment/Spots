@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Spots.Models.DisplayManager;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -14,23 +15,6 @@ namespace Spots.Views
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class vwRegister : ContentPage
     {
-        #region Binding Attributes
-        // Labels
-        public string lbl_Register { get; set; }
-        public string lbl_RegisterEmailField { get; set; }
-        public string lbl_eMailPlaceHolder { get; set; }
-        public string lbl_RegisterPasswordField { get; set; }
-        public string lbl_PwdPlaceHolder { get; set; }
-        public string lbl_RegisterConfirmPasswordField { get; set; }
-        public string lbl_RegisterConfirmEmailField { get; set; }
-        // Colors
-        public string cl_MainBrand { get; set; }
-        public string cl_BackGround { get; set; }
-        public string cl_TextOnBG { get; set; }
-        public string cl_TextOnElse { get; set; }
-        public string cl_TextError { get; set; }
-        #endregion
-
         string firstName;
         string lastName;
         string birthDate;
@@ -41,23 +25,7 @@ namespace Spots.Views
             this.lastName = lastName;
             this.birthDate = birthDate;
 
-            #region Resource Manager Setup
-            // Load Reosurces
-            lbl_Register = RsrcManager.GetText("lbl_Register");
-            lbl_RegisterEmailField = RsrcManager.GetText("lbl_RegisterEmailField");
-            lbl_eMailPlaceHolder = RsrcManager.GetText("lbl_eMailPlaceHolder");
-            lbl_RegisterPasswordField = RsrcManager.GetText("lbl_RegisterPasswordField");
-            lbl_PwdPlaceHolder = RsrcManager.GetText("lbl_PwdPlaceHolder");
-            lbl_RegisterConfirmPasswordField = RsrcManager.GetText("lbl_RegisterConfirmPasswordField");
-            lbl_RegisterConfirmEmailField = RsrcManager.GetText("lbl_RegisterConfirmEmailField");
-            cl_MainBrand = RsrcManager.GetColorHexCode("cl_MainBrand");
-            cl_BackGround = RsrcManager.GetColorHexCode("cl_BackGround");
-            cl_TextOnBG = RsrcManager.GetColorHexCode("cl_TextOnBG");
-            cl_TextOnElse = RsrcManager.GetColorHexCode("cl_TextOnElse");
-            cl_TextError = RsrcManager.GetColorHexCode("cl_TextError");
-            #endregion
-
-            BindingContext = this;
+            BindingContext = RsrcManager.resourceCollection;
 
             InitializeComponent();
         }

@@ -11,23 +11,33 @@
 
             <Grid Grid.Row="0">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="17*"/>
-                    <RowDefinition Height="3*"/>
+                    <RowDefinition Height="16*"/>
+                    <RowDefinition Height="4*"/>
                 </Grid.RowDefinitions>
 
-                <Frame Grid.Row="0" Padding="0" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" CornerRadius="100"
-                       Margin="50,30,50,0">
+                <Frame x:Name="_FrameProfilePicture" Grid.Row="0" Padding="0" 
+                       Margin="50,30,50,0" CornerRadius="100" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand">
                     <Frame.GestureRecognizers>
                         <TapGestureRecognizer Tapped="ProfilePictureOnClicked"/>
                     </Frame.GestureRecognizers>
                     <Image x:Name="_ProfileImage" Aspect="AspectFill" Source="{Binding profilePictureAddress}"></Image>
                 </Frame>
-                <Label Grid.Row="1" Text="{Binding fullName}" HorizontalOptions="Center" FontAttributes="Bold" FontSize="20" VerticalOptions="Start"/>
+                <Label Grid.Row="1" Text="{Binding fullName}" HorizontalOptions="Center" TextColor="White"
+                       FontAttributes="Bold" FontSize="25" VerticalOptions="Start"/>
             </Grid>
 
-            <StackLayout Grid.Row="1">
-                
-            </StackLayout>
+            <Frame Grid.Row="1" VerticalOptions="FillAndExpand" Margin="10,15" HasShadow="True" CornerRadius="25" BackgroundColor="{Binding cl_MainGray}">
+                <StackLayout x:Name="_ButtonStack" >
+                    <StackLayout VerticalOptions="FillAndExpand">
+                        <Button HorizontalOptions="FillAndExpand" Text="{Binding lbl_MyProfile}" BackgroundColor="{Binding cl_MainGray}"
+                                TextColor="{Binding cl_TextOnElse}" CornerRadius="20"/>
+                        <Button HorizontalOptions="FillAndExpand" Text="{Binding lbl_Preferences}" BackgroundColor="{Binding cl_MainGray}"
+                                TextColor="{Binding cl_TextOnElse}" CornerRadius="20"/>
+                    </StackLayout>
+                    <Button x:Name="_ButtonLogOut" HorizontalOptions="FillAndExpand" Text="{Binding lbl_LogOut}" BackgroundColor="{Binding cl_MainGray}"
+                            TextColor="{Binding cl_TextOnElse}" CornerRadius="20"/>
+                </StackLayout>
+            </Frame>
         </Grid>
     </ContentView.Content>
 </ContentView>

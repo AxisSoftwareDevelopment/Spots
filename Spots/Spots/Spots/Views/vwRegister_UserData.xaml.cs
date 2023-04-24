@@ -1,4 +1,5 @@
 ﻿using Spots.Models;
+using Spots.Models.DisplayManager;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,23 +14,6 @@ namespace Spots.Views
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class vwRegister_UserData : ContentPage
     {
-        #region Binding Attributes
-        // Labels
-        public string lbl_Next { get; set; } = RsrcManager.GetText("lbl_Next");
-        public string lbl_RegisterFirstName { get; set; } = RsrcManager.GetText("lbl_RegisterFirstName");
-        public string lbl_RegisterLastName { get; set; } = RsrcManager.GetText("lbl_RegisterLastName");
-        public string lbl_FirstNamePlaceHolder { get; set; } = RsrcManager.GetText("lbl_FirstNamePlaceHolder");
-        public string lbl_LastNamePlaceHolder { get; set; } = RsrcManager.GetText("lbl_LastNamePlaceHolder");
-        public string lbl_BirthdateField { get; set; } = RsrcManager.GetText("lbl_BirthdateField");
-        public string lbl_UserData { get; set; } = RsrcManager.GetText("lbl_UserData");
-        // Colors
-        public string cl_MainBrand { get; set; } = RsrcManager.GetColorHexCode("cl_MainBrand");
-        public string cl_BackGround { get; set; } = RsrcManager.GetColorHexCode("cl_BackGround");
-        public string cl_TextOnBG { get; set; } = RsrcManager.GetColorHexCode("cl_TextOnBG");
-        public string cl_TextOnElse { get; set; } = RsrcManager.GetColorHexCode("cl_TextOnElse");
-        public string cl_TextError { get; set; } = RsrcManager.GetColorHexCode("cl_TextError");
-        #endregion
-
         private bool birhtdateSelected = false;
 
         public vwRegister_UserData()
@@ -44,7 +28,7 @@ namespace Spots.Views
             _dateBirthdate.DateSelected += (o, e) =>
             {
                 _dateBirthdate.Format = "MM/dd/yyyy";
-                _dateBirthdate.TextColor = ColorConverters.FromHex(cl_TextOnBG);
+                _dateBirthdate.TextColor = ColorConverters.FromHex(RsrcManager.resourceCollection.cl_TextOnBG);
                 birhtdateSelected = true;
             };
         }

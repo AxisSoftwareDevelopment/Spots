@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text;
 using Xamarin.Forms;
-using static Android.Renderscripts.Sampler;
+using Spots.Models.DisplayManager;
 
 namespace Spots.Models
 {
@@ -26,7 +26,7 @@ namespace Spots.Models
         public string fullName
         {
             get { return _fullName; }
-            private set 
+            private set
             {
                 _fullName = value;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(fullName)));

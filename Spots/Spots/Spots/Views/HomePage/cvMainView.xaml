@@ -10,26 +10,29 @@
             TabStripHeight="50"
             TabIndicatorColor="{Binding cl_MainBrand}">
             <xct:TabViewItem
-                x:Name="_TabButton1"
                 Text="{Binding lbl_Menu_1}"
                 TextColor="{Binding cl_TextOnBG}"
                 TextColorSelected="{Binding cl_MainBrand}"
                 FontSize="13"
-                FontSizeSelected="15"/>
+                FontSizeSelected="15">
+                <ContentView x:Name="_TabView1"/>
+            </xct:TabViewItem>
             <xct:TabViewItem
-                x:Name="_TabButton2"
                 Text="{Binding lbl_Menu_2}"
                 TextColor="{Binding cl_TextOnBG}"
                 TextColorSelected="{Binding cl_MainBrand}"
                 FontSize="13"
-                FontSizeSelected="15"/>
+                FontSizeSelected="15">
+                <ContentView x:Name="_TabView2"/>
+            </xct:TabViewItem>
             <xct:TabViewItem
-                x:Name="_TabButton3"
                 Text="{Binding lbl_Menu_3}"
                 TextColor="{Binding cl_TextOnBG}"
                 TextColorSelected="{Binding cl_MainBrand}"
                 FontSize="13"
-                FontSizeSelected="15"/>
+                FontSizeSelected="15">
+                <ContentView x:Name="_TabView3"/>
+            </xct:TabViewItem>
         </xct:TabView>
     </ContentView.Content>
 </ContentView>
