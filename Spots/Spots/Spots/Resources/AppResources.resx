@@ -117,6 +117,10 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="lbl_AreYouSure" xml:space="preserve">
+    <value>Are you sure?</value>
+    <comment>Label that questions the user if is sure</comment>
+  </data>
   <data name="lbl_BirthdateField" xml:space="preserve">
     <value>Birthdate:</value>
     <comment>Label that indicates the input field for the user's birthdate</comment>
@@ -160,6 +164,10 @@
   <data name="lbl_Next" xml:space="preserve">
     <value>Next</value>
     <comment>Label that indicates the next item</comment>
+  </data>
+  <data name="lbl_No" xml:space="preserve">
+    <value>No</value>
+    <comment>Label that indicates Negation</comment>
   </data>
   <data name="lbl_Or" xml:space="preserve">
     <value>Or</value>
@@ -209,9 +217,17 @@
     <value>User Information</value>
     <comment>Label that indicates user information</comment>
   </data>
+  <data name="lbl_Yes" xml:space="preserve">
+    <value>Yes</value>
+    <comment>Label that indicates afirmation</comment>
+  </data>
   <data name="TEST" xml:space="preserve">
     <value>--Placeholder--</value>
     <comment>-</comment>
+  </data>
+  <data name="txt_ConfirmLogOut" xml:space="preserve">
+    <value>Are you sure you want to want to log out?</value>
+    <comment>Text that questions the user if is sure of logout action</comment>
   </data>
   <data name="txt_LogIn" xml:space="preserve">
     <value>Log in to your account</value>

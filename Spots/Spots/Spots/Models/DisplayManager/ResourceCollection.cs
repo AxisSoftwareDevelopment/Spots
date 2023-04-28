@@ -34,9 +34,13 @@ namespace Spots.Models.DisplayManager
         private string _lbl_MyProfile;
         private string _lbl_Preferences;
         private string _lbl_LogOut;
+        private string _lbl_AreYouSure;
+        private string _lbl_Yes;
+        private string _lbl_No;
 
         // Texts
         private string _txt_LogIn;
+        private string _txt_ConfirmLogOut;
 
         // Colors
         private string _cl_MainBrand;
@@ -241,6 +245,33 @@ namespace Spots.Models.DisplayManager
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(lbl_LogOut)));
             }
         }
+        public string lbl_AreYouSure
+        {
+            get { return _lbl_AreYouSure; }
+            set
+            {
+                _lbl_AreYouSure = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(lbl_AreYouSure)));
+            }
+        }
+        public string lbl_Yes
+        {
+            get { return _lbl_Yes; }
+            set
+            {
+                _lbl_Yes = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(lbl_Yes)));
+            }
+        }
+        public string lbl_No
+        {
+            get { return _lbl_No; }
+            set
+            {
+                _lbl_No = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(lbl_No)));
+            }
+        }
 
         // Texts
         public string txt_LogIn
@@ -250,6 +281,15 @@ namespace Spots.Models.DisplayManager
             {
                 _txt_LogIn = value;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(txt_LogIn)));
+            }
+        }
+        public string txt_ConfirmLogOut
+        {
+            get { return _txt_ConfirmLogOut; }
+            set
+            {
+                _txt_ConfirmLogOut = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(txt_ConfirmLogOut)));
             }
         }
 
@@ -350,8 +390,12 @@ namespace Spots.Models.DisplayManager
             lbl_MyProfile = RsrcManager.GetText("lbl_MyProfile");
             lbl_Preferences = RsrcManager.GetText("lbl_Preferences");
             lbl_LogOut = RsrcManager.GetText("lbl_LogOut");
+            lbl_AreYouSure = RsrcManager.GetText("lbl_AreYouSure");
+            lbl_Yes = RsrcManager.GetText("lbl_Yes");
+            lbl_No = RsrcManager.GetText("lbl_No");
             // Texts
             txt_LogIn = RsrcManager.GetText("txt_LogIn");
+            txt_ConfirmLogOut = RsrcManager.GetText("txt_ConfirmLogOut");
             // Colors
             cl_MainBrand = RsrcManager.GetColorHexCode("cl_MainBrand");
             cl_BackGround = RsrcManager.GetColorHexCode("cl_BackGround");

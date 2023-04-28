@@ -44,6 +44,11 @@ namespace Spots.Models
             };
             return await firestoreManager.SaveNewUserDataAsync(id, userData);
         }
+
+        public static void LogOut()
+        {
+            authorizator.LogOut();
+        }
         #endregion
     }
 }

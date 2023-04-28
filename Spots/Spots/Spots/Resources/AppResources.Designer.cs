@@ -61,6 +61,15 @@ namespace Spots.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Are you sure?.
+        /// </summary>
+        internal static string lbl_AreYouSure {
+            get {
+                return ResourceManager.GetString("lbl_AreYouSure", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Birthdate:.
         /// </summary>
         internal static string lbl_BirthdateField {
@@ -156,6 +165,15 @@ namespace Spots.Resources {
         internal static string lbl_Next {
             get {
                 return ResourceManager.GetString("lbl_Next", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No.
+        /// </summary>
+        internal static string lbl_No {
+            get {
+                return ResourceManager.GetString("lbl_No", resourceCulture);
             }
         }
         
@@ -268,11 +286,29 @@ namespace Spots.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Yes.
+        /// </summary>
+        internal static string lbl_Yes {
+            get {
+                return ResourceManager.GetString("lbl_Yes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to --Placeholder--.
         /// </summary>
         internal static string TEST {
             get {
                 return ResourceManager.GetString("TEST", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to want to log out?.
+        /// </summary>
+        internal static string txt_ConfirmLogOut {
+            get {
+                return ResourceManager.GetString("txt_ConfirmLogOut", resourceCulture);
             }
         }
         
