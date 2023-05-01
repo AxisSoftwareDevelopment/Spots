@@ -1,4 +1,5 @@
 ﻿using Spots.Models.SessionManagement;
+using Plugin.Firebase.Auth;
 
 namespace Spots.Models.DatabaseManagement
 {
@@ -8,7 +9,7 @@ namespace Spots.Models.DatabaseManagement
         #region Public Methods
         public static async Task<User> LogInAsync(string email, string password)
         {
-            //IFirebaseUser user = await CrossFirebaseAuth.Current.SignInWithEmailAndPasswordAsync(email, password);
+            IFirebaseUser user = await CrossFirebaseAuth.Current.SignInWithEmailAndPasswordAsync(email, password);
             //Dictionary<string, string> userData = GetUserDataAsync(user);
 
             return new User();//(user.Uid, userData);

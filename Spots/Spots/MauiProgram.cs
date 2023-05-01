@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using Microsoft.Maui.LifecycleEvents;
 using Plugin.Firebase.Auth;
-using Plugin.Firebase.Bundled.Shared;
 
 #if IOS
 	using Plugin.Firebase.Core.Platforms.iOS;

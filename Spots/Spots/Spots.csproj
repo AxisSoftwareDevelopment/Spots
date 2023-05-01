@@ -52,6 +52,10 @@
 	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">
 		<BundleResource Include="GoogleService-Info.plist" />
 	</ItemGroup>
+
+	<ItemGroup>
+	  <None Remove="Platforms\Android\Resources\values\strings.xml" />
+	</ItemGroup>
 	<!-- Google Services -->
 
 	<ItemGroup>
