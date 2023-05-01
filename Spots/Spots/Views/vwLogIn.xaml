@@ -10,8 +10,8 @@
         <Grid HorizontalOptions="Fill"
               VerticalOptions="Fill">
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="*"/>
+                <RowDefinition Height="7*"/>
+                <RowDefinition Height="13*"/>
             </Grid.RowDefinitions>
             <Image Grid.Row="0" x:Name="_imgLogo" Margin="0,20,0,20" HeightRequest="180" WidthRequest="80"
                    Source="{DynamicResource img_Logo}"/>
