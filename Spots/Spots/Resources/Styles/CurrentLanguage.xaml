@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xaml-comp compile="true" ?>
+<ResourceDictionary 
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+    
+    <x:String x:Key="lbl_AreYouSure">Are you sure?</x:String> <!-- Label that questions the user if is sure -->
+    <x:String x:Key="lbl_BirthdateField">Birthdate:</x:String> <!-- Label that indicates the input field for the user's birthdate -->
+    <x:String x:Key="lbl_Discovery">Discovery</x:String> <!-- Label that indicates the Discovery section -->
+    <x:String x:Key="lbl_eMailPlaceHolder">example@mail.com</x:String>	<!-- User eMail placeholder -->
+    <x:String x:Key="lbl_Feed">Feed</x:String> <!-- Label that indicates the Feed section -->
+    <x:String x:Key="lbl_FirstNamePlaceHolder">First Name</x:String> <!-- First name field placeholder -->
+    <x:String x:Key="lbl_LastNamePlaceHolder">Last Name</x:String> <!-- Last name field placeholder -->
+    <x:String x:Key="lbl_LogIn">Log In</x:String> <!-- Log in label -->
+    <x:String x:Key="lbl_LogOut">Log Out</x:String> <!-- Label that indicates Log Out function -->
+    <x:String x:Key="lbl_MyPraises">My Praises</x:String> <!-- Label that indicates the My Praises section -->
+    <x:String x:Key="lbl_MyProfile">My Profile</x:String> <!-- Label that indicates My Profile window -->
+    <x:String x:Key="lbl_Next">Next</x:String> <!-- Label that indicates the next item -->
+    <x:String x:Key="lbl_No">No</x:String>	<!-- Label that indicates Negation -->
+    <x:String x:Key="lbl_Or">Or</x:String> <!-- Alternative label 'or' -->
+    <x:String x:Key="lbl_Preferences">Preferences</x:String> <!-- Label that indicates the Preferences window -->
+    <x:String x:Key="lbl_PwdPlaceHolder">**********</x:String> <!-- User password placeholder -->
+    <x:String x:Key="lbl_Register">Register</x:String> <!-- Register label -->
+    <x:String x:Key="lbl_RegisterConfirmEmailField">Confirm email:</x:String> <!-- Label that indicates the input field for the confirmation of the user email -->
+    <x:String x:Key="lbl_RegisterConfirmPasswordField">Confirm Password:</x:String> <!-- Label that indicates the input field of the password confirmation -->
+    <x:String x:Key="lbl_RegisterEmailField">User Email:</x:String> <!-- Label that indicates the input field for user email -->
+    <x:String x:Key="lbl_RegisterFirstName">First Name:</x:String> <!-- Label that indicates the input field of the user's first name -->
+    <x:String x:Key="lbl_RegisterLastName">Last Name:</x:String> <!-- Label that indicates the input field of the user's last name -->
+    <x:String x:Key="lbl_RegisterPasswordField">User Password:</x:String> <!-- Label that indicates the input field for user password -->
+    <x:String x:Key="lbl_Save">Save</x:String> <!-- Label that indicates save -->
+    <x:String x:Key="lbl_UserData">User</x:String> <!-- Information	Label that indicates user information -->
+    <x:String x:Key="lbl_Yes">Yes</x:String> <!-- Label that indicates afirmation -->
+    
+    <x:String x:Key="txt_ConfirmLogOut">Are you sure you want to want to log out?</x:String> <!-- Text that questions the user if is sure of logout action -->
+    <x:String x:Key="txt_LogIn">Log in to your account</x:String> <!-- Log in text -->
+    <x:String x:Key="txt_LogInError_EmptyEntry">One or both fields are empty. Please fill the information correctly.</x:String> <!-- Error message displayed when one or both LogIn entry fields are empty -->
+    <x:String x:Key="txt_LogInError_WrongCredentials">The email and password provided do not match with any user registered.</x:String> <!-- Error message displayerd when the credentials provided dont match any user on database. -->
+    <x:String x:Key="txt_RegisterError_EmailsDontMatch">The email provided in the 'Email' and 'Confirm Email' fields must be the same. Please fill the information correctly.</x:String> <!-- Error message displayed when the emails provided in the Register form dont match. -->
+    <x:String x:Key="txt_RegisterError_EmptyFields">One or more fields are empty. Please fill the information correctly.</x:String> <!-- Error message displayed when one or more Register entry fields are empty -->
+    <x:String x:Key="txt_RegisterError_InvalidBirthdate">The birthdate provided is not valid. Make sure you are above 12 years of age.</x:String> <!-- Error message displayed when the birthdate provided in the Register form is not valid -->
+    <x:String x:Key="txt_RegisterError_InvalidEmail">The eMail provided is invalid. Please fill the information correctly.</x:String> <!-- Error message displayed when the email provided in the Register form has an invalid format. -->
+    <x:String x:Key="txt_RegisterError_InvalidPasswordLength">Your password must be at least 8 characters long.</x:String> <!-- Error message displayed when the password providad is not of the valid length -->
+    <x:String x:Key="txt_RegisterError_PasswordsDontMatch">The passwords provided in the 'Password' and 'Confirm Password' fields must be the same. Please fill the information correctly.</x:String> <!-- Error message displayed when the passwords provided in the Register form dont match. -->
+    <x:String x:Key="txt_RegisterError_RegisterError">There was an error while trying to register your account, please verify your information and tray again later.</x:String> <!-- Error message displayed when the CreateUser method returns false, indicating there was an error trying to register the account -->
+
+</ResourceDictionary>
