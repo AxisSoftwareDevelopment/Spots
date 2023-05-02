@@ -1,6 +1,7 @@
 ﻿using Spots.Models.SessionManagement;
 using Plugin.Firebase.Auth;
 using Plugin.Firebase.Firestore;
+using Plugin.Firebase.Core.Exceptions;
 #if IOS
     using Plugin.Firebase.Firestore.Platforms.iOS.Extensions;
     using Foundation;
@@ -14,9 +15,18 @@ namespace Spots.Models.DatabaseManagement
     {
 
         #region Public Methods
-        public static async Task<User> LogInAsync(string email, string password)
+        public static async Task<User> LogInWithEmailAndPasswordAsync(string email, string password)
         {
-            IFirebaseUser user = await CrossFirebaseAuth.Current.SignInWithEmailAndPasswordAsync(email, password);
+            string[] userSignInMethods = await CrossFirebaseAuth.Current.FetchSignInMethodsAsync(email);
+
+            if(userSignInMethods.Length == 0 || !userSignInMethods.Contains("password"))
+                throw new FirebaseAuthException(FIRAuthError.InvalidEmail, "Custom Exception -> There was no email and password login method, or none at all.");
+
+            IFirebaseUser user = await CrossFirebaseAuth.Current.SignInWithEmailAndPasswordAsync(email, password, false);
+
+            if(!user.IsEmailVerified)
+                throw new FirebaseAuthException(FIRAuthError.UserDisabled, "Custon Exception -> Email not verified.");
+
             Dictionary<string, string> userData = await GetUserDataAsync(user);
 
             return new User(user.Uid, userData);

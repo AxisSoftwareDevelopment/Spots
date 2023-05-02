@@ -1,9 +1,12 @@
 using Spots.Models.SessionManagement;
 using Spots.Models.DatabaseManagement;
+using Plugin.Firebase.Core;
+using Plugin.Firebase.Core.Exceptions;
 
 namespace Spots.Views;
 public partial class vwLogIn : ContentPage
 {
+    private const int RESOURCE_INDEX_CURRENTLANGUAGE = 1;
 	public vwLogIn()
 	{
 		InitializeComponent();
@@ -24,7 +27,7 @@ public partial class vwLogIn : ContentPage
             // Look for user in database
             try
             {
-                User user = await DatabaseManager.LogInAsync(email, password);
+                User user = await DatabaseManager.LogInWithEmailAndPasswordAsync(email, password);
 
                 if (user.userID != null && user.userID.Length > 0)
                 {
@@ -36,9 +39,31 @@ public partial class vwLogIn : ContentPage
                     DisplayErrorSection("txt_LogInError_WrongCredentials");
                 }
             }
-            catch (Exception ex)
+            catch (FirebaseAuthException ex)
             {
-                await Application.Current.MainPage.DisplayAlert("Error", ex.Message.ToString(), "OK");
+                string errorID;
+                switch (ex.Reason)
+                {
+                    case FIRAuthError.InvalidEmail:
+                        errorID = "txt_Error_InvalidEmail";
+                        break;
+                    case FIRAuthError.WrongPassword:
+                        errorID = "txt_Error_WrongPassword";
+                        break;
+                    case FIRAuthError.InvalidCredential:
+                        errorID = "txt_Error_InvalidCredential";
+                        break;
+                    case FIRAuthError.UserNotFound:
+                        errorID = "txt_Error_UserNotFound";
+                        break;
+                    default:
+                        errorID = "txt_Error_Undefined";
+                        break;
+                }
+                object message = "";
+                Resources.MergedDictionaries.ElementAt(RESOURCE_INDEX_CURRENTLANGUAGE).TryGetValue(errorID, out message);
+
+                await Application.Current.MainPage.DisplayAlert("Error", (string)message, "OK");
             }
         }
         else
