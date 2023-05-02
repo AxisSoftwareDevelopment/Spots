@@ -1,5 +1,12 @@
 ﻿using Spots.Models.SessionManagement;
 using Plugin.Firebase.Auth;
+using Plugin.Firebase.Firestore;
+#if IOS
+    using Plugin.Firebase.Firestore.Platforms.iOS.Extensions;
+    using Foundation;
+#else
+    using Plugin.Firebase.Firestore.Platforms.Android.Extensions;
+#endif
 
 namespace Spots.Models.DatabaseManagement
 {
@@ -10,23 +17,20 @@ namespace Spots.Models.DatabaseManagement
         public static async Task<User> LogInAsync(string email, string password)
         {
             IFirebaseUser user = await CrossFirebaseAuth.Current.SignInWithEmailAndPasswordAsync(email, password);
-            //Dictionary<string, string> userData = GetUserDataAsync(user);
+            Dictionary<string, string> userData = await GetUserDataAsync(user);
 
-            return new User();//(user.Uid, userData);
+            return new User(user.Uid, userData);
         }
 
-        //private static Dictionary<string, string> GetUserDataAsync(IFirebaseUser user)
-        //{
-        //    Dictionary<string, string> userData = new Dictionary<string, string>
-        //    {
-        //        //{ "firstName", firstName },
-        //        //{ "lastName", lastName },
-        //        //{ "birthDate", birthDate },
-        //        //{ "email", email },
-        //        { "profilePicture", "null" }
-        //    };
-        //    return userData;
-        //}
+        private async static Task<Dictionary<string, string>> GetUserDataAsync(IFirebaseUser user)
+        {
+            IDocumentSnapshot documentSnapshot = await CrossFirebaseFirestore.Current
+                .GetCollection("UserData")
+                .GetDocument(user.Uid)
+                .GetDocumentSnapshotAsync<Task<IDocumentSnapshot>>();
+
+            return ParseDocumentSnapshot(documentSnapshot);
+        }
 
         //public static async Task<bool> CreateUserAsync(string firstName, string lastName, string email, string password, string birthDate)
         //{
@@ -47,6 +51,27 @@ namespace Spots.Models.DatabaseManagement
         //{
         //    authorizator.LogOut();
         //}
+        #endregion
+
+        #region Utilities
+        private static Dictionary<string, string> ParseDocumentSnapshot(IDocumentSnapshot documentSnapshot)
+        {
+            Dictionary<string, string> dict = new Dictionary<string, string>();
+#if IOS
+            NSDictionary<NSString, NSObject> nsDict = documentSnapshot.ToNative().GetData(Firebase.CloudFirestore.ServerTimestampBehavior.Previous);
+            foreach (var key in nsDict.Keys)
+            {
+                dict[key.Description] = nsDict[key].Description;
+            }
+#else
+            IDictionary<string, Java.Lang.Object> dataSnapshot = documentSnapshot.ToNative().Data;
+            foreach (string key in dataSnapshot.Keys)
+            {
+                dict[key] = dataSnapshot[key].ToString();
+            }
+#endif
+            return dict;
+        }
         #endregion
     }
 }
