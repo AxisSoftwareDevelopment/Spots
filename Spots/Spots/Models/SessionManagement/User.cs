@@ -112,10 +112,10 @@ namespace Spots.Models.SessionManagement
         public User()
             : this(null, new Dictionary<string, string>()
             {
-                { "firstName", "First Name" },
-                { "lastName", "Last Name"},
-                { "birthDate", "05/05/1555" },
-                { "email", "example@mail.com" },
+                { "firstName", "" },
+                { "lastName", ""},
+                { "birthDate", "" },
+                { "email", "" },
                 { "profilePictureAddress", "null" }
             })
         { }
@@ -124,10 +124,10 @@ namespace Spots.Models.SessionManagement
         public User(string userID, Dictionary<string, string> userData)
         {
             this.userID = userID;
-            firstName = userData["firstName"].Length > 0 ? userData["firstName"] : "First Name";
-            lastName = userData["lastName"].Length > 0 ? userData["lastName"] : "Last Name";
-            birthDate = userData["birthDate"].Length > 0 ? userData["birthDate"] : "05/05/1555";
-            email = userData["email"].Length > 0 ? userData["email"] : "example@mail.com";
+            firstName = userData["firstName"].Length > 0 ? userData["firstName"] : "";
+            lastName = userData["lastName"].Length > 0 ? userData["lastName"] : "";
+            birthDate = userData["birthDate"].Length > 0 ? userData["birthDate"] : "";
+            email = userData["email"].Length > 0 ? userData["email"] : "";
             profilePictureAddress = userData["profilePictureAddress"].Length > 0 ? userData["profilePictureAddress"] : "null";
         }
 
@@ -141,6 +141,16 @@ namespace Spots.Models.SessionManagement
                 { "email", email },
                 { "profilePictureAddress", profilePictureAddress }
             };
+        }
+
+        public void UpdateUserData(User userData)
+        {
+            userID = userData.userID;
+            firstName = userData.firstName;
+            lastName = userData.lastName;
+            birthDate = userData.birthDate;
+            email = userData.email;
+            profilePictureAddress = userData.profilePictureAddress;
         }
     }
 }

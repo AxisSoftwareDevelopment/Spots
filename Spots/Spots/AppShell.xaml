@@ -4,11 +4,44 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:Spots"
-    Shell.FlyoutBehavior="Disabled">
+    x:Name="_Shell">
 
-    <ShellContent
-        Title="Home"
-        ContentTemplate="{DataTemplate local:MainPage}"
-        Route="MainPage" />
+    <Shell.FlyoutHeader>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="16*"/>
+                <RowDefinition Height="4*"/>
+            </Grid.RowDefinitions>
+
+            <Frame x:Name="_FrameProfilePicture" Grid.Row="0" Padding="0" 
+                       Margin="50,30,50,0" CornerRadius="100" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand">
+                <ImageButton x:Name="_ProfileImage" Aspect="AspectFill" Source="{Binding profilePictureAddress}" ></ImageButton>
+            </Frame>
+            <Label Grid.Row="1" Text="{Binding fullName}" HorizontalOptions="Center" TextColor="White"
+                       FontAttributes="Bold" FontSize="25" VerticalOptions="Start"/>
+        </Grid>
+    </Shell.FlyoutHeader>
+
+    <Shell.FlyoutContent>
+        <Frame VerticalOptions="FillAndExpand" Margin="10,15" HasShadow="True" CornerRadius="25" BackgroundColor="{DynamicResource Secondary}">
+            <StackLayout x:Name="_ButtonStack" >
+                <StackLayout VerticalOptions="FillAndExpand">
+                    <Button HorizontalOptions="FillAndExpand" Text="{DynamicResource lbl_MyProfile}" BackgroundColor="{DynamicResource Tertiary}"
+                                 TextColor="{DynamicResource PrimaryAccent}" CornerRadius="20"/>
+                    <Button HorizontalOptions="FillAndExpand" Text="{DynamicResource lbl_Preferences}" BackgroundColor="{DynamicResource Tertiary}"
+                                 TextColor="{DynamicResource PrimaryAccent}" CornerRadius="20"/>
+                </StackLayout>
+
+            </StackLayout>
+        </Frame>
+    </Shell.FlyoutContent>
+
+    <Shell.FlyoutFooter>
+        <Button x:Name="_ButtonLogOut" HorizontalOptions="FillAndExpand" Text="{DynamicResource lbl_LogOut}" BackgroundColor="{DynamicResource Tertiary}"
+                             TextColor="{DynamicResource PrimaryAccent}" CornerRadius="20"/>
+    </Shell.FlyoutFooter>
+
+    <ShellContent x:Name="_ShellContent" Title="Home" Route="MainPage"/>
+    <ShellContent x:Name="_ShellContent2" Title="Home2" Route="MainPage2"/>
 
 </Shell>

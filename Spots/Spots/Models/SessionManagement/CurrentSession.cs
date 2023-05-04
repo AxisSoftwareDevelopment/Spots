@@ -1,4 +1,7 @@
-﻿using System;
+﻿using Plugin.Firebase.Auth;
+using Spots.Models.DatabaseManagement;
+using Spots.Views;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,15 +11,14 @@ namespace Spots.Models.SessionManagement
 {
     public static class CurrentSession
     {
-        // public static string sessionID { get; private set; }
         public static bool sessionOnline { get; private set; } = false;
-        public static User currentUser { get; private set; }
+        public static User currentUser { get; private set; } = new();
 
         public static bool StartSession(User user)
         {
             if (!sessionOnline)
             {
-                currentUser = user;
+                currentUser.UpdateUserData( user );
                 sessionOnline = true;
 
                 return true;
@@ -29,7 +31,8 @@ namespace Spots.Models.SessionManagement
 
         public static void CloseSession()
         {
-            currentUser = new User();
+            Application.Current.MainPage = new NavigationPage( new vwLogIn() );
+            currentUser.UpdateUserData( new() );
             sessionOnline = false;
         }
     }

@@ -7,13 +7,14 @@ using Plugin.Firebase.Core.Exceptions;
     using Foundation;
 #else
     using Plugin.Firebase.Firestore.Platforms.Android.Extensions;
+    using Java.Util;
 #endif
 
 namespace Spots.Models.DatabaseManagement
 {
     public static class DatabaseManager
     {
-
+        public static IFirebaseAuth firebaseAuth = CrossFirebaseAuth.Current;
         #region Public Methods
         public static async Task<User> LogInWithEmailAndPasswordAsync(string email, string password)
         {
@@ -24,49 +25,91 @@ namespace Spots.Models.DatabaseManagement
 
             IFirebaseUser user = await CrossFirebaseAuth.Current.SignInWithEmailAndPasswordAsync(email, password, false);
 
-            if(!user.IsEmailVerified)
-                throw new FirebaseAuthException(FIRAuthError.UserDisabled, "Custon Exception -> Email not verified.");
+            //if(!firebaseUser.IsEmailVerified)
+            //    throw new FirebaseAuthException(FIRAuthError.UserDisabled, "Custon Exception -> Email not verified.");
 
-            Dictionary<string, string> userData = await GetUserDataAsync(user);
-
-            return new User(user.Uid, userData);
+            return await GetUserDataAsync(user);
         }
 
-        private async static Task<Dictionary<string, string>> GetUserDataAsync(IFirebaseUser user)
+        public static async Task<bool> CreateUserAsync(string firstName, string lastName, string email, string password, string birthDate)
         {
-            IDocumentSnapshot documentSnapshot = await CrossFirebaseFirestore.Current
-                .GetCollection("UserData")
-                .GetDocument(user.Uid)
-                .GetDocumentSnapshotAsync<Task<IDocumentSnapshot>>();
+            await CrossFirebaseAuth.Current.CreateUserAsync(email, password);
 
-            return ParseDocumentSnapshot(documentSnapshot);
+            string id = CrossFirebaseAuth.Current.CurrentUser?.Uid;
+            if (id.Length == 0)
+                throw new FirebaseAuthException(FIRAuthError.Undefined, "Custom Exception -> Unhandled exception: User not registered correctly.");
+
+            await LogOutAsync();
+
+            Dictionary<string, string> userData = new()
+            {
+                { "firstName", firstName },
+                { "lastName", lastName },
+                { "birthDate", birthDate },
+                { "email", email },
+                { "profilePicture", "null" }
+            };
+            return await SaveNewUserDataAsync(id, userData);
         }
 
-        //public static async Task<bool> CreateUserAsync(string firstName, string lastName, string email, string password, string birthDate)
-        //{
-        //    string id = await authorizator.RegisterWithEmailAndPasswordAsync(email, password);
-        //    authorizator.LogOut();
-        //    Dictionary<string, string> userData = new Dictionary<string, string>
-        //    {
-        //        { "firstName", firstName },
-        //        { "lastName", lastName },
-        //        { "birthDate", birthDate },
-        //        { "email", email },
-        //        { "profilePicture", "null" }
-        //    };
-        //    return await firestoreManager.SaveNewUserDataAsync(id, userData);
-        //}
+        public static async Task ValidateCurrentSession()
+        {
+            try
+            {
+                if (CrossFirebaseAuth.Current.CurrentUser != null)
+                {
+                    User user = await GetUserDataAsync( CrossFirebaseAuth.Current.CurrentUser );
+                    CurrentSession.StartSession( user );
+                }
+            }
+            catch (Exception) 
+            {
+                await LogOutAsync();
+            }
+        }
 
-        //public static void LogOut()
-        //{
-        //    authorizator.LogOut();
-        //}
+        public static async Task LogOutAsync(bool shouldUpdateMainPage = true)
+        {
+            await CrossFirebaseAuth.Current.SignOutAsync();
+            CurrentSession.CloseSession(shouldUpdateMainPage);
+        }
+        #endregion
+
+        #region Private Methods
+        private async static Task<User> GetUserDataAsync(IFirebaseUser firebaseUser)
+        {
+            User user = new();
+            try
+            {
+                IDocumentSnapshot documentSnapshot = await CrossFirebaseFirestore.Current
+                    .GetCollection("UserData")
+                    .GetDocument(firebaseUser.Uid)
+                    .GetDocumentSnapshotAsync<Task<IDocumentSnapshot>>();
+
+                user = new(firebaseUser.Uid, ParseFromDocumentSnapshot(documentSnapshot));
+            }
+            catch (Exception) { }
+
+            return user;
+        }
+
+        private static async Task<bool> SaveNewUserDataAsync(string id, Dictionary<string, string> userData)
+        {
+            object parsedData = ParseFromDictionary(userData);
+
+            await CrossFirebaseFirestore.Current
+                .GetCollection("UserData")
+                .GetDocument(id)
+                .SetDataAsync(parsedData);
+
+            return true;
+        }
         #endregion
 
         #region Utilities
-        private static Dictionary<string, string> ParseDocumentSnapshot(IDocumentSnapshot documentSnapshot)
+        private static Dictionary<string, string> ParseFromDocumentSnapshot(IDocumentSnapshot documentSnapshot)
         {
-            Dictionary<string, string> dict = new Dictionary<string, string>();
+            Dictionary<string, string> dict = new();
 #if IOS
             NSDictionary<NSString, NSObject> nsDict = documentSnapshot.ToNative().GetData(Firebase.CloudFirestore.ServerTimestampBehavior.Previous);
             foreach (var key in nsDict.Keys)
@@ -81,6 +124,27 @@ namespace Spots.Models.DatabaseManagement
             }
 #endif
             return dict;
+        }
+
+        private static object ParseFromDictionary(Dictionary<string, string> dictionary)
+        {
+            object parsedObject;
+#if IOS
+            NSDictionary<NSString, NSObject> plataformObject = new();
+            foreach (string key in dictionary.Keys)
+            {
+                plataformObject.SetValueForKey(NSObject.FromObject(dictionary[key]), (NSString)NSObject.FromObject(key));
+            }
+            parsedObject = plataformObject;
+#else
+            HashMap plataformObject = new();
+            foreach (string key in dictionary.Keys)
+            {
+                plataformObject.Put(key, dictionary[key]);
+            }
+            parsedObject = plataformObject;
+#endif
+            return parsedObject;
         }
         #endregion
     }

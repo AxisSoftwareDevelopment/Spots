@@ -1,17 +1,15 @@
 using Spots.Models.SessionManagement;
 using Spots.Models.DatabaseManagement;
-using Plugin.Firebase.Core;
 using Plugin.Firebase.Core.Exceptions;
 
 namespace Spots.Views;
 public partial class vwLogIn : ContentPage
 {
-    private const int RESOURCE_INDEX_CURRENTLANGUAGE = 1;
 	public vwLogIn()
 	{
-		InitializeComponent();
+        InitializeComponent();
         Resources = Application.Current.Resources;
-	}
+    }
 
 	private async void BtnLogInOnClickAsync(object sender, EventArgs e)
 	{
@@ -32,15 +30,17 @@ public partial class vwLogIn : ContentPage
                 if (user.userID != null && user.userID.Length > 0)
                 {
                     CurrentSession.StartSession(user);
-                    Application.Current.MainPage = new AppShell();
+                    Application.Current.MainPage = new NavigationPage( new AppShell() );
                 }
                 else
                 {
+                    // TODO: Setup User Data
                     DisplayErrorSection("txt_LogInError_WrongCredentials");
                 }
             }
             catch (FirebaseAuthException ex)
             {
+                #region Error Message Calculation
                 string errorID;
                 switch (ex.Reason)
                 {
@@ -60,10 +60,13 @@ public partial class vwLogIn : ContentPage
                         errorID = "txt_Error_Undefined";
                         break;
                 }
-                object message = "";
-                Resources.MergedDictionaries.ElementAt(RESOURCE_INDEX_CURRENTLANGUAGE).TryGetValue(errorID, out message);
+                #endregion
 
-                await Application.Current.MainPage.DisplayAlert("Error", (string)message, "OK");
+                DisplayErrorSection(errorID);
+            }
+            catch (Exception ex)
+            {
+                await Application.Current.MainPage.DisplayAlert("Unhandled Error", ex.Message, "OK");
             }
         }
         else
@@ -76,7 +79,7 @@ public partial class vwLogIn : ContentPage
 
 	public void BtnRegisterOnClick(object sender, EventArgs e)
 	{
-
+        Navigation.PushAsync(new vwUpdateUserData());
 	}
 
     private void SwitchLockViewState()

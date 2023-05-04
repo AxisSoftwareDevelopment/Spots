@@ -1,34 +1,37 @@
 ﻿using Microsoft.Extensions.Logging;
 using Microsoft.Maui.LifecycleEvents;
 using Plugin.Firebase.Auth;
-
+using Spots.Models.DatabaseManagement;
+using Spots.Models.SessionManagement;
 #if IOS
 	using Plugin.Firebase.Core.Platforms.iOS;
 #else
-	using Plugin.Firebase.Core.Platforms.Android;
+using Plugin.Firebase.Core.Platforms.Android;
 #endif
 
 namespace Spots;
 
 public static class MauiProgram
 {
-	public static MauiApp CreateMauiApp()
-	{
-		var builder = MauiApp.CreateBuilder();
-		builder
-			.UseMauiApp<App>()
-			.RegisterFirebaseServices()
-			.ConfigureFonts(fonts =>
-			{
-				fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
-				fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
-			});
+    public static MauiApp CreateMauiApp()
+    {
+        var builder = MauiApp.CreateBuilder();
+        builder
+            .UseMauiApp<App>()
+            .RegisterFirebaseServices()
+            .ConfigureFonts(fonts =>
+            {
+                fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
+                fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
+            });
 
 #if DEBUG
-		builder.Logging.AddDebug();
+        builder.Logging.AddDebug();
 #endif
 
-		return builder.Build();
+        Task.Run( DatabaseManager.ValidateCurrentSession );
+
+        return builder.Build();
 	}
 
     private static MauiAppBuilder RegisterFirebaseServices(this MauiAppBuilder builder)
