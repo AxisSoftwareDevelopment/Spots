@@ -49,6 +49,7 @@ namespace Spots.Models.DatabaseManagement
                 { "email", email },
                 { "profilePicture", "null" }
             };
+
             return await SaveNewUserDataAsync(id, userData);
         }
 
@@ -64,14 +65,13 @@ namespace Spots.Models.DatabaseManagement
             }
             catch (Exception) 
             {
-                await LogOutAsync();
+                CurrentSession.CloseSession();
             }
         }
 
-        public static async Task LogOutAsync(bool shouldUpdateMainPage = true)
+        public static async Task LogOutAsync()
         {
             await CrossFirebaseAuth.Current.SignOutAsync();
-            CurrentSession.CloseSession(shouldUpdateMainPage);
         }
         #endregion
 

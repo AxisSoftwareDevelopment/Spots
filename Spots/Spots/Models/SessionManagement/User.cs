@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Spots.Models.SessionManagement
 {
-    public class User : INotifyPropertyChanged
+    public class User : BindableObject, INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -18,92 +18,72 @@ namespace Spots.Models.SessionManagement
         private string _lastName;
         private string _birthDate;
         private string _email;
-        private Image _profilePicture;
         private string _profilePictureAddress;
         #endregion
 
         #region Public Parameters
         public string fullName
         {
-            get { return _fullName; }
+            get => _fullName; 
             private set
             {
-                _fullName = value;
+                _fullName = value ?? "";
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(fullName)));
             }
         }
         public string userID
         {
-            get { return _userID; }
+            get => _userID;
             private set
             {
-                _userID = value;
+                _userID = value ?? "";
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(userID)));
             }
         }
         public string firstName
         {
-            get { return _firstName; }
+            get => _firstName;
             private set
             {
-                _firstName = value;
+                _firstName = value ?? "";
                 fullName = $"{value} {lastName}";
             }
         }
         public string lastName
         {
-            get { return _lastName; }
+            get => _lastName; 
             private set
             {
-                _lastName = value;
+                _lastName = value ?? "";
                 fullName = $"{firstName} {value}";
             }
         }
         public string birthDate
         {
-            get { return _birthDate; }
+            get => _birthDate;
             private set
             {
-                _birthDate = value;
+                _birthDate = value ?? "";
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(birthDate)));
             }
         }
         public string email
         {
-            get { return _email; }
+            get => _email;
             private set
             {
-                _email = value;
+                _email = value ?? "";
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(email)));
-            }
-        }
-        public Image profilePicture
-        {
-            get { return _profilePicture; }
-            private set
-            {
-                _profilePicture = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(profilePicture)));
             }
         }
 
         public string profilePictureAddress
         {
-            get { return profilePicture.Source.ToString().Replace("File: ", ""); }
+            get => _profilePictureAddress.Equals("null") ? "dotnet_bot.png" : _profilePictureAddress; 
             set
             {
-                _profilePictureAddress = value;
-
-                if (_profilePictureAddress.Equals("null") || _profilePictureAddress.Length == 0)
-                {
-                    // Set default profile picture
-                    profilePicture = new Image() { Source = "" };
-                }
-                else
-                {
-                    // Get image from DB
-                    profilePicture = new Image();
-                }
+                _profilePictureAddress = value ?? "null";
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(profilePictureAddress)));
             }
         }
         #endregion

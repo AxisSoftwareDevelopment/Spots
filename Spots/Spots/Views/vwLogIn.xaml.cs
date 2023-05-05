@@ -1,6 +1,7 @@
 using Spots.Models.SessionManagement;
 using Spots.Models.DatabaseManagement;
 using Plugin.Firebase.Core.Exceptions;
+using Spots.Views.MainMenu;
 
 namespace Spots.Views;
 public partial class vwLogIn : ContentPage
@@ -29,8 +30,7 @@ public partial class vwLogIn : ContentPage
 
                 if (user.userID != null && user.userID.Length > 0)
                 {
-                    CurrentSession.StartSession(user);
-                    Application.Current.MainPage = new NavigationPage( new AppShell() );
+                    Application.Current.MainPage = new NavigationPage( new vwMainShell( user ) );
                 }
                 else
                 {

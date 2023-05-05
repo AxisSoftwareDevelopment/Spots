@@ -21,6 +21,7 @@ namespace Spots.Models.SessionManagement
                 currentUser.UpdateUserData( user );
                 sessionOnline = true;
 
+                Console.WriteLine("-----------------------> Session started");
                 return true;
             }
             else
@@ -29,11 +30,14 @@ namespace Spots.Models.SessionManagement
             }
         }
 
-        public static void CloseSession()
+        public static void CloseSession( bool shouldUpdateMainPage = true)
         {
-            Application.Current.MainPage = new NavigationPage( new vwLogIn() );
-            currentUser.UpdateUserData( new() );
+            currentUser = new();
             sessionOnline = false;
+            Task.Run( DatabaseManager.LogOutAsync );
+
+            if (shouldUpdateMainPage)
+                Application.Current.MainPage = new NavigationPage( new vwLogIn() );
         }
     }
 }
