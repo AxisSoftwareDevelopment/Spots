@@ -18,11 +18,11 @@
                             Keyboard="Email" ReturnType="Next"></Entry>
                     <Label Text="{DynamicResource lbl_RegisterLastName}" TextColor="{DynamicResource SecondaryAccent}" HorizontalOptions="FillAndExpand" HorizontalTextAlignment="Center"></Label>
                     <Entry x:Name="_entryLastName" Placeholder="{DynamicResource lbl_LastNamePlaceHolder}" HorizontalOptions="FillAndExpand" 
-                            Keyboard="Email" ReturnType="Next"></Entry>
+                            Keyboard="Email" ReturnType="Done"></Entry>
                     <Label Text="{DynamicResource lbl_BirthdateField}" TextColor="{DynamicResource SecondaryAccent}" HorizontalOptions="FillAndExpand" HorizontalTextAlignment="Center"></Label>
                     <DatePicker x:Name="_dateBirthdate" TextColor="#AFAFAF"></DatePicker>
-                    <Button x:Name="_btnSave" Text="Save" CornerRadius="20" BackgroundColor="{DynamicResource Tertiary}" TextColor="{DynamicResource PrimaryAccent}"
-                            Margin="0,50,0,20" Clicked="BtnRegisterOnClick"></Button>
+                    <Button x:Name="_btnSave" CornerRadius="20" BackgroundColor="{DynamicResource Tertiary}" TextColor="{DynamicResource PrimaryAccent}"
+                           Text="{DynamicResource lbl_Next}" Margin="0,50,0,20" Clicked="BtnNextSaveOnClick"></Button>
                 </StackLayout>
             </ScrollView>
         </Frame>

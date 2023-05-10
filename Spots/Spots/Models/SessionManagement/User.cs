@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Plugin.Firebase.Firestore;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -16,7 +17,7 @@ namespace Spots.Models.SessionManagement
         private string _userID;
         private string _firstName;
         private string _lastName;
-        private string _birthDate;
+        private DateTimeOffset _birthDate;
         private string _email;
         private string _profilePictureAddress;
         #endregion
@@ -31,6 +32,7 @@ namespace Spots.Models.SessionManagement
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(fullName)));
             }
         }
+        [FirestoreDocumentId]
         public string userID
         {
             get => _userID;
@@ -40,6 +42,7 @@ namespace Spots.Models.SessionManagement
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(userID)));
             }
         }
+        [FirestoreProperty(nameof(firstName))]
         public string firstName
         {
             get => _firstName;
@@ -49,6 +52,7 @@ namespace Spots.Models.SessionManagement
                 fullName = $"{value} {lastName}";
             }
         }
+        [FirestoreProperty(nameof(lastName))]
         public string lastName
         {
             get => _lastName; 
@@ -58,15 +62,17 @@ namespace Spots.Models.SessionManagement
                 fullName = $"{firstName} {value}";
             }
         }
-        public string birthDate
+        [FirestoreProperty(nameof(birthDate))]
+        public DateTimeOffset birthDate
         {
             get => _birthDate;
             private set
             {
-                _birthDate = value ?? "";
+                _birthDate = value;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(birthDate)));
             }
         }
+        [FirestoreProperty(nameof(email))]
         public string email
         {
             get => _email;
@@ -76,7 +82,7 @@ namespace Spots.Models.SessionManagement
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(email)));
             }
         }
-
+        [FirestoreProperty(nameof(profilePictureAddress))]
         public string profilePictureAddress
         {
             get => _profilePictureAddress.Equals("null") ? "dotnet_bot.png" : _profilePictureAddress; 
@@ -87,40 +93,24 @@ namespace Spots.Models.SessionManagement
             }
         }
         #endregion
-
-        // Default Constructor
         public User()
-            : this(null, new Dictionary<string, string>()
-            {
-                { "firstName", "" },
-                { "lastName", ""},
-                { "birthDate", "" },
-                { "email", "" },
-                { "profilePictureAddress", "null" }
-            })
-        { }
-
-        // Regular Constructor
-        public User(string userID, Dictionary<string, string> userData)
         {
-            this.userID = userID;
-            firstName = userData["firstName"].Length > 0 ? userData["firstName"] : "";
-            lastName = userData["lastName"].Length > 0 ? userData["lastName"] : "";
-            birthDate = userData["birthDate"].Length > 0 ? userData["birthDate"] : "";
-            email = userData["email"].Length > 0 ? userData["email"] : "";
-            profilePictureAddress = userData["profilePictureAddress"].Length > 0 ? userData["profilePictureAddress"] : "null";
+            userID = "";
+            firstName = "";
+            lastName = "";
+            birthDate = DateTimeOffset.Now;
+            email = "";
+            profilePictureAddress = "null";
         }
 
-        public Dictionary<string, string> ToDictionary()
+        public User(string UserID, string FirstName, string LastName, DateTimeOffset BirthDate, string Email, string ProfilePicture)
         {
-            userID = null;
-            return new Dictionary<string, string> {
-                { "firstName", firstName },
-                { "lastName", lastName},
-                { "birthDate", birthDate },
-                { "email", email },
-                { "profilePictureAddress", profilePictureAddress }
-            };
+            userID = UserID;
+            firstName = FirstName;
+            lastName = LastName;
+            birthDate = BirthDate;
+            email = Email;
+            profilePictureAddress = ProfilePicture;
         }
 
         public void UpdateUserData(User userData)

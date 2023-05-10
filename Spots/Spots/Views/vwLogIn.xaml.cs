@@ -45,19 +45,19 @@ public partial class vwLogIn : ContentPage
                 switch (ex.Reason)
                 {
                     case FIRAuthError.InvalidEmail:
-                        errorID = "txt_Error_InvalidEmail";
+                        errorID = "txt_LogInError_WrongCredentials";
                         break;
                     case FIRAuthError.WrongPassword:
-                        errorID = "txt_Error_WrongPassword";
+                        errorID = "txt_LogInError_WrongCredentials";
                         break;
                     case FIRAuthError.InvalidCredential:
-                        errorID = "txt_Error_InvalidCredential";
+                        errorID = "txt_LogInError_InvalidCredential";
                         break;
                     case FIRAuthError.UserNotFound:
-                        errorID = "txt_Error_UserNotFound";
+                        errorID = "txt_LogInError_WrongCredentials";
                         break;
                     default:
-                        errorID = "txt_Error_Undefined";
+                        errorID = "txt_LogInError_Undefined";
                         break;
                 }
                 #endregion

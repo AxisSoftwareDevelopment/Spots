@@ -30,11 +30,11 @@ public partial class vwUpdateUserData : ContentPage
         InitializeControllers();
     }
 
-    public async void BtnRegisterOnClick(Object sender, EventArgs e)
+    public async void BtnNextSaveOnClick(Object sender, EventArgs e)
     {
         string firstName = _entryFirstName.Text is null ? "" : _entryFirstName.Text;
         string lastName = _entryLastName.Text is null ? "" : _entryLastName.Text;
-        string birthdate = _dateBirthdate.Date.ToString();
+        DateTimeOffset birthdate = _dateBirthdate.Date;
 
         bool thereAreEmptyFields = (firstName.Length == 0 ||
                             lastName.Length == 0 ||
@@ -75,14 +75,12 @@ public partial class vwUpdateUserData : ContentPage
         _dateBirthdate.DateSelected += (o, e) =>
         {
             _dateBirthdate.Format = "MM/dd/yyyy";
-            _dateBirthdate.SetDynamicResource(DatePicker.TextColorProperty, "cl_TextOnBG");
+            _dateBirthdate.SetDynamicResource(DatePicker.TextColorProperty, "SecondaryAccent");
             birhtdateSelected = true;
         };
 
         // Set Button Text Propperty
-        if (isNewUser)
-            _btnSave.SetDynamicResource(Button.TextProperty, "lbl_Next");
-        else
+        if (!isNewUser)
         {
             _btnSave.SetDynamicResource(Button.TextProperty, "lbl_Save");
             LoadCurrentUserData();

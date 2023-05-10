@@ -22,6 +22,12 @@
                    Source="{Binding profilePictureAddress}" />
         </StackLayout>
 
+        <ContentView 
+            x:Name="_ContentView"
+            Grid.Row="1"
+            VerticalOptions="FillAndExpand"
+            HorizontalOptions="FillAndExpand"/>
+
     </Grid>
     
 </ContentPage>

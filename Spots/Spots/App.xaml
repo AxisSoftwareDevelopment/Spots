@@ -10,7 +10,7 @@
                 <ResourceDictionary Source="Resources/Styles/CurrentLanguage.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <Style TargetType="NavigationPage">
-                <Setter Property="BarBackgroundColor" Value="blue"></Setter>
+                <Setter Property="BarBackgroundColor" Value="{DynamicResource Primary}"></Setter>
             </Style>
         </ResourceDictionary>
     </Application.Resources>
