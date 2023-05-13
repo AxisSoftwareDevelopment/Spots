@@ -3,7 +3,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Spots.Views.MainMenu.vcSideUserMenu"
              Title="vcSideUserMenu"
-             NavigationPage.HasNavigationBar="False"
              BackgroundColor="{DynamicResource Primary}">
     
     <StackLayout>
@@ -12,7 +11,7 @@
             <ImageButton x:Name="_ProfileImage" Aspect="AspectFill" Source="{Binding profilePictureAddress}" Clicked="ProfilePictureOrMyProfileOnClicked"/>
         </Border>
         <Label Grid.Row="1" Text="{Binding fullName}" HorizontalOptions="Center" TextColor="{DynamicResource PrimaryAccent}"
-            FontAttributes="Bold" FontSize="25" VerticalOptions="Start"/>
+            FontAttributes="Bold" FontSize="25" VerticalOptions="Start" HorizontalTextAlignment="Center"/>
 
         <Frame Grid.Row="1" VerticalOptions="FillAndExpand" Margin="10,15" HasShadow="True" CornerRadius="25" BackgroundColor="{DynamicResource Secondary}">
             <StackLayout x:Name="_ButtonStack" >

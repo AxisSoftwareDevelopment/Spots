@@ -8,9 +8,9 @@ public partial class vwMainShell : FlyoutPage
     {
         InitializeComponent();
 
+        NavigationPage.SetTitleView(this, new Navigation.cvFlyoutUserNavigationBar(this));
         Flyout = new vcSideUserMenu();
-        Detail = new vcFeedViews(this);
-        NavigationPage.SetHasNavigationBar(this, false);
+        Detail = new vwLogIn();
 
         if (user != null)
             CurrentSession.StartSession(user);

@@ -11,7 +11,6 @@ public partial class vcSideUserMenu : ContentPage
 
         InitializeComponent();
         BindingContext = CurrentSession.currentUser;
-        NavigationPage.SetHasNavigationBar(this, false);
 
         _FrameProfilePicture.WidthRequest = profilePictureDimensions;
         _FrameProfilePicture.HeightRequest = profilePictureDimensions;
