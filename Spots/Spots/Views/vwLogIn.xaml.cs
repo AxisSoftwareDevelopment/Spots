@@ -30,7 +30,7 @@ public partial class vwLogIn : ContentPage
 
                 if (user.userID != null && user.userID.Length > 0)
                 {
-                    Application.Current.MainPage = new NavigationPage( new vwMainShell( user ) );
+                    Application.Current.MainPage = new vwMainShell( user );
                 }
                 else
                 {

@@ -77,6 +77,9 @@
 	  <MauiXaml Update="Resources\Styles\Styles.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Views\MainMenu\Feeds\cvMainFeed.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Views\MainMenu\vcFeedViews.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>

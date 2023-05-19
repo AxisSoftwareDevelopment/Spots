@@ -1,18 +1,19 @@
+using Microsoft.Maui.Controls;
 using Spots.Models.SessionManagement;
+using Spots.Views.MainMenu.Feeds;
 
 namespace Spots.Views.MainMenu;
 
-public partial class vcFeedViews : ContentPage
+public partial class vcFeedViews : TabbedPage
 {
-    public vcFeedViews()
+    public vcFeedViews(FlyoutPage flyout)
 	{
-        DisplayInfo displayInfo = DeviceDisplay.MainDisplayInfo;
-        double profilePictureDimensions = displayInfo.Height * 0.015;
-
         InitializeComponent();
-        BindingContext = CurrentSession.currentUser;
 
-        _FrameProfilePicture.HeightRequest = profilePictureDimensions;
-        _FrameProfilePicture.WidthRequest = profilePictureDimensions;
+        NavigationPage.SetTitleView(this, new Navigation.cvFlyoutUserNavigationBar(flyout));
+
+
+        _Tab1.Content = new cvMainFeed();
+        IconImageSource = "placeholder_logo.jpg";
     }
 }
