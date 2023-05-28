@@ -2,6 +2,7 @@ using Spots.Models.SessionManagement;
 using Spots.Models.DatabaseManagement;
 using Plugin.Firebase.Core.Exceptions;
 using Spots.Views.MainMenu;
+using Spots.Views.Users;
 
 namespace Spots.Views;
 public partial class vwLogIn : ContentPage
@@ -23,19 +24,22 @@ public partial class vwLogIn : ContentPage
         if (CredentialsAreValid(email, password, out errorMsg))
         {
             HideErrorSection();
-            // Look for user in database
+            // Look for _user in database
             try
             {
                 User user = await DatabaseManager.LogInWithEmailAndPasswordAsync(email, password);
 
-                if (user.userID != null && user.userID.Length > 0)
+                if (user.userDataRetrieved)
                 {
+                    // Check if the _user has updated its basic information yet
+                    await Application.Current.MainPage.DisplayAlert("Welcome!", "Welcome to spots!", "OK");
                     Application.Current.MainPage = new vwMainShell( user );
                 }
                 else
                 {
-                    // TODO: Setup User Data
-                    DisplayErrorSection("txt_LogInError_WrongCredentials");
+                    // Setup User Data
+                    await Application.Current.MainPage.DisplayAlert("First time?", "Hello! Is this your first time in here? We dont know much about you... Please share a bit more about you with us! :)", "OK");
+                    await Navigation.PushAsync(new vwUpdateUserInformation(user, email, password));
                 }
             }
             catch (FirebaseAuthException ex)
@@ -79,7 +83,7 @@ public partial class vwLogIn : ContentPage
 
 	public void BtnRegisterOnClick(object sender, EventArgs e)
 	{
-        Navigation.PushAsync(new vwUpdateUserData());
+        Navigation.PushAsync(new vwRegister());
 	}
 
     private void SwitchLockViewState()

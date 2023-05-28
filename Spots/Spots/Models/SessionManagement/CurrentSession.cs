@@ -21,7 +21,6 @@ namespace Spots.Models.SessionManagement
                 currentUser.UpdateUserData( user );
                 sessionOnline = true;
 
-                Console.WriteLine("-----------------------> Session started");
                 return true;
             }
             else

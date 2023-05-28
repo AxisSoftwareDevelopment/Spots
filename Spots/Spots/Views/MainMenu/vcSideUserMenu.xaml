@@ -22,7 +22,7 @@
                             Clicked="PreferencesOnClicked" TextColor="{DynamicResource PrimaryAccent}" CornerRadius="20" Margin="0,0,0,15"/>
                 </StackLayout>
                 <Button x:Name="_ButtonLogOut" HorizontalOptions="FillAndExpand" Text="{DynamicResource lbl_LogOut}" BackgroundColor="{DynamicResource Tertiary}"
-                        Clicked="LogOutOnClicked" TextColor="{DynamicResource PrimaryAccent}" CornerRadius="20" />
+                        Clicked="LogOutOnClickedAsync" TextColor="{DynamicResource PrimaryAccent}" CornerRadius="20" />
             </StackLayout>
         </Frame>
         

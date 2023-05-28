@@ -5,11 +5,9 @@
              Title="vcFeedViews"
              BarBackground="{DynamicResource Secondary}"
              SelectedTabColor="{DynamicResource Primary}"
-             UnselectedTabColor="{DynamicResource Tertiary}"
-             >
+             UnselectedTabColor="{DynamicResource Tertiary}">
 
     <ContentPage x:Name="_Tab1" Title="{DynamicResource lbl_Feed}"/>
     <ContentPage x:Name="_Tab2" Title="{DynamicResource lbl_Discovery}"/>
-    <ContentPage x:Name="_Tab3" Title="{DynamicResource lbl_MyPraises}"/>
 
 </TabbedPage>

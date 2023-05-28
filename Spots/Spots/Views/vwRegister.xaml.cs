@@ -5,18 +5,9 @@ namespace Spots.Views;
 
 public partial class vwRegister : ContentPage
 {
-    private readonly string firstName;
-    private readonly string lastName;
-    private readonly DateTimeOffset birthDate;
-
-    public vwRegister(string FirstName, string LastName, DateTimeOffset BirthDate)
+    public vwRegister()
 	{
-        firstName = FirstName;
-        lastName = LastName;
-        birthDate = BirthDate;
-
         InitializeComponent();
-        Resources = Application.Current.Resources;
     }
 
     public async void BtnRegisterOnClick(Object sender, EventArgs e)
@@ -42,7 +33,7 @@ public partial class vwRegister : ContentPage
 
             try
             {
-                if (await DatabaseManager.CreateUserAsync(firstName, lastName, email, password, birthDate, "null"))
+                if (await DatabaseManager.CreateUserAsync(email, password))
                 {
                     await Application.Current.MainPage.DisplayAlert("Success", "User created successfully.", "OK");
                     await Navigation.PopToRootAsync();

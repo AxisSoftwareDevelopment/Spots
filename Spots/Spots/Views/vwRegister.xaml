@@ -5,7 +5,7 @@
              Title="vwRegister"
              BackgroundColor="{DynamicResource Primary}">
     <NavigationPage.TitleView>
-        <Label Text="{DynamicResource lbl_Register}" TextColor="{DynamicResource PrimaryAccent}" FontSize="24" FontAttributes="Bold" HorizontalOptions="Start"></Label>
+        <Label Text="{DynamicResource lbl_Register}" TextColor="{DynamicResource PrimaryAccent}" FontSize="24" FontAttributes="Bold" HorizontalOptions="Start" VerticalOptions="Center"></Label>
     </NavigationPage.TitleView>
     <ContentPage.Content>
         <Frame x:Name="_frameRegisterForm" Margin="20, 30" HasShadow="True" CornerRadius="50" BackgroundColor="{DynamicResource Secondary}">

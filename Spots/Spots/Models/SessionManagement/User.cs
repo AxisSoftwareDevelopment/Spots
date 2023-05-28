@@ -1,10 +1,5 @@
 ﻿using Plugin.Firebase.Firestore;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Spots.Models.SessionManagement
 {
@@ -14,15 +9,29 @@ namespace Spots.Models.SessionManagement
 
         #region Private Parameters
         private string _fullName;
+        private string _fullPhoneNumber;
         private string _userID;
         private string _firstName;
         private string _lastName;
         private DateTimeOffset _birthDate;
         private string _email;
         private string _profilePictureAddress;
+        private string _phoneNumber;
+        private string _phoneCountryCode;
+        private string _description;
         #endregion
 
         #region Public Parameters
+        public bool userDataRetrieved = false;
+        public string fullPhoneNumber
+        {
+            get => _fullPhoneNumber?.Length > 0 ? _fullPhoneNumber : "+ -- --- --- ----";
+            private set
+            {
+                _fullPhoneNumber = value ?? "";
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(fullPhoneNumber)));
+            }
+        }
         public string fullName
         {
             get => _fullName; 
@@ -36,7 +45,7 @@ namespace Spots.Models.SessionManagement
         public string userID
         {
             get => _userID;
-            private set
+            set
             {
                 _userID = value ?? "";
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(userID)));
@@ -46,7 +55,7 @@ namespace Spots.Models.SessionManagement
         public string firstName
         {
             get => _firstName;
-            private set
+            set
             {
                 _firstName = value ?? "";
                 fullName = $"{value} {lastName}";
@@ -56,7 +65,7 @@ namespace Spots.Models.SessionManagement
         public string lastName
         {
             get => _lastName; 
-            private set
+            set
             {
                 _lastName = value ?? "";
                 fullName = $"{firstName} {value}";
@@ -66,7 +75,7 @@ namespace Spots.Models.SessionManagement
         public DateTimeOffset birthDate
         {
             get => _birthDate;
-            private set
+            set
             {
                 _birthDate = value;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(birthDate)));
@@ -76,7 +85,7 @@ namespace Spots.Models.SessionManagement
         public string email
         {
             get => _email;
-            private set
+            set
             {
                 _email = value ?? "";
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(email)));
@@ -92,6 +101,40 @@ namespace Spots.Models.SessionManagement
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(profilePictureAddress)));
             }
         }
+        [FirestoreProperty(nameof(phoneNumber))]
+        public string phoneNumber
+        {
+            get => _phoneNumber;
+            set
+            {
+                _phoneNumber = value ?? "null";
+                if (value?.Length == 10)
+                    fullPhoneNumber = $"+({_phoneCountryCode}) {value?.Substring(0, 3)} {value?.Substring(3, 3)} {value?.Substring(6, 4)}";
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(phoneNumber)));
+            }
+        }
+        [FirestoreProperty(nameof(phoneCountryCode))]
+        public string phoneCountryCode
+        {
+            get => _phoneCountryCode;
+            set
+            {
+                _phoneCountryCode = value ?? "null";
+                if(_phoneNumber?.Length == 10)
+                    fullPhoneNumber = $"+({value}) {_phoneNumber.Substring(0,3)} {_phoneNumber.Substring(3,3)} {_phoneNumber.Substring(6, 4)}";
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(phoneCountryCode)));
+            }
+        }
+        [FirestoreProperty(nameof(description))]
+        public string description
+        {
+            get => _description;
+            set
+            {
+                _description = value ?? "null";
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(description)));
+            }
+        }
         #endregion
         public User()
         {
@@ -101,9 +144,13 @@ namespace Spots.Models.SessionManagement
             birthDate = DateTimeOffset.Now;
             email = "";
             profilePictureAddress = "null";
+            phoneCountryCode = "";
+            phoneNumber = "";
+            description = "";
         }
 
-        public User(string UserID, string FirstName, string LastName, DateTimeOffset BirthDate, string Email, string ProfilePicture)
+        public User(string UserID, string FirstName, string LastName, DateTimeOffset BirthDate, string Email, 
+            string ProfilePicture = "", string PhoneNumber = "", string PhoneCountryCode = "", string Description = "")
         {
             userID = UserID;
             firstName = FirstName;
@@ -111,6 +158,9 @@ namespace Spots.Models.SessionManagement
             birthDate = BirthDate;
             email = Email;
             profilePictureAddress = ProfilePicture;
+            phoneNumber = PhoneNumber;
+            phoneCountryCode = PhoneCountryCode;
+            description = Description;
         }
 
         public void UpdateUserData(User userData)
@@ -121,6 +171,9 @@ namespace Spots.Models.SessionManagement
             birthDate = userData.birthDate;
             email = userData.email;
             profilePictureAddress = userData.profilePictureAddress;
+            phoneNumber = userData.phoneNumber;
+            phoneCountryCode = userData.phoneCountryCode;
+            description = userData.description;
         }
     }
 }

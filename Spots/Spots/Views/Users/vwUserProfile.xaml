@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Spots.Views.Users.vwUserProfile"
+             Title="Profile"
+             BackgroundColor="{DynamicResource Secondary}">
+    <NavigationPage.TitleView>
+        <Label Text="{DynamicResource lbl_Profile}" TextColor="{DynamicResource PrimaryAccent}" FontSize="24" FontAttributes="Bold" HorizontalOptions="Start" VerticalOptions="Center"></Label>
+    </NavigationPage.TitleView>
+    <ScrollView >
+
+        <StackLayout>
+            <StackLayout x:Name="_ProfileCard">
+                <Border x:Name="_FrameProfilePicture" Padding="0" Margin="15,15,15,0" StrokeShape="RoundRectangle 500" BackgroundColor="Red">
+                    <ImageButton x:Name="_ProfileImage" Aspect="AspectFill" Source="{Binding profilePictureAddress}"/>
+                </Border>
+                <Label Grid.Row="1" Text="{Binding fullName}" HorizontalOptions="Center" TextColor="{DynamicResource SecondaryAccent}"
+                FontAttributes="Bold" FontSize="25" VerticalOptions="Start" HorizontalTextAlignment="Center" Margin="20,0,20,0"/>
+            </StackLayout>
+
+            <StackLayout x:Name="_DescriptionLayout" Margin="25,0,25,5">
+                <Label Text="{DynamicResource lbl_Description}" FontSize="18" TextColor="{DynamicResource Tertiary}" FontAttributes="Bold"/>
+                <Label Text="{Binding description}" TextColor="{DynamicResource SecondaryAccent}"/>
+            </StackLayout>
+
+            <StackLayout x:Name="_UserInformation" Margin="25,0,25,5">
+                <Label Text="{DynamicResource lbl_PersonalInformation}" FontSize="18" TextColor="{DynamicResource Tertiary}" FontAttributes="Bold"/>
+                <StackLayout Orientation="Horizontal">
+                    <Label Text="{DynamicResource lbl_RegisterEmailField}" TextColor="{DynamicResource Tertiary}" Margin="0,0,5,0"/>
+                    <Label Text="{Binding email}" TextColor="{DynamicResource SecondaryAccent}"/>
+                </StackLayout>
+                <StackLayout Orientation="Horizontal">
+                    <Label Text="{DynamicResource lbl_PhoneField}" TextColor="{DynamicResource Tertiary}" Margin="0,0,5,0"/>
+                    <Label Text="{Binding fullPhoneNumber}" TextColor="{DynamicResource SecondaryAccent}"/>
+                </StackLayout>
+            </StackLayout>
+
+            <Button Text="{DynamicResource lbl_EditPersonalInfo}" Margin="35, 10, 35, 10" BackgroundColor="{DynamicResource Tertiary}" TextColor="{DynamicResource PrimaryAccent}" Clicked="EditPersonalInformation"/>
+
+            <ListView x:Name="_ListPraises" VerticalOptions="FillAndExpand" BackgroundColor="{DynamicResource Tertiary}"/>
+
+        </StackLayout>
+        
+    </ScrollView>
+</ContentPage>

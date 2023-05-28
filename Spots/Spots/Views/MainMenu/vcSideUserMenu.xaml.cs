@@ -1,11 +1,17 @@
+using Firebase.Auth;
 using Spots.Models.SessionManagement;
+using Spots.Views.Users;
 
 namespace Spots.Views.MainMenu;
 
 public partial class vcSideUserMenu : ContentPage
 {
-	public vcSideUserMenu()
+    INavigation _Navigation;
+    FlyoutPage _Flyout;
+	public vcSideUserMenu( INavigation navigation, FlyoutPage flyoutPage)
 	{
+        _Navigation = navigation;
+        _Flyout = flyoutPage;
         DisplayInfo displayInfo = DeviceDisplay.MainDisplayInfo;
         double profilePictureDimensions = displayInfo.Height * 0.065;
 
@@ -18,7 +24,8 @@ public partial class vcSideUserMenu : ContentPage
 
     private void ProfilePictureOrMyProfileOnClicked(object sender, EventArgs e)
     {
-        var x = NavigationPage.GetHasNavigationBar(this);
+        _Flyout.IsPresented = false;
+        _Navigation.PushAsync(new vwUserProfile(CurrentSession.currentUser));
     }
 
     private void PreferencesOnClicked(object sender, EventArgs e)
@@ -26,8 +33,9 @@ public partial class vcSideUserMenu : ContentPage
 
     }
 
-    private void LogOutOnClicked(object sender, EventArgs e)
+    private async void LogOutOnClickedAsync(object sender, EventArgs e)
     {
-        CurrentSession.CloseSession(shouldUpdateMainPage: true);
+        if (await Application.Current.MainPage.DisplayAlert("Log Out", "Are you sure?", "Yes", "Cancel"))
+            CurrentSession.CloseSession(shouldUpdateMainPage: true);
     }
 }

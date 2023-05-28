@@ -2,6 +2,7 @@
 using Plugin.Firebase.Auth;
 using Plugin.Firebase.Firestore;
 using Plugin.Firebase.Core.Exceptions;
+using Spots.Views.Users;
 
 namespace Spots.Models.DatabaseManagement
 {
@@ -9,7 +10,7 @@ namespace Spots.Models.DatabaseManagement
     {
         public static IFirebaseAuth firebaseAuth = CrossFirebaseAuth.Current;
         #region Public Methods
-        public static async Task<User> LogInWithEmailAndPasswordAsync(string email, string password)
+        public static async Task<User> LogInWithEmailAndPasswordAsync(string email, string password, bool getUser = true)
         {
             string[] userSignInMethods = await CrossFirebaseAuth.Current.FetchSignInMethodsAsync(email);
 
@@ -21,10 +22,21 @@ namespace Spots.Models.DatabaseManagement
             //if(!firebaseUser.IsEmailVerified)
             //    throw new FirebaseAuthException(FIRAuthError.UserDisabled, "Custon Exception -> Email not verified.");
 
-            return await GetUserDataAsync(iFUser);
+            User user;
+            if (getUser)
+            {
+                user = await GetUserDataAsync(iFUser);
+                if (!user.userDataRetrieved)
+                    await LogOutAsync();
+            }
+            else
+            {
+                user = new();
+            }
+            return user;
         }
 
-        public static async Task<bool> CreateUserAsync(string firstName, string lastName, string email, string password, DateTimeOffset birthDate, string profilePictureAddress)
+        public static async Task<bool> CreateUserAsync(string email, string password)
         {
             await CrossFirebaseAuth.Current.CreateUserAsync(email, password);
 
@@ -33,10 +45,7 @@ namespace Spots.Models.DatabaseManagement
                 throw new FirebaseAuthException(FIRAuthError.Undefined, "Custom Exception -> Unhandled exception: User not registered correctly.");
 
             await LogOutAsync();
-
-            User user = new( id, firstName,  lastName, birthDate, email, profilePictureAddress );
-
-            return await SaveNewUserDataAsync(user);
+            return true;
         }
 
         public static async Task ValidateCurrentSession()
@@ -59,27 +68,8 @@ namespace Spots.Models.DatabaseManagement
         {
             await CrossFirebaseAuth.Current.SignOutAsync();
         }
-        #endregion
 
-        #region Private Methods
-        private async static Task<User> GetUserDataAsync(IFirebaseUser firebaseUser)
-        {
-            IDocumentSnapshot<User> documentSnapshot = await CrossFirebaseFirestore.Current
-                .GetCollection("UserData")
-                .GetDocument(firebaseUser.Uid)
-                .GetDocumentSnapshotAsync<User>();
-
-            User user = new( firebaseUser.Uid,
-                documentSnapshot.Data.firstName,
-                documentSnapshot.Data.lastName,
-                documentSnapshot.Data.birthDate,
-                documentSnapshot.Data.email,
-                documentSnapshot.Data.profilePictureAddress );
-
-            return user;
-        }
-
-        private static async Task<bool> SaveNewUserDataAsync(User user)
+        public static async Task<bool> SaveUserDataAsync(User user)
         {
             try
             {
@@ -92,6 +82,32 @@ namespace Spots.Models.DatabaseManagement
             }
 
             return true;
+        }
+        #endregion
+
+        #region Private Methods
+        private async static Task<User> GetUserDataAsync(IFirebaseUser firebaseUser)
+        {
+            IDocumentSnapshot<User> documentSnapshot = await CrossFirebaseFirestore.Current
+                .GetCollection("UserData")
+                .GetDocument(firebaseUser.Uid)
+                .GetDocumentSnapshotAsync<User>();
+
+            User user = new() { userID = firebaseUser.Uid, email = firebaseUser.Email };
+            // If there is no _user data in the database
+            if (documentSnapshot.Data != null)
+            {
+                user.firstName = documentSnapshot.Data.firstName;
+                user.lastName = documentSnapshot.Data.lastName;
+                user.birthDate = documentSnapshot.Data.birthDate;
+                user.profilePictureAddress = documentSnapshot.Data.profilePictureAddress;
+                user.description = documentSnapshot.Data.description;
+                user.phoneNumber = documentSnapshot.Data.phoneNumber;
+                user.phoneCountryCode = documentSnapshot.Data.phoneCountryCode;
+                user.userDataRetrieved = true;
+            }
+
+            return user;
         }
         #endregion
 

@@ -1,4 +1,5 @@
 using Spots.Models.SessionManagement;
+using Spots.Views.Users;
 
 namespace Spots.Views.MainMenu;
 
@@ -7,11 +8,9 @@ public partial class vwMainShell : FlyoutPage
 	public vwMainShell(User user = null)
     {
         InitializeComponent();
-        
-        Flyout = new vcSideUserMenu();
-        Detail = new NavigationPage(new vcFeedViews(this));
 
-        
+        Detail = new NavigationPage(new vcFeedViews(this));
+        Flyout = new vcSideUserMenu( Detail.Navigation, this );
 
         if (user != null)
             CurrentSession.StartSession(user);
