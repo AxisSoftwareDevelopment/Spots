@@ -3,6 +3,7 @@ using Spots.Models.DatabaseManagement;
 using Plugin.Firebase.Core.Exceptions;
 using Spots.Views.MainMenu;
 using Spots.Views.Users;
+using Spots.Models.ResourceManagement;
 
 namespace Spots.Views;
 public partial class vwLogIn : ContentPage
@@ -19,9 +20,8 @@ public partial class vwLogIn : ContentPage
 
         string email = _entryEmail.Text;
         string password = _entryPassword.Text;
-        string errorMsg;
 
-        if (CredentialsAreValid(email, password, out errorMsg))
+        if (CredentialsAreValid(email, password, out string errorMsg))
         {
             HideErrorSection();
             // Look for _user in database
@@ -38,7 +38,8 @@ public partial class vwLogIn : ContentPage
                 else
                 {
                     // Setup User Data
-                    await Application.Current.MainPage.DisplayAlert("First time?", "Hello! Is this your first time in here? We dont know much about you... Please share a bit more about you with us! :)", "OK");
+                    string[] strings = ResourceManagement.GetStringResources(Resources, new string[3] { "lbl_FirstTime", "txt_FirstTime", "lbl_Ok" });
+                    await Application.Current.MainPage.DisplayAlert(strings[0], strings[1], strings[2]);
                     await Navigation.PushAsync(new vwUpdateUserInformation(user, email, password));
                 }
             }

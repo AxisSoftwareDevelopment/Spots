@@ -39,6 +39,8 @@
     <x:String x:Key="lbl_EditPersonalInfo">Edit Personal Information</x:String> <!-- Label that indicates to edit personal information -->
     <x:String x:Key="lbl_Skip">Skip</x:String> <!-- Label that indicates to Skip -->
     <x:String x:Key="lbl_Description">Description</x:String> <!-- Label that indicates Description section -->
+    <x:String x:Key="lbl_FirstTime">First Time?</x:String> <!-- Label that asks first time? -->
+    <x:String x:Key="lbl_Ok">Ok</x:String> <!-- Label that indicates ok -->
     
     <x:String x:Key="txt_ConfirmLogOut">Are you sure you want to want to log out?</x:String> <!-- Text that questions the user if is sure of logout action -->
     <x:String x:Key="txt_LogIn">Log in to your account</x:String> <!-- Log in text -->
@@ -58,5 +60,6 @@
     <x:String x:Key="txt_UserInfoError_DescriptionTooLong">User description must be under 150 characters.</x:String> <!-- Error message displayed when the CreateUser method returns false, indicating there was an error trying to register the account -->
     <x:String x:Key="txt_UserInfoError_InvalidPhoneNumber">Invalid phone number. Phone number has to be 10 digits long and the country code has to be 2 digits long.</x:String> <!-- Error message displayed when the CreateUser method returns false, indicating there was an error trying to register the account -->
     <x:String x:Key="txt_Error_UnkownError">Unkown error. Please contact support for further analisys.</x:String> <!-- Error message displayed when the CreateUser method returns false, indicating there was an error trying to register the account -->
+    <x:String x:Key="txt_FirstTime">We dont know much about you... Please share a bit about you with us!</x:String> <!-- Error message displayed when the CreateUser method returns false, indicating there was an error trying to register the account -->
 
 </ResourceDictionary>

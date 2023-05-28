@@ -5,15 +5,15 @@ using System.Globalization;
 
 namespace Spots.Views.Users;
 
-public partial class vwUpdateUserInformation : ContentPage
+public partial class vwUpdateBusinessInformation : ContentPage
 {
-	private User _user;
-	private bool _userIsEmpty;
+    private User _user;
+    private bool _userIsEmpty;
     private string _password, _email;
     private bool _birhtdateSelected = false;
 
-    public vwUpdateUserInformation(User user, string email = null, string password = null)
-	{
+    public vwUpdateBusinessInformation(User user, string email = null, string password = null)
+    {
         _user = user;
         _userIsEmpty = password != null && email != null && !user.userDataRetrieved;
         _password = password;
@@ -49,30 +49,26 @@ public partial class vwUpdateUserInformation : ContentPage
     private async void SaveOnCLickAsync(object sender, EventArgs e)
     {
         // We update the _user data
-        string firstName = ToTitleCase(_entryFirstName.Text.Trim());
-        string lastName = ToTitleCase(_entryLastName.Text.Trim());
+        string brandName = ToTitleCase(_entryBrandName.Text.Trim());
+        string BusinessName = ToTitleCase(_entryBusinessName.Text.Trim());
         string description = _editorDescription.Text.Trim();
         string phoneNumber = _entryPhoneNumber.Text;
         string phoneCountryCode = _entryPhoneCountryCode.Text;
-        DateTimeOffset birthdate = _dateBirthdate.Date;
 
-        bool thereAreEmptyFields = firstName.Length == 0 ||
-                            lastName.Length == 0 ||
+        bool thereAreEmptyFields = brandName.Length == 0 ||
+                            BusinessName.Length == 0 ||
                             (!_birhtdateSelected && _userIsEmpty);
         bool descriptionUnder150Chars = description.Length <= 150;
         bool validPhoneNumber = (phoneNumber.Length == 10 && phoneCountryCode.Length == 2) || (phoneNumber.Length == 0 && phoneCountryCode.Length == 0);
-        bool birthdateIsValid = (DateTime.Today.Year - _dateBirthdate.Date.Year) > 12;
 
-        if (!thereAreEmptyFields && birthdateIsValid && descriptionUnder150Chars && validPhoneNumber)
+        if (!thereAreEmptyFields && descriptionUnder150Chars && validPhoneNumber)
         {
             HideErrorSection();
 
-            if(_userIsEmpty)
+            if (_userIsEmpty)
                 _user.email = _email;
-            _user.firstName = firstName;
-            _user.lastName = lastName;
-            if(_birhtdateSelected)
-                _user.birthDate = birthdate;
+            _user.firstName = brandName;
+            _user.lastName = BusinessName;
             //_user.profilePictureAddress
             _user.phoneNumber = phoneNumber;
             _user.phoneCountryCode = phoneCountryCode;
@@ -128,26 +124,19 @@ public partial class vwUpdateUserInformation : ContentPage
     private void InitializeControllers()
     {
         // Load _user data
-        _entryFirstName.Text = _user.firstName;
-        _entryLastName.Text = _user.lastName;
+        _entryBrandName.Text = _user.firstName;
+        _entryBusinessName.Text = _user.lastName;
         _entryPhoneNumber.Text = _user.phoneNumber;
         _entryPhoneCountryCode.Text = _user.phoneCountryCode;
         _editorDescription.Text = _user.description;
         // Initialize BirthDate field
         if (_userIsEmpty)
         {
-            _dateBirthdate.Format = "--/--/----";
-            _dateBirthdate.MaximumDate = DateTime.Today;
-            _dateBirthdate.DateSelected += (o, e) =>
-            {
-                _dateBirthdate.Format = "MM/dd/yyyy";
-                _dateBirthdate.SetDynamicResource(DatePicker.TextColorProperty, "SecondaryAccent");
-                _birhtdateSelected = true;
-            };
+            
         }
         else
         {
-            _dateBirthdate.Date = _user.birthDate.Date;
+            
         }
     }
 
