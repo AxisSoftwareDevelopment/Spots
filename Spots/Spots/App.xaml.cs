@@ -11,7 +11,7 @@ public partial class App : Application
         InitializeComponent();
 
         if (DatabaseManager.firebaseAuth.CurrentUser != null)
-            MainPage = new vwMainShell();
+            MainPage = new vwMainShell(DatabaseManager.firebaseAuth.CurrentUser.DisplayName.Equals("Business"));
         else
             MainPage = new NavigationPage(new vwLogIn());
     }

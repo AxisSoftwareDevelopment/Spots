@@ -1,4 +1,6 @@
 ﻿using Plugin.Firebase.Firestore;
+using Spots.Models.DatabaseManagement;
+using Spots.Models.ResourceManagement;
 using System.ComponentModel;
 
 namespace Spots.Models.SessionManagement
@@ -19,10 +21,21 @@ namespace Spots.Models.SessionManagement
         private string _phoneNumber;
         private string _phoneCountryCode;
         private string _description;
+        private ImageSource _profilePictureSource;
         #endregion
 
         #region Public Parameters
         public bool userDataRetrieved = false;
+        public ImageSource profilePictureSource
+        {
+            get => _profilePictureAddress.Equals("null") ?
+                ImageSource.FromFile("placeholder_logo.jpg") : _profilePictureSource;
+            set
+            {
+                _profilePictureSource = value ?? null;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(profilePictureSource)));
+            }
+        }
         public string fullPhoneNumber
         {
             get => _fullPhoneNumber?.Length > 0 ? _fullPhoneNumber : "+ -- --- --- ----";
@@ -91,16 +104,6 @@ namespace Spots.Models.SessionManagement
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(email)));
             }
         }
-        [FirestoreProperty(nameof(profilePictureAddress))]
-        public string profilePictureAddress
-        {
-            get => _profilePictureAddress.Equals("null") ? "dotnet_bot.png" : _profilePictureAddress; 
-            set
-            {
-                _profilePictureAddress = value ?? "null";
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(profilePictureAddress)));
-            }
-        }
         [FirestoreProperty(nameof(phoneNumber))]
         public string phoneNumber
         {
@@ -135,6 +138,16 @@ namespace Spots.Models.SessionManagement
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(description)));
             }
         }
+        [FirestoreProperty(nameof(profilePictureAddress))]
+        public string profilePictureAddress
+        {
+            get => _profilePictureAddress;
+            set
+            {
+                _profilePictureAddress = value ?? "null";
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(profilePictureAddress)));
+            }
+        }
         #endregion
         public User()
         {
@@ -150,20 +163,22 @@ namespace Spots.Models.SessionManagement
         }
 
         public User(string UserID, string FirstName, string LastName, DateTimeOffset BirthDate, string Email, 
-            string ProfilePicture = "", string PhoneNumber = "", string PhoneCountryCode = "", string Description = "")
+            string ProfilePictureAddr = "", ImageSource ProfilePictureSrc = null, string PhoneNumber = "", string PhoneCountryCode = "", string Description = "")
         {
             userID = UserID;
             firstName = FirstName;
             lastName = LastName;
             birthDate = BirthDate;
             email = Email;
-            profilePictureAddress = ProfilePicture;
+            profilePictureAddress = ProfilePictureAddr;
+            profilePictureSource = profilePictureAddress.Equals("null") ? 
+                ImageSource.FromFile("placeholder_logo.jpg") : ProfilePictureSrc;
             phoneNumber = PhoneNumber;
             phoneCountryCode = PhoneCountryCode;
             description = Description;
         }
 
-        public void UpdateUserData(User userData)
+        public async void UpdateUserData(User userData)
         {
             userID = userData.userID;
             firstName = userData.firstName;
@@ -171,9 +186,21 @@ namespace Spots.Models.SessionManagement
             birthDate = userData.birthDate;
             email = userData.email;
             profilePictureAddress = userData.profilePictureAddress;
+            profilePictureSource = userData.profilePictureSource;
             phoneNumber = userData.phoneNumber;
             phoneCountryCode = userData.phoneCountryCode;
             description = userData.description;
+        }
+
+        public async void UpdateProfilePicture(string address)
+        {
+            profilePictureAddress = address;
+            if(!profilePictureAddress.Equals("null"))
+            {
+                Uri imageUri = new( await DatabaseManager.GetImageDownloadLink(profilePictureAddress) );
+
+                profilePictureSource = ImageSource.FromUri(imageUri);
+            }
         }
     }
 }

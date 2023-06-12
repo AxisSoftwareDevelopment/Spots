@@ -41,11 +41,17 @@
     <x:String x:Key="lbl_Description">Description</x:String> <!-- Label that indicates Description section -->
     <x:String x:Key="lbl_FirstTime">First Time?</x:String> <!-- Label that asks first time? -->
     <x:String x:Key="lbl_Ok">Ok</x:String> <!-- Label that indicates ok -->
+    <x:String x:Key="lbl_BusinessMode">Business Mode</x:String> <!-- Label that indicates business mode -->
+    <x:String x:Key="lbl_UserMode">User Mode</x:String> <!-- Label that indicates User mode -->
+    <x:String x:Key="lbl_BusinessLogIn">Business Log In</x:String> <!-- Label that indicates business Log in -->
+    <x:String x:Key="lbl_BusinessName">Business Name</x:String> <!-- Label that indicates business Name -->
+    <x:String x:Key="lbl_BrandName">Brand Name</x:String> <!-- Label that indicates business Brand Name -->
     
     <x:String x:Key="txt_ConfirmLogOut">Are you sure you want to want to log out?</x:String> <!-- Text that questions the user if is sure of logout action -->
     <x:String x:Key="txt_LogIn">Log in to your account</x:String> <!-- Log in text -->
     <x:String x:Key="txt_LogInError_EmptyEntry">One or both fields are empty. Please fill the information correctly.</x:String> <!-- Error message displayed when one or both LogIn entry fields are empty -->
-    <x:String x:Key="txt_LogInError_WrongCredentials">The email and password provided do not match with any user registered.</x:String> <!-- Error message displayerd when the credentials provided dont match any user on database. -->
+    <x:String x:Key="txt_LogInError_WrongCredentials_User">The email and password provided do not match with any regular user registered.</x:String> <!-- Error message displayerd when the credentials provided dont match any user on database. -->
+    <x:String x:Key="txt_LogInError_WrongCredentials_Business">The email and password provided do not match with any business user registered.</x:String> <!-- Error message displayerd when the credentials provided dont match any user on database. -->
     <x:String x:Key="txt_LogInError_InvalidEmail"> The email provided is invalid. Please fill the information correctly.</x:String> <!-- Error message displayed when the email is deemed invalid by the provider of authentication -->
     <x:String x:Key="txt_LogInError_InvalidCredential">Invalid Credential. Please verify your information and try again.</x:String> <!-- Error displayed when the cretential is deemed invalid by the authorization provider -->
     <x:String x:Key="txt_LogInError_Undefined">Unhandled error. Please verify the information you provided and try again later.</x:String> <!-- Error message displayed when the error is not handled -->

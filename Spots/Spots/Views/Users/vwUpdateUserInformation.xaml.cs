@@ -1,4 +1,5 @@
 using Spots.Models.DatabaseManagement;
+using Spots.Models.ResourceManagement;
 using Spots.Models.SessionManagement;
 using Spots.Views.MainMenu;
 using System.Globalization;
@@ -10,7 +11,8 @@ public partial class vwUpdateUserInformation : ContentPage
 	private User _user;
 	private bool _userIsEmpty;
     private string _password, _email;
-    private bool _birhtdateSelected = false;
+    private bool _birhtdateSelected, _profilePictureChanged = false;
+    private ImageFile _profilePictureFile;
 
     public vwUpdateUserInformation(User user, string email = null, string password = null)
 	{
@@ -77,22 +79,35 @@ public partial class vwUpdateUserInformation : ContentPage
             _user.phoneNumber = phoneNumber;
             _user.phoneCountryCode = phoneCountryCode;
             _user.description = description;
+            if (_profilePictureChanged)
+            {
+                _user.profilePictureAddress = await DatabaseManager.SaveProfilePicture(isBusiness: false, _user.userID, _profilePictureFile);
+                _user.profilePictureSource = ImageSource.FromStream( () => ImageManagement.ByteArrayToStream(_profilePictureFile.Bytes) );
+            }
 
             if (await DatabaseManager.SaveUserDataAsync(_user))
             {
+                
                 _user.userDataRetrieved = true;
                 await Application.Current.MainPage.DisplayAlert("Success", "Your information has been updated. Way to go!", "OK");
                 // If the user was empty, it meas we came from the log in.
                 if (_userIsEmpty)
                 {
                     // We then have to log in and go to main page.
-                    await DatabaseManager.LogInWithEmailAndPasswordAsync(_email, _password, getUser: false);
+                    await DatabaseManager.LogInBusinessAsync(_email, _password, getUser: false);
                     Application.Current.MainPage = new vwMainShell(_user);
                 }
-                else
+                else if(DataChanged())
                 {
                     // If the user was just updating information, then we just pop the page from navigation
                     CurrentSession.currentUser.UpdateUserData(_user);
+                    
+                    await Navigation.PopAsync();
+                }
+                else
+                {
+                    // If the user was updating information, but didnt change any data, we do nothing
+                    await Application.Current.MainPage.DisplayAlert("Alert", "No information was changed", "OK");
                     await Navigation.PopAsync();
                 }
             }
@@ -124,6 +139,19 @@ public partial class vwUpdateUserInformation : ContentPage
         }
     }
 
+    public async void LoadImageOnClickAsync(object sender, EventArgs e)
+    {
+        ImageFile image = await ImageManagement.PickImageFromInternalStorage();
+
+        if (image != null) 
+        {
+            _profilePictureFile = image;
+            _ProfileImage.Source = ImageSource.FromStream( () => ImageManagement.ByteArrayToStream(image.Bytes) );
+            _profilePictureChanged = true;
+        }
+        
+    }
+
     #region Utilities
     private void InitializeControllers()
     {
@@ -149,6 +177,26 @@ public partial class vwUpdateUserInformation : ContentPage
         {
             _dateBirthdate.Date = _user.birthDate.Date;
         }
+    }
+
+    private bool DataChanged()
+    {
+        if(_profilePictureChanged)
+            return true;
+        if (_user.firstName != ToTitleCase(_entryFirstName.Text.Trim()))
+            return true;
+        if (_user.lastName != ToTitleCase(_entryLastName.Text.Trim()))
+            return true;
+        if (_user.description != _editorDescription.Text.Trim())
+            return true;
+        if (_user.phoneNumber != _entryPhoneNumber.Text)
+            return true;
+        if(_user.phoneCountryCode != _entryPhoneCountryCode.Text)
+            return true;
+        if (_birhtdateSelected)
+            return true;
+
+        return false;
     }
 
     private void DisplayErrorSection(string errorID)

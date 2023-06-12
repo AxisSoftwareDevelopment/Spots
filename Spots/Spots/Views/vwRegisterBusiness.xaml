@@ -38,7 +38,7 @@
                     </StackLayout>
                     
                     <Button x:Name="_btnRegister" Text="{DynamicResource lbl_Register}" CornerRadius="20" BackgroundColor="{DynamicResource Tertiary}" TextColor="{DynamicResource PrimaryAccent}"
-                            Margin="0,50,0,20" VerticalOptions="End"></Button>
+                            Margin="0,50,0,20" VerticalOptions="End" Clicked="BtnRegisterOnClick"></Button>
                 </StackLayout>
             </ScrollView>
         </Frame>

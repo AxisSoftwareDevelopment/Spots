@@ -1,11 +1,5 @@
-﻿using Plugin.Firebase.Auth;
-using Spots.Models.DatabaseManagement;
+﻿using Spots.Models.DatabaseManagement;
 using Spots.Views;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Spots.Models.SessionManagement
 {
@@ -13,6 +7,8 @@ namespace Spots.Models.SessionManagement
     {
         public static bool sessionOnline { get; private set; } = false;
         public static User currentUser { get; private set; } = new();
+
+        public static BusinessUser currentBusiness { get; private set; } = new();
 
         public static bool StartSession(User user)
         {
@@ -29,9 +25,25 @@ namespace Spots.Models.SessionManagement
             }
         }
 
+        public static bool StartSession(BusinessUser bussinesUser)
+        {
+            if (!sessionOnline)
+            {
+                currentBusiness.UpdateUserData(bussinesUser);
+                sessionOnline = true;
+
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
         public static void CloseSession( bool shouldUpdateMainPage = true)
         {
             currentUser = new();
+            currentBusiness = new();
             sessionOnline = false;
             Task.Run( DatabaseManager.LogOutAsync );
 

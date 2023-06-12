@@ -3,7 +3,7 @@ using System.ComponentModel;
 
 namespace Spots.Models.SessionManagement
 {
-    class BusinessUser : BindableObject, INotifyPropertyChanged
+    public class BusinessUser : BindableObject, INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -14,6 +14,7 @@ namespace Spots.Models.SessionManagement
         private string _userID;
         private string _email;
         private string _profilePictureAddress;
+        private ImageSource _profilePictureSource;
         private string _phoneNumber;
         private string _phoneCountryCode;
         private string _description;
@@ -22,6 +23,16 @@ namespace Spots.Models.SessionManagement
 
         #region Public Parameters
         public bool userDataRetrieved = false;
+        public ImageSource profilePictureSource
+        {
+            get => _profilePictureAddress.Equals("null") ?
+                ImageSource.FromFile("placeholder_logo.jpg") : _profilePictureSource;
+            set
+            {
+                _profilePictureSource = value ?? null;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(profilePictureSource)));
+            }
+        }
         public string fullPhoneNumber
         {
             get => _fullPhoneNumber?.Length > 0 ? _fullPhoneNumber : "+ -- --- --- ----";
@@ -71,16 +82,6 @@ namespace Spots.Models.SessionManagement
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(email)));
             }
         }
-        [FirestoreProperty(nameof(profilePictureAddress))]
-        public string profilePictureAddress
-        {
-            get => _profilePictureAddress.Equals("null") ? "dotnet_bot.png" : _profilePictureAddress;
-            set
-            {
-                _profilePictureAddress = value ?? "null";
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(profilePictureAddress)));
-            }
-        }
         [FirestoreProperty(nameof(phoneNumber))]
         public string phoneNumber
         {
@@ -125,6 +126,16 @@ namespace Spots.Models.SessionManagement
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(location)));
             }
         }
+        [FirestoreProperty(nameof(profilePictureAddress))]
+        public string profilePictureAddress
+        {
+            get => _profilePictureAddress;
+            set
+            {
+                _profilePictureAddress = value ?? "null";
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(profilePictureAddress)));
+            }
+        }
         #endregion
 
         public BusinessUser()
@@ -140,14 +151,15 @@ namespace Spots.Models.SessionManagement
             location = "";
         }
 
-        public BusinessUser(string UserID, string BrandName, string BusinessName, string Email, string ProfilePicture = "", 
+        public BusinessUser(string UserID, string BrandName, string BusinessName, string Email, string ProfilePictureAddress = "", ImageSource ProfilePictureSource = null,
             string PhoneNumber = "", string PhoneCountryCode = "", string Description = "", string bLocation = "")
         {
             userID = UserID;
             brandName = BrandName;
             businessName = BusinessName;
             email = Email;
-            profilePictureAddress = ProfilePicture;
+            profilePictureAddress = ProfilePictureAddress;
+            profilePictureSource = ProfilePictureSource;
             phoneNumber = PhoneNumber;
             phoneCountryCode = PhoneCountryCode;
             description = Description;
@@ -161,6 +173,7 @@ namespace Spots.Models.SessionManagement
             businessName = userData.businessName;
             email = userData.email;
             profilePictureAddress = userData.profilePictureAddress;
+            profilePictureSource = userData.profilePictureSource;
             phoneNumber = userData.phoneNumber;
             phoneCountryCode = userData.phoneCountryCode;
             description = userData.description;

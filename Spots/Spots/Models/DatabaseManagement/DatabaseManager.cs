@@ -2,15 +2,19 @@
 using Plugin.Firebase.Auth;
 using Plugin.Firebase.Firestore;
 using Plugin.Firebase.Core.Exceptions;
-using Spots.Views.Users;
+using Plugin.Firebase.Storage;
+using Spots.Models.ResourceManagement;
 
 namespace Spots.Models.DatabaseManagement
 {
     public static class DatabaseManager
     {
+        const long MAX_IMAGE_STREAM_SIZE = 1 * 1024 * 1024;
+
         public static IFirebaseAuth firebaseAuth = CrossFirebaseAuth.Current;
+
         #region Public Methods
-        public static async Task<User> LogInWithEmailAndPasswordAsync(string email, string password, bool getUser = true)
+        public static async Task<User> LogInUserAsync(string email, string password, bool getUser = true)
         {
             string[] userSignInMethods = await CrossFirebaseAuth.Current.FetchSignInMethodsAsync(email);
 
@@ -18,6 +22,13 @@ namespace Spots.Models.DatabaseManagement
                 throw new FirebaseAuthException(FIRAuthError.InvalidEmail, "Custom Exception -> There was no email and password login method, or none at all.");
 
             IFirebaseUser iFUser = await CrossFirebaseAuth.Current.SignInWithEmailAndPasswordAsync(email, password, false);
+
+            bool isBusinessUser = iFUser.DisplayName != null ? iFUser.DisplayName.Equals("Business") : false;
+            if (isBusinessUser)
+            {
+                await LogOutAsync();
+                throw new FirebaseAuthException(FIRAuthError.EmailAlreadyInUse, "txt_LogInError_WrongCredentials_User -> There is alredy a business user with this email.");
+            }
 
             //if(!firebaseUser.IsEmailVerified)
             //    throw new FirebaseAuthException(FIRAuthError.UserDisabled, "Custon Exception -> Email not verified.");
@@ -36,9 +47,43 @@ namespace Spots.Models.DatabaseManagement
             return user;
         }
 
-        public static async Task<bool> CreateUserAsync(string email, string password)
+        public static async Task<BusinessUser> LogInBusinessAsync(string email, string password, bool getUser = true)
+        {
+            string[] userSignInMethods = await CrossFirebaseAuth.Current.FetchSignInMethodsAsync(email);
+
+            if (userSignInMethods.Length == 0 || !userSignInMethods.Contains("password"))
+                throw new FirebaseAuthException(FIRAuthError.InvalidEmail, "Custom Exception -> There was no email and password login method, or none at all.");
+
+            IFirebaseUser iFUser = await CrossFirebaseAuth.Current.SignInWithEmailAndPasswordAsync(email, password, false);
+
+            bool isBusinessUser = iFUser.DisplayName != null ? iFUser.DisplayName.Equals("Business") : false;
+            if (!isBusinessUser)
+            {
+                await LogOutAsync();
+                throw new FirebaseAuthException(FIRAuthError.EmailAlreadyInUse, "txt_LogInError_WrongCredentials_Business -> There is alredy a regular user with this email.");
+            }
+
+            //if(!firebaseUser.IsEmailVerified)
+            //    throw new FirebaseAuthException(FIRAuthError.UserDisabled, "Custon Exception -> Email not verified.");
+
+            BusinessUser user;
+            if (getUser)
+            {
+                user = await GetBusinessDataAsync(iFUser);
+                if (!user.userDataRetrieved)
+                    await LogOutAsync();
+            }
+            else
+            {
+                user = new();
+            }
+            return user;
+        }
+
+        public static async Task<bool> CreateUserAsync(string email, string password, bool isBusinessUser)
         {
             await CrossFirebaseAuth.Current.CreateUserAsync(email, password);
+            await CrossFirebaseAuth.Current.CurrentUser.UpdateProfileAsync(isBusinessUser ? "Business" : "User");
 
             string id = CrossFirebaseAuth.Current.CurrentUser?.Uid;
             if (id.Length == 0 || id == null)
@@ -54,8 +99,16 @@ namespace Spots.Models.DatabaseManagement
             {
                 if (CrossFirebaseAuth.Current.CurrentUser != null)
                 {
-                    User user = await GetUserDataAsync( CrossFirebaseAuth.Current.CurrentUser );
-                    CurrentSession.StartSession( user );
+                    if (CrossFirebaseAuth.Current.CurrentUser.DisplayName.Equals("Business"))
+                    {
+                        BusinessUser user = await GetBusinessDataAsync(CrossFirebaseAuth.Current.CurrentUser);
+                        CurrentSession.StartSession(user);
+                    }
+                    else
+                    {
+                        User user = await GetUserDataAsync(CrossFirebaseAuth.Current.CurrentUser);
+                        CurrentSession.StartSession(user);
+                    }
                 }
             }
             catch (Exception) 
@@ -83,6 +136,40 @@ namespace Spots.Models.DatabaseManagement
 
             return true;
         }
+
+        public static async Task<bool> SaveBusinessDataAsync(BusinessUser user)
+        {
+            try
+            {
+                IDocumentReference documentReference = CrossFirebaseFirestore.Current.GetCollection("BusinessData").GetDocument(user.userID);
+                await documentReference.SetDataAsync(user);
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        public static async Task<string> SaveProfilePicture(bool isBusiness, string userID, ImageFile imageFile)
+        {
+            string filePath = $"{(isBusiness? "Businesses" : "Users")}/{userID}/profilePicture.{imageFile.ContentType.Split('/')[1]}";
+
+            IStorageReference storageRef = CrossFirebaseStorage.Current.GetReferenceFromPath(filePath);
+
+            //await storageRef.DeleteAsync();
+            await storageRef.PutBytes(imageFile.Bytes).AwaitAsync();
+            return filePath;
+        }
+
+        public static async Task<string> GetImageDownloadLink(string path)
+        {
+            IStorageReference storageRef = CrossFirebaseStorage.Current.GetReferenceFromPath(path);
+            string imageStream = await storageRef.GetDownloadUrlAsync();
+
+            return imageStream;
+        }
         #endregion
 
         #region Private Methods
@@ -100,6 +187,39 @@ namespace Spots.Models.DatabaseManagement
                 user.firstName = documentSnapshot.Data.firstName;
                 user.lastName = documentSnapshot.Data.lastName;
                 user.birthDate = documentSnapshot.Data.birthDate;
+                user.profilePictureAddress = documentSnapshot.Data.profilePictureAddress;
+                user.description = documentSnapshot.Data.description;
+                user.phoneNumber = documentSnapshot.Data.phoneNumber;
+                user.phoneCountryCode = documentSnapshot.Data.phoneCountryCode;
+                user.userDataRetrieved = true;
+                // Getting profile picture
+                ImageSource imageSource = null;
+                if (!documentSnapshot.Data.profilePictureAddress.Equals("null"))
+                {
+                    Uri imageUri = new( await GetImageDownloadLink(documentSnapshot.Data.profilePictureAddress) );
+
+                    imageSource = ImageSource.FromUri(imageUri);
+                }
+                user.profilePictureSource = imageSource;
+            }
+
+            return user;
+        }
+
+        private async static Task<BusinessUser> GetBusinessDataAsync(IFirebaseUser firebaseUser)
+        {
+            IDocumentSnapshot<BusinessUser> documentSnapshot = await CrossFirebaseFirestore.Current
+                .GetCollection("BusinessData")
+                .GetDocument(firebaseUser.Uid)
+                .GetDocumentSnapshotAsync<BusinessUser>();
+
+            BusinessUser user = new() { userID = firebaseUser.Uid, email = firebaseUser.Email };
+            // If there is no _user data in the database
+            if (documentSnapshot.Data != null)
+            {
+                user.brandName = documentSnapshot.Data.brandName;
+                user.businessName = documentSnapshot.Data.businessName;
+                user.location = documentSnapshot.Data.location;
                 user.profilePictureAddress = documentSnapshot.Data.profilePictureAddress;
                 user.description = documentSnapshot.Data.description;
                 user.phoneNumber = documentSnapshot.Data.phoneNumber;

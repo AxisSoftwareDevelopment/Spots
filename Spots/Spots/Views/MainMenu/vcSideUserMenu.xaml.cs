@@ -25,6 +25,7 @@ public partial class vcSideUserMenu : ContentPage
     private void ProfilePictureOrMyProfileOnClicked(object sender, EventArgs e)
     {
         _Flyout.IsPresented = false;
+        
         _Navigation.PushAsync(new vwUserProfile(CurrentSession.currentUser));
     }
 

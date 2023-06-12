@@ -33,7 +33,7 @@ public partial class vwRegister : ContentPage
 
             try
             {
-                if (await DatabaseManager.CreateUserAsync(email, password))
+                if (await DatabaseManager.CreateUserAsync(email, password, isBusinessUser: false))
                 {
                     await Application.Current.MainPage.DisplayAlert("Success", "User created successfully.", "OK");
                     await Navigation.PopToRootAsync();

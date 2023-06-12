@@ -20,7 +20,8 @@
                             <Border x:Name="_FrameProfilePicture" Padding="0" Margin="15,15,15,0" StrokeShape="RoundRectangle 500" BackgroundColor="{DynamicResource Tertiary}">
                                 <Image x:Name="_ProfileImage" Aspect="AspectFill" Source="{Binding profilePictureAddress}"/>
                             </Border>
-                            <Button x:Name="_btnLoadImage" Text="{DynamicResource lbl_LoadImage}" BackgroundColor="{DynamicResource Tertiary}" TextColor="{DynamicResource PrimaryAccent}" VerticalOptions="Center"/>
+                            <Button x:Name="_btnLoadImage" Text="{DynamicResource lbl_LoadImage}" BackgroundColor="{DynamicResource Tertiary}" TextColor="{DynamicResource PrimaryAccent}" 
+                                    VerticalOptions="Center" Clicked="LoadImageOnClickAsync"/>
                         </StackLayout>
                         <!-- First Name -->
                         <StackLayout Orientation="Horizontal">

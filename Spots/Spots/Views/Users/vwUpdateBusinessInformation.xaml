@@ -20,22 +20,23 @@
                             <Border x:Name="_FrameProfilePicture" Padding="0" Margin="15,15,15,0" StrokeShape="RoundRectangle 500" BackgroundColor="{DynamicResource Tertiary}">
                                 <Image x:Name="_ProfileImage" Aspect="AspectFill" Source="{Binding profilePictureAddress}"/>
                             </Border>
-                            <Button x:Name="_btnLoadImage" Text="{DynamicResource lbl_LoadImage}" BackgroundColor="{DynamicResource Tertiary}" TextColor="{DynamicResource PrimaryAccent}" VerticalOptions="Center"/>
+                            <Button x:Name="_btnLoadImage" Text="{DynamicResource lbl_LoadImage}" BackgroundColor="{DynamicResource Tertiary}" TextColor="{DynamicResource PrimaryAccent}" VerticalOptions="Center"
+                                    Clicked="LoadImageOnClickAsync"/>
                         </StackLayout>
                         <!-- Brand Name -->
                         <StackLayout Orientation="Horizontal">
-                            <Label Text="Brand Name" TextColor="{DynamicResource SecondaryAccent}" HorizontalOptions="Center" HorizontalTextAlignment="Center"
+                            <Label Text="{DynamicResource lbl_BrandName}" TextColor="{DynamicResource SecondaryAccent}" HorizontalOptions="Center" HorizontalTextAlignment="Center"
                                 Margin="0,20,0,0"/>
                             <Label Text=" *" VerticalOptions="Center" FontAttributes="Bold" TextColor="{DynamicResource ErrorAccent}" Margin="0,20,0,0"/>
                         </StackLayout>
-                        <Entry x:Name="_entryBrandName" Placeholder="{DynamicResource lbl_FirstNamePlaceHolder}" HorizontalOptions="FillAndExpand" 
+                        <Entry x:Name="_entryBrandName" Placeholder="{DynamicResource lbl_BrandName}" HorizontalOptions="FillAndExpand" 
                             Keyboard="Email" ReturnType="Next"/>
                         <!-- Business Name -->
                         <StackLayout Orientation="Horizontal">
-                            <Label Text="Business Name" TextColor="{DynamicResource SecondaryAccent}" HorizontalOptions="Center" HorizontalTextAlignment="Center"/>
+                            <Label Text="{DynamicResource lbl_BusinessName}" TextColor="{DynamicResource SecondaryAccent}" HorizontalOptions="Center" HorizontalTextAlignment="Center"/>
                             <Label Text=" *" VerticalOptions="Center" FontAttributes="Bold" TextColor="{DynamicResource ErrorAccent}"/>
                         </StackLayout>
-                        <Entry x:Name="_entryBusinessName" Placeholder="{DynamicResource lbl_LastNamePlaceHolder}" HorizontalOptions="FillAndExpand" 
+                        <Entry x:Name="_entryBusinessName" Placeholder="{DynamicResource lbl_BusinessName}" HorizontalOptions="FillAndExpand" 
                             Keyboard="Email" ReturnType="Next"/>
                         <!-- Location -->
                         <StackLayout Orientation="Horizontal">
