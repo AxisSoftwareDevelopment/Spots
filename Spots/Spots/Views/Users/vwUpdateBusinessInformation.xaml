@@ -49,9 +49,9 @@
                         <Label Text="{DynamicResource lbl_DescriptionField}" TextColor="{DynamicResource SecondaryAccent}" HorizontalOptions="Center" HorizontalTextAlignment="Center"/>
                         <Editor x:Name="_editorDescription" Placeholder="{DynamicResource lbl_Description}" HorizontalOptions="FillAndExpand" AutoSize="TextChanges"/>
                         <!-- Main Phone number -->
-                        <Label Text="{DynamicResource lbl_PhoneField}" TextColor="{DynamicResource SecondaryAccent}" HorizontalOptions="Center" HorizontalTextAlignment="Center"/>
+                        <Label x:Name="_lblPhoneNumber" Text="{DynamicResource lbl_PhoneField}" TextColor="{DynamicResource SecondaryAccent}" HorizontalOptions="Center" HorizontalTextAlignment="Center"/>
                         <StackLayout Orientation="Horizontal">
-                            <Label Text="+" TextColor="{DynamicResource SecondaryAccent}" VerticalOptions="Center"/>
+                            <Label x:Name="_lblPlusPhoneNumber" Text="+" TextColor="{DynamicResource SecondaryAccent}" VerticalOptions="Center"/>
                             <Entry x:Name="_entryPhoneCountryCode" Placeholder="01" Keyboard="Telephone" Margin="5,0,5,0" ReturnType="Next" MaxLength="2"/>
                             <Entry x:Name="_entryPhoneNumber" Placeholder="000 000 0000" HorizontalOptions="FillAndExpand"  MaxLength="10" Keyboard="Telephone" ReturnType="Done"/>
                         </StackLayout>

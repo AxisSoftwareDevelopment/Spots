@@ -92,6 +92,9 @@
 	  <MauiXaml Update="Views\Navigation\cvFlyoutUserNavigationBar.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Views\Users\vwBusinessProfile.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Views\Users\vwUpdateBusinessInformation.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>

@@ -18,6 +18,8 @@ public partial class vwRegisterBusiness : ContentPage
         string confirmEmail = _entryConfirmEmail is null ? "" : _entryConfirmEmail.Text;
         string password = _entryPassword.Text is null ? "" : _entryPassword.Text;
         string confirmPassword = _entryConfirmPassword.Text is null ? "" : _entryConfirmPassword.Text;
+        string phoneNumber = _entryPhoneNumber.Text is null ? "" : _entryPhoneNumber.Text;
+        string phoneNumberCountryCode = _entryPhoneCountryCode.Text is null ? "" : _entryPhoneCountryCode.Text;
 
         bool thereAreEmptyFields = (email.Length == 0 ||
                             confirmEmail.Length == 0 ||
@@ -33,7 +35,7 @@ public partial class vwRegisterBusiness : ContentPage
 
             try
             {
-                if (await DatabaseManager.CreateUserAsync(email, password, isBusinessUser: true))
+                if (await DatabaseManager.CreateUserAsync(email, password, isBusinessUser: true, phoneNumber, phoneNumberCountryCode))
                 {
                     await Application.Current.MainPage.DisplayAlert("Success", "User created successfully.", "OK");
                     await Navigation.PopToRootAsync();

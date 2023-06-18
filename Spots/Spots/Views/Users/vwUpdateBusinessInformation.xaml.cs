@@ -11,7 +11,7 @@ public partial class vwUpdateBusinessInformation : ContentPage
     private BusinessUser _user;
     private bool _userIsEmpty;
     private string _password, _email, _phoneNumber, _phoneCountryCode;
-    private bool _birhtdateSelected, _profilePictureChanged = false;
+    private bool _profilePictureChanged = false;
     private ImageFile _profilePictureFile;
 
     public vwUpdateBusinessInformation(BusinessUser user, string email = null, string password = null, string phoneNumber = null, string phoneCountryCode = null)
@@ -55,31 +55,41 @@ public partial class vwUpdateBusinessInformation : ContentPage
         // We update the _user data
         string brandName = ToTitleCase(_entryBrandName.Text.Trim());
         string BusinessName = ToTitleCase(_entryBusinessName.Text.Trim());
-        string description = _editorDescription.Text.Trim();
+        string description =  _editorDescription.Text.Trim();
         string phoneNumber = _entryPhoneNumber.Text;
         string phoneCountryCode = _entryPhoneCountryCode.Text;
 
         bool thereAreEmptyFields = brandName.Length == 0 ||
-                            BusinessName.Length == 0 ||
-                            (!_birhtdateSelected && _userIsEmpty);
+                            BusinessName.Length == 0;
         bool descriptionUnder150Chars = description.Length <= 150;
-        bool validPhoneNumber = (phoneNumber.Length == 10 && phoneCountryCode.Length == 2) || (phoneNumber.Length == 0 && phoneCountryCode.Length == 0);
+        bool validPhoneNumber;
+        if (_userIsEmpty)
+            validPhoneNumber = true;
+        else
+            validPhoneNumber = (phoneNumber.Length == 10 && phoneCountryCode.Length == 2) || (phoneNumber.Length == 0 && phoneCountryCode.Length == 0);
 
         if (!thereAreEmptyFields && descriptionUnder150Chars && validPhoneNumber)
         {
             HideErrorSection();
 
             if (_userIsEmpty)
+            {
                 _user.email = _email;
+                _user.phoneNumber = _phoneNumber;
+                _user.phoneCountryCode = _phoneCountryCode;
+            }
+            else
+            {
+                _user.phoneNumber = phoneNumber;
+                _user.phoneCountryCode = phoneCountryCode;
+            }
             _user.brandName = brandName;
             _user.businessName = BusinessName;
             //_user.profilePictureAddress
-            _user.phoneNumber = phoneNumber;
-            _user.phoneCountryCode = phoneCountryCode;
             _user.description = description;
             if (_profilePictureChanged)
             {
-                _user.profilePictureAddress = await DatabaseManager.SaveProfilePicture(isBusiness: false, _user.userID, _profilePictureFile);
+                _user.profilePictureAddress = await DatabaseManager.SaveProfilePicture(isBusiness: true, _user.userID, _profilePictureFile);
                 _user.profilePictureSource = ImageSource.FromStream(() => ImageManagement.ByteArrayToStream(_profilePictureFile.Bytes));
             }
 
@@ -87,7 +97,7 @@ public partial class vwUpdateBusinessInformation : ContentPage
             {
                 _user.userDataRetrieved = true;
                 await Application.Current.MainPage.DisplayAlert("Success", "Your information has been updated. Way to go!", "OK");
-                // If the user was empty, it meas we came from the log in.
+                // If the business was empty, it meas we came from the log in.
                 if (_userIsEmpty)
                 {
                     // We then have to log in and go to main page.
@@ -96,14 +106,14 @@ public partial class vwUpdateBusinessInformation : ContentPage
                 }
                 else if(DataChanged())
                 {
-                    // If the user was just updating information, then we just pop the page from navigation
+                    // If the business was just updating information, then we just pop the page from navigation
                     CurrentSession.currentBusiness.UpdateUserData(_user);
 
                     await Navigation.PopAsync();
                 }
                 else
                 {
-                    // If the user was updating information, but didnt change any data, we do nothing
+                    // If the business was updating information, but didnt change any data, we do nothing
                     await Application.Current.MainPage.DisplayAlert("Alert", "No information was changed", "OK");
                     await Navigation.PopAsync();
                 }
@@ -157,6 +167,8 @@ public partial class vwUpdateBusinessInformation : ContentPage
         {
             _entryPhoneNumber.IsVisible = false;
             _entryPhoneCountryCode.IsVisible = false;
+            _lblPhoneNumber.IsVisible = false;
+            _lblPlusPhoneNumber.IsVisible = false;
             _entryPhoneNumber.Text = _phoneNumber;
             _entryPhoneCountryCode.Text = _phoneCountryCode;
         }
@@ -180,8 +192,6 @@ public partial class vwUpdateBusinessInformation : ContentPage
         if (_user.phoneNumber != _entryPhoneNumber.Text)
             return true;
         if (_user.phoneCountryCode != _entryPhoneCountryCode.Text)
-            return true;
-        if (_birhtdateSelected)
             return true;
 
         return false;

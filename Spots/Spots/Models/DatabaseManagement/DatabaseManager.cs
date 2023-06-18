@@ -27,7 +27,7 @@ namespace Spots.Models.DatabaseManagement
             if (isBusinessUser)
             {
                 await LogOutAsync();
-                throw new FirebaseAuthException(FIRAuthError.EmailAlreadyInUse, "txt_LogInError_WrongCredentials_User -> There is alredy a business user with this email.");
+                throw new FirebaseAuthException(FIRAuthError.EmailAlreadyInUse, "txt_LogInError_WrongCredentials_User -> There is alredy a business business with this email.");
             }
 
             //if(!firebaseUser.IsEmailVerified)
@@ -60,7 +60,7 @@ namespace Spots.Models.DatabaseManagement
             if (!isBusinessUser)
             {
                 await LogOutAsync();
-                throw new FirebaseAuthException(FIRAuthError.EmailAlreadyInUse, "txt_LogInError_WrongCredentials_Business -> There is alredy a regular user with this email.");
+                throw new FirebaseAuthException(FIRAuthError.EmailAlreadyInUse, "txt_LogInError_WrongCredentials_Business -> There is alredy a regular business with this email.");
             }
 
             //if(!firebaseUser.IsEmailVerified)
@@ -80,10 +80,13 @@ namespace Spots.Models.DatabaseManagement
             return user;
         }
 
-        public static async Task<bool> CreateUserAsync(string email, string password, bool isBusinessUser)
+        public static async Task<bool> CreateUserAsync(string email, string password, bool isBusinessUser, string phoneNunber = null, string phoneCountryCode = null)
         {
             await CrossFirebaseAuth.Current.CreateUserAsync(email, password);
-            await CrossFirebaseAuth.Current.CurrentUser.UpdateProfileAsync(isBusinessUser ? "Business" : "User");
+            await CrossFirebaseAuth.Current.CurrentUser.UpdateProfileAsync(displayName: isBusinessUser ? "Business" : "User");
+            bool x;
+            if (isBusinessUser)
+                x = await SaveBusinessDataAsync(new BusinessUser() { userID = CrossFirebaseAuth.Current.CurrentUser.Uid, email = email, phoneNumber = phoneNunber, phoneCountryCode = phoneCountryCode });
 
             string id = CrossFirebaseAuth.Current.CurrentUser?.Uid;
             if (id.Length == 0 || id == null)
@@ -224,7 +227,7 @@ namespace Spots.Models.DatabaseManagement
                 user.description = documentSnapshot.Data.description;
                 user.phoneNumber = documentSnapshot.Data.phoneNumber;
                 user.phoneCountryCode = documentSnapshot.Data.phoneCountryCode;
-                user.userDataRetrieved = true;
+                user.userDataRetrieved = documentSnapshot.Data.brandName.Length > 0;
             }
 
             return user;

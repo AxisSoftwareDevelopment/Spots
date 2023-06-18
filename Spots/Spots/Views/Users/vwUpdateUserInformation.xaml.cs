@@ -90,7 +90,7 @@ public partial class vwUpdateUserInformation : ContentPage
                 
                 _user.userDataRetrieved = true;
                 await Application.Current.MainPage.DisplayAlert("Success", "Your information has been updated. Way to go!", "OK");
-                // If the user was empty, it meas we came from the log in.
+                // If the business was empty, it meas we came from the log in.
                 if (_userIsEmpty)
                 {
                     // We then have to log in and go to main page.
@@ -99,14 +99,14 @@ public partial class vwUpdateUserInformation : ContentPage
                 }
                 else if(DataChanged())
                 {
-                    // If the user was just updating information, then we just pop the page from navigation
+                    // If the business was just updating information, then we just pop the page from navigation
                     CurrentSession.currentUser.UpdateUserData(_user);
                     
                     await Navigation.PopAsync();
                 }
                 else
                 {
-                    // If the user was updating information, but didnt change any data, we do nothing
+                    // If the business was updating information, but didnt change any data, we do nothing
                     await Application.Current.MainPage.DisplayAlert("Alert", "No information was changed", "OK");
                     await Navigation.PopAsync();
                 }
