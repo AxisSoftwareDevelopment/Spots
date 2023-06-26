@@ -17,7 +17,7 @@ public partial class vcSideUserMenu : ContentPage
 
         InitializeComponent();
         SetBindings(CurrentSession.sessionMode);
-        CurrentSession.OnSessionModeChanged += CurrentSession_OnSessionModeChanged;
+        //CurrentSession.OnSessionModeChanged += CurrentSession_OnSessionModeChanged;
 
 
         _FrameProfilePicture.WidthRequest = profilePictureDimensions;

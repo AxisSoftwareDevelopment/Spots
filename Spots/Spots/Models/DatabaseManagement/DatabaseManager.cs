@@ -12,6 +12,7 @@ namespace Spots.Models.DatabaseManagement
         const long MAX_IMAGE_STREAM_SIZE = 1 * 1024 * 1024;
 
         public static IFirebaseAuth firebaseAuth = CrossFirebaseAuth.Current;
+        public static event EventHandler SignInValidationEvent;
 
         #region Public Methods
         public static async Task<User> LogInUserAsync(string email, string password, bool getUser = true)
@@ -96,7 +97,7 @@ namespace Spots.Models.DatabaseManagement
             return true;
         }
 
-        public static async Task ValidateCurrentSession()
+        public static async Task<bool> ValidateCurrentSession()
         {
             try
             {
@@ -112,12 +113,14 @@ namespace Spots.Models.DatabaseManagement
                         User user = await GetUserDataAsync(CrossFirebaseAuth.Current.CurrentUser);
                         CurrentSession.StartSession(user);
                     }
+                    return true;
                 }
             }
             catch (Exception) 
             {
                 CurrentSession.CloseSession();
             }
+            return false;
         }
 
         public static async Task LogOutAsync()

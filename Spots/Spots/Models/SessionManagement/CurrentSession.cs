@@ -12,7 +12,7 @@ namespace Spots.Models.SessionManagement
 
     public static class CurrentSession
     {
-        public static event EventHandler OnSessionModeChanged;
+        //public static event EventHandler OnSessionModeChanged;
         public static SessionMode sessionMode {  get; private set; } = SessionMode.UserSession;
         public static bool sessionOnline { get; private set; } = false;
         public static User currentUser { get; private set; } = new();
@@ -25,7 +25,7 @@ namespace Spots.Models.SessionManagement
                 sessionMode = SessionMode.UserSession;
                 currentUser.UpdateUserData( user );
                 sessionOnline = true;
-                OnSessionModeChanged.Invoke( null, EventArgs.Empty);
+                //OnSessionModeChanged.Invoke( null, EventArgs.Empty);
 
                 return true;
             }
@@ -42,7 +42,7 @@ namespace Spots.Models.SessionManagement
                 sessionMode = SessionMode.BusinessSession;
                 currentBusiness.UpdateUserData(bussinesUser);
                 sessionOnline = true;
-                OnSessionModeChanged.Invoke(null, EventArgs.Empty);
+                //OnSessionModeChanged.Invoke(null, EventArgs.Empty);
 
                 return true;
             }

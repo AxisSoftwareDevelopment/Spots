@@ -3,8 +3,9 @@ using Microsoft.Maui.LifecycleEvents;
 using Plugin.Firebase.Auth;
 using Spots.Models.DatabaseManagement;
 using Spots.Models.SessionManagement;
+using Microsoft.Maui;
 #if IOS
-	using Plugin.Firebase.Core.Platforms.iOS;
+using Plugin.Firebase.Core.Platforms.iOS;
 #else
 using Plugin.Firebase.Core.Platforms.Android;
 #endif
@@ -13,6 +14,7 @@ namespace Spots;
 
 public static class MauiProgram
 {
+    public static event EventHandler<bool> SignInValidated;
     public static MauiApp CreateMauiApp()
     {
         var builder = MauiApp.CreateBuilder();
@@ -29,7 +31,12 @@ public static class MauiProgram
         builder.Logging.AddDebug();
 #endif
 
-        Task.Run( DatabaseManager.ValidateCurrentSession );
+        Task.Run( async () =>
+        {
+            bool userSignedIn = await DatabaseManager.ValidateCurrentSession();
+            await Task.Delay(3000);
+            SignInValidated.Invoke(null, userSignedIn);
+        });
 
         return builder.Build();
 	}
