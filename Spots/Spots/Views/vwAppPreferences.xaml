@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Spots.Views.vwAppPreferences"
+             Title="Preferences"
+             BackgroundColor="{DynamicResource Secondary}">
+    <NavigationPage.TitleView>
+        <Label Text="{DynamicResource lbl_Preferences}" TextColor="{DynamicResource PrimaryAccent}" FontSize="24" FontAttributes="Bold" HorizontalOptions="Start" VerticalOptions="Center"/>
+    </NavigationPage.TitleView>
+    <ScrollView x:Name="_scrollviewMain" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" HorizontalScrollBarVisibility="Never" VerticalScrollBarVisibility="Never" Margin="25, 0, 25, 0">
+        <StackLayout VerticalOptions="CenterAndExpand">
+            <Label Text="{DynamicResource lbl_Language}" TextColor="{DynamicResource SecondaryAccent}" HorizontalOptions="FillAndExpand" HorizontalTextAlignment="Center"/>
+            <Picker x:Name="_PickerLanguage" TextColor="{DynamicResource SecondaryAccent}"/>
+            <Label Text="{DynamicResource lbl_Theme}" TextColor="{DynamicResource SecondaryAccent}" HorizontalOptions="FillAndExpand" HorizontalTextAlignment="Center"/>
+            <Picker x:Name="_PickerTheme" TextColor="{DynamicResource SecondaryAccent}"/>
+            <StackLayout Orientation="Horizontal" HorizontalOptions="Center">
+                <Button x:Name="_btnApply" Text="{DynamicResource lbl_Apply}" CornerRadius="20" BackgroundColor="{DynamicResource Tertiary}" TextColor="{DynamicResource PrimaryAccent}"
+                            Margin="0,50,15,20" VerticalOptions="End"  Clicked="ApplyOnClick"/>
+                <Button x:Name="_btnCancel" Text="{DynamicResource lbl_Cancel}" CornerRadius="20" BackgroundColor="{DynamicResource Tertiary}" TextColor="{DynamicResource PrimaryAccent}"
+                            Margin="15,50,0,20" VerticalOptions="End"  Clicked="CancelOnClick"/>
+            </StackLayout>
+            
+        </StackLayout>
+    </ScrollView>
+</ContentPage>

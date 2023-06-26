@@ -4,6 +4,10 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
     
+    <x:String x:Key="lbl_LangEnglish">English</x:String> <!-- Label that indicates Language English -->
+    <x:String x:Key="lbl_LangSpanish">Spanish</x:String> <!-- Label that indicates Language English -->
+    <x:String x:Key="lbl_ThemeDark">Dark</x:String> <!-- Label that indicates Dark theme -->
+    <x:String x:Key="lbl_ThemeLight">Light</x:String> <!-- Label that indicates Light theme -->
     <x:String x:Key="lbl_AreYouSure">Are you sure?</x:String> <!-- Label that questions the user if is sure -->
     <x:String x:Key="lbl_BirthdateField">Birthdate:</x:String> <!-- Label that indicates the input field for the user's birthdate -->
     <x:String x:Key="lbl_Discovery">Discovery</x:String> <!-- Label that indicates the Discovery section -->
@@ -46,6 +50,10 @@
     <x:String x:Key="lbl_BusinessLogIn">Business Log In</x:String> <!-- Label that indicates business Log in -->
     <x:String x:Key="lbl_BusinessName">Business Name</x:String> <!-- Label that indicates business Name -->
     <x:String x:Key="lbl_BrandName">Brand Name</x:String> <!-- Label that indicates business Brand Name -->
+    <x:String x:Key="lbl_Language">Language</x:String> <!-- Label that indicates application language -->
+    <x:String x:Key="lbl_Theme">App Theme</x:String> <!-- Label that indicates aplication theme -->
+    <x:String x:Key="lbl_Apply">Apply</x:String> <!-- Label that indicates Apply changes -->
+    <x:String x:Key="lbl_Cancel">Cancel</x:String> <!-- Label that indicates Cancelation -->
     
     <x:String x:Key="txt_ConfirmLogOut">Are you sure you want to want to log out?</x:String> <!-- Text that questions the user if is sure of logout action -->
     <x:String x:Key="txt_LogIn">Log in to your account</x:String> <!-- Log in text -->

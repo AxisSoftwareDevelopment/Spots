@@ -132,6 +132,9 @@ public partial class vwLogIn : ContentPage
                 case FIRAuthError.UserNotFound:
                     errorID = "txt_LogInError_WrongCredentials";
                     break;
+                case FIRAuthError.EmailAlreadyInUse:
+                    errorID = ex.Message.Split("->")[0].Trim();
+                    break;
                 default:
                     errorID = "txt_LogInError_Undefined";
                     break;

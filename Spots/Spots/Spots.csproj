@@ -104,6 +104,9 @@
 	  <MauiXaml Update="Views\Users\vwUserProfile.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Views\vwAppPreferences.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Views\vwLogIn.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>

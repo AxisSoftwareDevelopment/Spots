@@ -41,7 +41,9 @@ public partial class vcSideUserMenu : ContentPage
 
     private void PreferencesOnClicked(object sender, EventArgs e)
     {
+        _Flyout.IsPresented = false;
 
+        _Navigation.PushAsync(new vwAppPreferences());
     }
 
     private async void LogOutOnClickedAsync(object sender, EventArgs e)
