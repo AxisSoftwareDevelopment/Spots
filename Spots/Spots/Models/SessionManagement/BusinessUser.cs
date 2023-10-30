@@ -5,7 +5,7 @@ namespace Spots.Models.SessionManagement
 {
     public class BusinessUser : BindableObject, INotifyPropertyChanged
     {
-        public event PropertyChangedEventHandler PropertyChanged;
+        new public event PropertyChangedEventHandler PropertyChanged;
 
         #region Private Parameters
         private string _fullPhoneNumber;

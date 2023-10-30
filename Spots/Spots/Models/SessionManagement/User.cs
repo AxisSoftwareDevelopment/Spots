@@ -7,7 +7,7 @@ namespace Spots.Models.SessionManagement
 {
     public class User : BindableObject, INotifyPropertyChanged
     {
-        public event PropertyChangedEventHandler PropertyChanged;
+        new public event PropertyChangedEventHandler PropertyChanged;
 
         #region Private Parameters
         private string _fullName;
@@ -178,7 +178,7 @@ namespace Spots.Models.SessionManagement
             description = Description;
         }
 
-        public async void UpdateUserData(User userData)
+        public void UpdateUserData(User userData)
         {
             userID = userData.userID;
             firstName = userData.firstName;
