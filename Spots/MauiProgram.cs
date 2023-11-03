@@ -47,14 +47,12 @@ public static class MauiProgram
 #if IOS
             events.AddiOS(iOS => iOS.FinishedLaunching((_,__) => {
                 CrossFirebase.Initialize();
-				FirebaseAuthImplementation.Initialize();
                 return false;
             }));
 #else
             events.AddAndroid(android => android.OnCreate((activity, _) =>
             {
                 CrossFirebase.Initialize(activity);
-                FirebaseAuthImplementation.Initialize("443931860533-lvbmdbnge1tdc2dmqpvmqg511ag25cv5.apps.googleusercontent.com");
             }));
 #endif
         });

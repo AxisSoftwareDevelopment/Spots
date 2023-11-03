@@ -12,7 +12,6 @@ public class MainActivity : MauiAppCompatActivity
 {
     protected override void OnActivityResult(int requestCode, Result resultCode, Intent data)
     {
-        FirebaseAuthImplementation.HandleActivityResultAsync(requestCode, resultCode, data);
         base.OnActivityResult(requestCode, resultCode, data);
     }
 }
