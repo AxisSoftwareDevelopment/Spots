@@ -17,7 +17,7 @@ public partial class vwUpdateUserInformation : ContentPage
     public vwUpdateUserInformation(User user, string email = null, string password = null)
 	{
         _user = user;
-        _userIsEmpty = password != null && email != null && !user.userDataRetrieved;
+        _userIsEmpty = password != null && email != null && !user.bUserDataRetrieved;
         _password = password;
         _email = email;
 
@@ -70,25 +70,25 @@ public partial class vwUpdateUserInformation : ContentPage
             HideErrorSection();
 
             if(_userIsEmpty)
-                _user.email = _email;
-            _user.firstName = firstName;
-            _user.lastName = lastName;
+                _user.sEmail = _email;
+            _user.sFirstName = firstName;
+            _user.sLastName = lastName;
             if(_birhtdateSelected)
-                _user.birthDate = birthdate;
+                _user.dtBirthDate = birthdate;
             //_user.profilePictureAddress
-            _user.phoneNumber = phoneNumber;
-            _user.phoneCountryCode = phoneCountryCode;
-            _user.description = description;
+            _user.sPhoneNumber = phoneNumber;
+            _user.sPhoneCountryCode = phoneCountryCode;
+            _user.sDescription = description;
             if (_profilePictureChanged)
             {
-                _user.profilePictureAddress = await DatabaseManager.SaveProfilePicture(isBusiness: false, _user.userID, _profilePictureFile);
-                _user.profilePictureSource = ImageSource.FromStream( () => ImageManagement.ByteArrayToStream(_profilePictureFile.Bytes) );
+                _user.sProfilePictureAddress = await DatabaseManager.SaveProfilePicture(isBusiness: false, _user.sUserID, _profilePictureFile);
+                _user.imProfilePictureSource = ImageSource.FromStream( () => ImageManagement.ByteArrayToStream(_profilePictureFile.Bytes) );
             }
 
             if (await DatabaseManager.SaveUserDataAsync(_user))
             {
                 
-                _user.userDataRetrieved = true;
+                _user.bUserDataRetrieved = true;
                 await Application.Current.MainPage.DisplayAlert("Success", "Your information has been updated. Way to go!", "OK");
                 // If the business was empty, it meas we came from the log in.
                 if (_userIsEmpty)
@@ -156,11 +156,11 @@ public partial class vwUpdateUserInformation : ContentPage
     private void InitializeControllers()
     {
         // Load _user data
-        _entryFirstName.Text = _user.firstName;
-        _entryLastName.Text = _user.lastName;
-        _entryPhoneNumber.Text = _user.phoneNumber;
-        _entryPhoneCountryCode.Text = _user.phoneCountryCode;
-        _editorDescription.Text = _user.description;
+        _entryFirstName.Text = _user.sFirstName;
+        _entryLastName.Text = _user.sLastName;
+        _entryPhoneNumber.Text = _user.sPhoneNumber;
+        _entryPhoneCountryCode.Text = _user.sPhoneCountryCode;
+        _editorDescription.Text = _user.sDescription;
         // Initialize BirthDate field
         if (_userIsEmpty)
         {
@@ -175,7 +175,7 @@ public partial class vwUpdateUserInformation : ContentPage
         }
         else
         {
-            _dateBirthdate.Date = _user.birthDate.Date;
+            _dateBirthdate.Date = _user.dtBirthDate.Date;
         }
     }
 
@@ -183,15 +183,15 @@ public partial class vwUpdateUserInformation : ContentPage
     {
         if(_profilePictureChanged)
             return true;
-        if (_user.firstName != ToTitleCase(_entryFirstName.Text.Trim()))
+        if (_user.sFirstName != ToTitleCase(_entryFirstName.Text.Trim()))
             return true;
-        if (_user.lastName != ToTitleCase(_entryLastName.Text.Trim()))
+        if (_user.sLastName != ToTitleCase(_entryLastName.Text.Trim()))
             return true;
-        if (_user.description != _editorDescription.Text.Trim())
+        if (_user.sDescription != _editorDescription.Text.Trim())
             return true;
-        if (_user.phoneNumber != _entryPhoneNumber.Text)
+        if (_user.sPhoneNumber != _entryPhoneNumber.Text)
             return true;
-        if(_user.phoneCountryCode != _entryPhoneCountryCode.Text)
+        if(_user.sPhoneCountryCode != _entryPhoneCountryCode.Text)
             return true;
         if (_birhtdateSelected)
             return true;

@@ -27,6 +27,10 @@
 		<BaseOutputPath></BaseOutputPath>
 	</PropertyGroup>
 
+	<PropertyGroup>
+		<RestorePackagesPath>C:\.ng</RestorePackagesPath>
+	</PropertyGroup>
+
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net7.0-android|AnyCPU'">
 	  <AndroidPackageFormat>apk</AndroidPackageFormat>
 	  <AndroidKeyStore>False</AndroidKeyStore>

@@ -53,11 +53,27 @@ public partial class vwAppPreferences : ContentPage
 
     public void ApplyOnClick(object sender, EventArgs e)
     {
+        if(_ThemeChanged)
+        {
+            Preferences.Set("Theme", _PickerTheme.Items[_PickerTheme.SelectedIndex]);
+            _ThemeChanged = false;
+        }
+        if (_LanguageChanged)
+        {
+            Preferences.Set("Language", _PickerLanguage.Items[_PickerLanguage.SelectedIndex]);
+            _LanguageChanged = false;
+        }
+        //TODO: Apply changes on resources
+        _LanguageChanged = false;
         Navigation.PopAsync();
     }
 
     public void CancelOnClick(object sender, EventArgs e)
     {
+        if(_ThemeChanged || _LanguageChanged)
+        {
+            //TODO: Ask if user wants to discard changes.
+        }
         Navigation.PopAsync();
     }
 }

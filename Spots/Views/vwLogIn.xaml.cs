@@ -100,7 +100,7 @@ public partial class vwLogIn : ContentPage
         {
             User user = await DatabaseManager.LogInUserAsync(email, password);
 
-            if (user.userDataRetrieved)
+            if (user.bUserDataRetrieved)
             {
                 // Check if the _user has updated its basic information yet
                 await Application.Current.MainPage.DisplayAlert("Welcome!", "Welcome to spots!", "OK");

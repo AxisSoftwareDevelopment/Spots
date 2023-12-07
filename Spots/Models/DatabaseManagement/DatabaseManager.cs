@@ -12,7 +12,6 @@ namespace Spots.Models.DatabaseManagement
         const long MAX_IMAGE_STREAM_SIZE = 1 * 1024 * 1024;
 
         public static IFirebaseAuth firebaseAuth = CrossFirebaseAuth.Current;
-        public static event EventHandler SignInValidationEvent;
 
         #region Public Methods
         public static async Task<User> LogInUserAsync(string email, string password, bool getUser = true)
@@ -38,7 +37,7 @@ namespace Spots.Models.DatabaseManagement
             if (getUser)
             {
                 user = await GetUserDataAsync(iFUser);
-                if (!user.userDataRetrieved)
+                if (!user.bUserDataRetrieved)
                     await LogOutAsync();
             }
             else
@@ -132,7 +131,7 @@ namespace Spots.Models.DatabaseManagement
         {
             try
             {
-                IDocumentReference documentReference = CrossFirebaseFirestore.Current.GetCollection("UserData").GetDocument(user.userID);
+                IDocumentReference documentReference = CrossFirebaseFirestore.Current.GetCollection("UserData").GetDocument(user.sUserID);
                 await documentReference.SetDataAsync(user);
             }
             catch (Exception)
@@ -186,27 +185,27 @@ namespace Spots.Models.DatabaseManagement
                 .GetDocument(firebaseUser.Uid)
                 .GetDocumentSnapshotAsync<User>();
 
-            User user = new() { userID = firebaseUser.Uid, email = firebaseUser.Email };
+            User user = new() { sUserID = firebaseUser.Uid, sEmail = firebaseUser.Email };
             // If there is no _user data in the database
             if (documentSnapshot.Data != null)
             {
-                user.firstName = documentSnapshot.Data.firstName;
-                user.lastName = documentSnapshot.Data.lastName;
-                user.birthDate = documentSnapshot.Data.birthDate;
-                user.profilePictureAddress = documentSnapshot.Data.profilePictureAddress;
-                user.description = documentSnapshot.Data.description;
-                user.phoneNumber = documentSnapshot.Data.phoneNumber;
-                user.phoneCountryCode = documentSnapshot.Data.phoneCountryCode;
-                user.userDataRetrieved = true;
+                user.sFirstName = documentSnapshot.Data.sFirstName;
+                user.sLastName = documentSnapshot.Data.sLastName;
+                user.dtBirthDate = documentSnapshot.Data.dtBirthDate;
+                user.sProfilePictureAddress = documentSnapshot.Data.sProfilePictureAddress;
+                user.sDescription = documentSnapshot.Data.sDescription;
+                user.sPhoneNumber = documentSnapshot.Data.sPhoneNumber;
+                user.sPhoneCountryCode = documentSnapshot.Data.sPhoneCountryCode;
+                user.bUserDataRetrieved = true;
                 // Getting profile picture
                 ImageSource imageSource = null;
-                if (!documentSnapshot.Data.profilePictureAddress.Equals("null"))
+                if (!documentSnapshot.Data.sProfilePictureAddress.Equals("null"))
                 {
-                    Uri imageUri = new( await GetImageDownloadLink(documentSnapshot.Data.profilePictureAddress) );
+                    Uri imageUri = new( await GetImageDownloadLink(documentSnapshot.Data.sProfilePictureAddress) );
 
                     imageSource = ImageSource.FromUri(imageUri);
                 }
-                user.profilePictureSource = imageSource;
+                user.imProfilePictureSource = imageSource;
             }
 
             return user;

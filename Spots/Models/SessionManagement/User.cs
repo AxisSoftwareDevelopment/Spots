@@ -10,196 +10,196 @@ namespace Spots.Models.SessionManagement
         new public event PropertyChangedEventHandler PropertyChanged;
 
         #region Private Parameters
-        private string _fullName;
-        private string _fullPhoneNumber;
-        private string _userID;
-        private string _firstName;
-        private string _lastName;
-        private DateTimeOffset _birthDate;
-        private string _email;
-        private string _profilePictureAddress;
-        private string _phoneNumber;
-        private string _phoneCountryCode;
-        private string _description;
-        private ImageSource _profilePictureSource;
+        private string _sFullName;
+        private string _sFullPhoneNumber;
+        private string _sUserID;
+        private string _sFirstName;
+        private string _sLastName;
+        private DateTimeOffset _dtBirthDate;
+        private string _sEmail;
+        private string _sProfilePictureAddress;
+        private string _sPhoneNumber;
+        private string _sPhoneCountryCode;
+        private string _sDescription;
+        private ImageSource _imProfilePictureSource;
         #endregion
 
         #region Public Parameters
-        public bool userDataRetrieved = false;
-        public ImageSource profilePictureSource
+        public bool bUserDataRetrieved = false;
+        public ImageSource imProfilePictureSource
         {
-            get => _profilePictureAddress.Equals("null") ?
-                ImageSource.FromFile("placeholder_logo.jpg") : _profilePictureSource;
+            get => _sProfilePictureAddress.Equals("null") ?
+                ImageSource.FromFile("placeholder_logo.jpg") : _imProfilePictureSource;
             set
             {
-                _profilePictureSource = value ?? null;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(profilePictureSource)));
+                _imProfilePictureSource = value ?? null;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(imProfilePictureSource)));
             }
         }
-        public string fullPhoneNumber
+        public string sFullPhoneNumber
         {
-            get => _fullPhoneNumber?.Length > 0 ? _fullPhoneNumber : "+ -- --- --- ----";
+            get => _sFullPhoneNumber?.Length > 0 ? _sFullPhoneNumber : "+ -- --- --- ----";
             private set
             {
-                _fullPhoneNumber = value ?? "";
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(fullPhoneNumber)));
+                _sFullPhoneNumber = value ?? "";
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(sFullPhoneNumber)));
             }
         }
-        public string fullName
+        public string sFullName
         {
-            get => _fullName; 
+            get => _sFullName; 
             private set
             {
-                _fullName = value ?? "";
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(fullName)));
+                _sFullName = value ?? "";
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(sFullName)));
             }
         }
         [FirestoreDocumentId]
-        public string userID
+        public string sUserID
         {
-            get => _userID;
+            get => _sUserID;
             set
             {
-                _userID = value ?? "";
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(userID)));
+                _sUserID = value ?? "";
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(sUserID)));
             }
         }
-        [FirestoreProperty(nameof(firstName))]
-        public string firstName
+        [FirestoreProperty(nameof(sFirstName))]
+        public string sFirstName
         {
-            get => _firstName;
+            get => _sFirstName;
             set
             {
-                _firstName = value ?? "";
-                fullName = $"{value} {lastName}";
+                _sFirstName = value ?? "";
+                sFullName = $"{value} {sLastName}";
             }
         }
-        [FirestoreProperty(nameof(lastName))]
-        public string lastName
+        [FirestoreProperty(nameof(sLastName))]
+        public string sLastName
         {
-            get => _lastName; 
+            get => _sLastName; 
             set
             {
-                _lastName = value ?? "";
-                fullName = $"{firstName} {value}";
+                _sLastName = value ?? "";
+                sFullName = $"{sFirstName} {value}";
             }
         }
-        [FirestoreProperty(nameof(birthDate))]
-        public DateTimeOffset birthDate
+        [FirestoreProperty(nameof(dtBirthDate))]
+        public DateTimeOffset dtBirthDate
         {
-            get => _birthDate;
+            get => _dtBirthDate;
             set
             {
-                _birthDate = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(birthDate)));
+                _dtBirthDate = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(dtBirthDate)));
             }
         }
-        [FirestoreProperty(nameof(email))]
-        public string email
+        [FirestoreProperty(nameof(sEmail))]
+        public string sEmail
         {
-            get => _email;
+            get => _sEmail;
             set
             {
-                _email = value ?? "";
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(email)));
+                _sEmail = value ?? "";
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(sEmail)));
             }
         }
-        [FirestoreProperty(nameof(phoneNumber))]
-        public string phoneNumber
+        [FirestoreProperty(nameof(sPhoneNumber))]
+        public string sPhoneNumber
         {
-            get => _phoneNumber;
+            get => _sPhoneNumber;
             set
             {
-                _phoneNumber = value ?? "null";
+                _sPhoneNumber = value ?? "null";
                 if (value?.Length == 10)
-                    fullPhoneNumber = $"+({_phoneCountryCode}) {value?.Substring(0, 3)} {value?.Substring(3, 3)} {value?.Substring(6, 4)}";
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(phoneNumber)));
+                    sFullPhoneNumber = $"+({_sPhoneCountryCode}) {value?.Substring(0, 3)} {value?.Substring(3, 3)} {value?.Substring(6, 4)}";
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(sPhoneNumber)));
             }
         }
-        [FirestoreProperty(nameof(phoneCountryCode))]
-        public string phoneCountryCode
+        [FirestoreProperty(nameof(sPhoneCountryCode))]
+        public string sPhoneCountryCode
         {
-            get => _phoneCountryCode;
+            get => _sPhoneCountryCode;
             set
             {
-                _phoneCountryCode = value ?? "null";
-                if(_phoneNumber?.Length == 10)
-                    fullPhoneNumber = $"+({value}) {_phoneNumber.Substring(0,3)} {_phoneNumber.Substring(3,3)} {_phoneNumber.Substring(6, 4)}";
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(phoneCountryCode)));
+                _sPhoneCountryCode = value ?? "null";
+                if(_sPhoneNumber?.Length == 10)
+                    sFullPhoneNumber = $"+({value}) {_sPhoneNumber.Substring(0,3)} {_sPhoneNumber.Substring(3,3)} {_sPhoneNumber.Substring(6, 4)}";
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(sPhoneCountryCode)));
             }
         }
-        [FirestoreProperty(nameof(description))]
-        public string description
+        [FirestoreProperty(nameof(sDescription))]
+        public string sDescription
         {
-            get => _description;
+            get => _sDescription;
             set
             {
-                _description = value ?? "null";
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(description)));
+                _sDescription = value ?? "null";
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(sDescription)));
             }
         }
-        [FirestoreProperty(nameof(profilePictureAddress))]
-        public string profilePictureAddress
+        [FirestoreProperty(nameof(sProfilePictureAddress))]
+        public string sProfilePictureAddress
         {
-            get => _profilePictureAddress;
+            get => _sProfilePictureAddress;
             set
             {
-                _profilePictureAddress = value ?? "null";
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(profilePictureAddress)));
+                _sProfilePictureAddress = value ?? "null";
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(sProfilePictureAddress)));
             }
         }
         #endregion
         public User()
         {
-            userID = "";
-            firstName = "";
-            lastName = "";
-            birthDate = DateTimeOffset.Now;
-            email = "";
-            profilePictureAddress = "null";
-            phoneCountryCode = "";
-            phoneNumber = "";
-            description = "";
+            sUserID = "";
+            sFirstName = "";
+            sLastName = "";
+            dtBirthDate = DateTimeOffset.Now;
+            sEmail = "";
+            sProfilePictureAddress = "null";
+            sPhoneCountryCode = "";
+            sPhoneNumber = "";
+            sDescription = "";
         }
 
         public User(string UserID, string FirstName, string LastName, DateTimeOffset BirthDate, string Email, 
             string ProfilePictureAddr = "", ImageSource ProfilePictureSrc = null, string PhoneNumber = "", string PhoneCountryCode = "", string Description = "")
         {
-            userID = UserID;
-            firstName = FirstName;
-            lastName = LastName;
-            birthDate = BirthDate;
-            email = Email;
-            profilePictureAddress = ProfilePictureAddr;
-            profilePictureSource = profilePictureAddress.Equals("null") ? 
+            sUserID = UserID;
+            sFirstName = FirstName;
+            sLastName = LastName;
+            dtBirthDate = BirthDate;
+            sEmail = Email;
+            sProfilePictureAddress = ProfilePictureAddr;
+            imProfilePictureSource = sProfilePictureAddress.Equals("null") ? 
                 ImageSource.FromFile("placeholder_logo.jpg") : ProfilePictureSrc;
-            phoneNumber = PhoneNumber;
-            phoneCountryCode = PhoneCountryCode;
-            description = Description;
+            sPhoneNumber = PhoneNumber;
+            sPhoneCountryCode = PhoneCountryCode;
+            sDescription = Description;
         }
 
         public void UpdateUserData(User userData)
         {
-            userID = userData.userID;
-            firstName = userData.firstName;
-            lastName = userData.lastName;
-            birthDate = userData.birthDate;
-            email = userData.email;
-            profilePictureAddress = userData.profilePictureAddress;
-            profilePictureSource = userData.profilePictureSource;
-            phoneNumber = userData.phoneNumber;
-            phoneCountryCode = userData.phoneCountryCode;
-            description = userData.description;
+            sUserID = userData.sUserID;
+            sFirstName = userData.sFirstName;
+            sLastName = userData.sLastName;
+            dtBirthDate = userData.dtBirthDate;
+            sEmail = userData.sEmail;
+            sProfilePictureAddress = userData.sProfilePictureAddress;
+            imProfilePictureSource = userData.imProfilePictureSource;
+            sPhoneNumber = userData.sPhoneNumber;
+            sPhoneCountryCode = userData.sPhoneCountryCode;
+            sDescription = userData.sDescription;
         }
 
         public async void UpdateProfilePicture(string address)
         {
-            profilePictureAddress = address;
-            if(!profilePictureAddress.Equals("null"))
+            sProfilePictureAddress = address;
+            if(!sProfilePictureAddress.Equals("null"))
             {
-                Uri imageUri = new( await DatabaseManager.GetImageDownloadLink(profilePictureAddress) );
+                Uri imageUri = new( await DatabaseManager.GetImageDownloadLink(sProfilePictureAddress) );
 
-                profilePictureSource = ImageSource.FromUri(imageUri);
+                imProfilePictureSource = ImageSource.FromUri(imageUri);
             }
         }
     }
