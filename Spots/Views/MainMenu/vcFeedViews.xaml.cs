@@ -4,6 +4,12 @@ using Spots.Views.MainMenu.Feeds;
 
 namespace Spots.Views.MainMenu;
 
+public enum eFeedViewTabs
+{
+    MAIN_FEED,
+    DISCOVERY_FEED
+};
+
 public partial class vcFeedViews : TabbedPage
 {
     public vcFeedViews(FlyoutPage flyout)
