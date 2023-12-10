@@ -10,49 +10,49 @@ public partial class cvDiscoverFeed : ContentView
         ObservableCollection<BusinessUser> businesses = new ObservableCollection<BusinessUser>
         {
             new BusinessUser()
-            { brandName = "MacDonald's",
-            businessName = "MacDonald's Lincoln street",
-            location = "Lincoln #239 Cumbres lalala lalala lala"},
+            { BrandName = "MacDonald's",
+            BusinessName = "MacDonald's Lincoln street",
+            Location = new FirebaseLocation("Lincoln #239 Cumbres lalala lalala lala", 0, 0)},
             new BusinessUser()
-            { brandName = "MacDonald's",
-            businessName = "MacDonald's Lincoln street",
-            location = "Lincoln #239 Cumbres"},
+            { BrandName = "MacDonald's",
+            BusinessName = "MacDonald's Lincoln",
+            Location = new FirebaseLocation("Lincoln #239 Cumbres lalala lalala lalala", 0, 0)},
             new BusinessUser()
-            { brandName = "MacDonald's",
-            businessName = "MacDonald's Lincoln street",
-            location = "Lincoln #239 Cumbres"},
+            { BrandName = "MacDonald's",
+            BusinessName = "MacDonald's Lincoln",
+            Location = new FirebaseLocation("Lincoln #239 Cumbres", 0, 0)},
             new BusinessUser()
-            { brandName = "MacDonald's",
-            businessName = "MacDonald's Lincoln street",
-            location = "Lincoln #239 Cumbres"},
+            { BrandName = "MacDonald's",
+            BusinessName = "MacDonald's Lincoln street",
+            Location = new FirebaseLocation("Lincoln #239 Cumbres", 0, 0)},
             new BusinessUser()
-            { brandName = "MacDonald's",
-            businessName = "MacDonald's Lincoln street",
-            location = "Lincoln #239 Cumbres"},
+            { BrandName = "MacDonald's",
+            BusinessName = "MacDonald's Lincoln street",
+            Location = new FirebaseLocation("Lincoln #239 Cumbres", 0, 0)},
             new BusinessUser()
-            { brandName = "MacDonald's",
-            businessName = "MacDonald's Lincoln street",
-            location = "Lincoln #239 Cumbres"},
+            { BrandName = "MacDonald's",
+            BusinessName = "MacDonald's Lincoln street",
+            Location = new FirebaseLocation("Lincoln #239 Cumbres", 0, 0)},
             new BusinessUser()
-            { brandName = "MacDonald's",
-            businessName = "MacDonald's Lincoln street",
-            location = "Lincoln #239 Cumbres"},
+            { BrandName = "MacDonald's",
+            BusinessName = "MacDonald's Lincoln street",
+            Location = new FirebaseLocation("Lincoln #239 Cumbres", 0, 0)},
             new BusinessUser()
-            { brandName = "MacDonald's",
-            businessName = "MacDonald's Lincoln street",
-            location = "Lincoln #239 Cumbres"},
+            { BrandName = "MacDonald's",
+            BusinessName = "MacDonald's Lincoln street",
+            Location = new FirebaseLocation("Lincoln #239 Cumbres", 0, 0)},
             new BusinessUser()
-            { brandName = "MacDonald's",
-            businessName = "MacDonald's Lincoln street",
-            location = "Lincoln #239 Cumbres"},
+            { BrandName = "MacDonald's",
+            BusinessName = "MacDonald's Lincoln street",
+            Location = new FirebaseLocation("Lincoln #239 Cumbres", 0, 0)},
             new BusinessUser()
-            { brandName = "MacDonald's",
-            businessName = "MacDonald's Lincoln street",
-            location = "Lincoln #239 Cumbres"},
+            { BrandName = "MacDonald's",
+            BusinessName = "MacDonald's Lincoln street",
+            Location = new FirebaseLocation("Lincoln #239 Cumbres", 0, 0)},
             new BusinessUser()
-            { brandName = "MacDonald's",
-            businessName = "MacDonald's Lincoln street",
-            location = "Lincoln #239 Cumbres"}
+            { BrandName = "MacDonald's",
+            BusinessName = "MacDonald's Lincoln street",
+            Location = new FirebaseLocation("Lincoln #239 Cumbres", 0, 0)}
         };
         InitializeComponent();
 		_colFeed.ItemsSource = businesses;

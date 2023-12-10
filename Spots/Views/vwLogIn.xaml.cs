@@ -56,7 +56,7 @@ public partial class vwLogIn : ContentPage
                 // Setup User Data
                 string[] strings = ResourceManagement.GetStringResources(Resources, new string[3] { "lbl_FirstTime", "txt_FirstTime", "lbl_Ok" });
                 await Application.Current.MainPage.DisplayAlert(strings[0], strings[1], strings[2]);
-                await Navigation.PushAsync(new vwUpdateBusinessInformation(business, email, password, business.phoneNumber, business.phoneCountryCode));
+                await Navigation.PushAsync(new vwUpdateBusinessInformation(business, email, password, business.PhoneNumber, business.PhoneCountryCode));
             }
         }
         catch (FirebaseAuthException ex)

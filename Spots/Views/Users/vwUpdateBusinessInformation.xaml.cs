@@ -74,23 +74,23 @@ public partial class vwUpdateBusinessInformation : ContentPage
 
             if (_userIsEmpty)
             {
-                _user.email = _email;
-                _user.phoneNumber = _phoneNumber;
-                _user.phoneCountryCode = _phoneCountryCode;
+                _user.Email = _email;
+                _user.PhoneNumber = _phoneNumber;
+                _user.PhoneCountryCode = _phoneCountryCode;
             }
             else
             {
-                _user.phoneNumber = phoneNumber;
-                _user.phoneCountryCode = phoneCountryCode;
+                _user.PhoneNumber = phoneNumber;
+                _user.PhoneCountryCode = phoneCountryCode;
             }
-            _user.brandName = brandName;
-            _user.businessName = BusinessName;
+            _user.BrandName = brandName;
+            _user.BusinessName = BusinessName;
             //_user.profilePictureAddress
-            _user.description = description;
+            _user.Description = description;
             if (_profilePictureChanged)
             {
-                _user.profilePictureAddress = await DatabaseManager.SaveProfilePicture(isBusiness: true, _user.userID, _profilePictureFile);
-                _user.profilePictureSource = ImageSource.FromStream(() => ImageManagement.ByteArrayToStream(_profilePictureFile.Bytes));
+                _user.ProfilePictureAddress = await DatabaseManager.SaveProfilePicture(isBusiness: true, _user.UserID, _profilePictureFile);
+                _user.ProfilePictureSource = ImageSource.FromStream(() => ImageManagement.ByteArrayToStream(_profilePictureFile.Bytes));
             }
 
             if (await DatabaseManager.SaveBusinessDataAsync(_user))
@@ -159,9 +159,9 @@ public partial class vwUpdateBusinessInformation : ContentPage
     private void InitializeControllers()
     {
         // Load _user data
-        _entryBrandName.Text = _user.brandName;
-        _entryBusinessName.Text = _user.businessName;
-        _editorDescription.Text = _user.description;
+        _entryBrandName.Text = _user.BrandName;
+        _entryBusinessName.Text = _user.BusinessName;
+        _editorDescription.Text = _user.Description;
         // Initialize BirthDate field
         if (_userIsEmpty)
         {
@@ -172,10 +172,10 @@ public partial class vwUpdateBusinessInformation : ContentPage
             _entryPhoneNumber.Text = _phoneNumber;
             _entryPhoneCountryCode.Text = _phoneCountryCode;
         }
-        else if (_user.phoneNumber.Length > 0)
+        else if (_user.PhoneNumber.Length > 0)
         {
-            _entryPhoneNumber.Text = _user.phoneNumber;
-            _entryPhoneCountryCode.Text = _user.phoneCountryCode;
+            _entryPhoneNumber.Text = _user.PhoneNumber;
+            _entryPhoneCountryCode.Text = _user.PhoneCountryCode;
         }
     }
 
@@ -183,15 +183,15 @@ public partial class vwUpdateBusinessInformation : ContentPage
     {
         if (_profilePictureChanged)
             return true;
-        if (_user.brandName != ToTitleCase(_entryBrandName.Text.Trim()))
+        if (_user.BrandName != ToTitleCase(_entryBrandName.Text.Trim()))
             return true;
-        if (_user.businessName != ToTitleCase(_entryBusinessName.Text.Trim()))
+        if (_user.BusinessName != ToTitleCase(_entryBusinessName.Text.Trim()))
             return true;
-        if (_user.description != _editorDescription.Text.Trim())
+        if (_user.Description != _editorDescription.Text.Trim())
             return true;
-        if (_user.phoneNumber != _entryPhoneNumber.Text)
+        if (_user.PhoneNumber != _entryPhoneNumber.Text)
             return true;
-        if (_user.phoneCountryCode != _entryPhoneCountryCode.Text)
+        if (_user.PhoneCountryCode != _entryPhoneCountryCode.Text)
             return true;
 
         return false;

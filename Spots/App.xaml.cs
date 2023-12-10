@@ -1,6 +1,8 @@
 ﻿using Spots.Models.DatabaseManagement;
 using Spots.Views;
 using Spots.Views.MainMenu;
+using Spots.Views.Maps;
+
 #if ANDROID
 using AndroidX.AppCompat.App;
 #endif
@@ -19,5 +21,6 @@ public partial class App : Application
         AppCompatDelegate.DefaultNightMode = AppCompatDelegate.ModeNightNo;
 #endif
         MainPage = new vwWaitForValidation();
+        //MainPage = new vwMapLocationSelector();
     }
 }

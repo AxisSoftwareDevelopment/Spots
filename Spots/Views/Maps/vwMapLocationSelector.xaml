@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:maps="clr-namespace:Microsoft.Maui.Controls.Maps;assembly=Microsoft.Maui.Controls.Maps"
+             x:Class="Spots.Views.Maps.vwMapLocationSelector"
+             Title="vwMapLocationSelector">
+    <StackLayout>
+        <maps:Map x:Name="_cvMap" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" Margin="5,5,5,0"/>
+        <Button x:Name="_btnReturnLocation" Text="{DynamicResource lbl_Save}" Margin="50,5"
+                BackgroundColor="{DynamicResource Primary}" TextColor="{DynamicResource PrimaryAccent}"/>
+    </StackLayout>
+    
+</ContentPage>

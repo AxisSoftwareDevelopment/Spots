@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<TargetFrameworks>net7.0-android</TargetFrameworks>
@@ -25,7 +25,8 @@
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">21.0</SupportedOSPlatformVersion>
 		<Platforms>AnyCPU;x64</Platforms>
 		<BaseOutputPath></BaseOutputPath>
-	</PropertyGroup>
+	  <UserSecretsId>687b7327-d2a2-42d7-aee6-ce8bf3548e90</UserSecretsId>
+  </PropertyGroup>
 
 	<PropertyGroup>
 		<RestorePackagesPath>C:\.ng</RestorePackagesPath>
@@ -92,14 +93,11 @@
 	  <None Remove="Resources\Images\placeholder_Logo.jpg" />
 	  <None Remove="Resources\Splash\placeholder_logo.jpg" />
 	</ItemGroup>
-
-	<ItemGroup>
-	  <MauiSplashScreen Include="Resources\Splash\placeholder_logo.jpg" />
-	</ItemGroup>
 	<!-- Google Services -->
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="7.0.0" />
+		<PackageReference Include="Microsoft.Maui.Controls.Maps" Version="7.0.101" />
 		<PackageReference Include="Plugin.Firebase" Version="2.0.6" />
 		<PackageReference Include="Xamarin.Build.Download" Version="0.11.4" />
 	</ItemGroup>
@@ -132,6 +130,9 @@
 	  <MauiXaml Update="Views\MainMenu\vwMainShell.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Views\Maps\vwMapLocationSelector.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Views\Navigation\cvFlyoutUserNavigationBar.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
@@ -162,6 +163,10 @@
 	  <MauiXaml Update="Views\vwWaitForValidation.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Models\DatabaseItems\" />
 	</ItemGroup>
 
 </Project>

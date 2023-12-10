@@ -1,6 +1,4 @@
-﻿using Spots.Models.DatabaseItems;
-
-namespace Spots.Models.MainFeeds
+﻿namespace Spots.Models.MainFeeds
 {
     public class MainFeedDataTemplateSelector : DataTemplateSelector
     {

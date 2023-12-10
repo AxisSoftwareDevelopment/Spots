@@ -86,7 +86,7 @@ namespace Spots.Models.DatabaseManagement
             await CrossFirebaseAuth.Current.CurrentUser.UpdateProfileAsync(displayName: isBusinessUser ? "Business" : "User");
             bool x;
             if (isBusinessUser)
-                x = await SaveBusinessDataAsync(new BusinessUser() { userID = CrossFirebaseAuth.Current.CurrentUser.Uid, email = email, phoneNumber = phoneNunber, phoneCountryCode = phoneCountryCode });
+                x = await SaveBusinessDataAsync(new BusinessUser() { UserID = CrossFirebaseAuth.Current.CurrentUser.Uid, Email = email, PhoneNumber = phoneNunber, PhoneCountryCode = phoneCountryCode });
 
             string id = CrossFirebaseAuth.Current.CurrentUser?.Uid;
             if (id.Length == 0 || id == null)
@@ -146,7 +146,7 @@ namespace Spots.Models.DatabaseManagement
         {
             try
             {
-                IDocumentReference documentReference = CrossFirebaseFirestore.Current.GetCollection("BusinessData").GetDocument(user.userID);
+                IDocumentReference documentReference = CrossFirebaseFirestore.Current.GetCollection("BusinessData").GetDocument(user.UserID);
                 await documentReference.SetDataAsync(user);
             }
             catch (Exception)
@@ -218,18 +218,18 @@ namespace Spots.Models.DatabaseManagement
                 .GetDocument(firebaseUser.Uid)
                 .GetDocumentSnapshotAsync<BusinessUser>();
 
-            BusinessUser user = new() { userID = firebaseUser.Uid, email = firebaseUser.Email };
+            BusinessUser user = new() { UserID = firebaseUser.Uid, Email = firebaseUser.Email };
             // If there is no _user data in the database
             if (documentSnapshot.Data != null)
             {
-                user.brandName = documentSnapshot.Data.brandName;
-                user.businessName = documentSnapshot.Data.businessName;
-                user.location = documentSnapshot.Data.location;
-                user.profilePictureAddress = documentSnapshot.Data.profilePictureAddress;
-                user.description = documentSnapshot.Data.description;
-                user.phoneNumber = documentSnapshot.Data.phoneNumber;
-                user.phoneCountryCode = documentSnapshot.Data.phoneCountryCode;
-                user.userDataRetrieved = documentSnapshot.Data.brandName.Length > 0;
+                user.BrandName = documentSnapshot.Data.BrandName;
+                user.BusinessName = documentSnapshot.Data.BusinessName;
+                user.Location = documentSnapshot.Data.Location;
+                user.ProfilePictureAddress = documentSnapshot.Data.ProfilePictureAddress;
+                user.Description = documentSnapshot.Data.Description;
+                user.PhoneNumber = documentSnapshot.Data.PhoneNumber;
+                user.PhoneCountryCode = documentSnapshot.Data.PhoneCountryCode;
+                user.userDataRetrieved = documentSnapshot.Data.BrandName.Length > 0;
             }
 
             return user;
