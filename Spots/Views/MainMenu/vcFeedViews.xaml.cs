@@ -20,6 +20,7 @@ public partial class vcFeedViews : TabbedPage
 
 
         _Tab1.Content = new cvMainFeed();
+        _Tab2.Content = new cvDiscoverFeed();
         IconImageSource = "placeholder_logo.jpg";
     }
 }
