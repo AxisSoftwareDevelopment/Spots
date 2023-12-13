@@ -131,7 +131,7 @@ namespace Spots.Models.DatabaseManagement
         {
             try
             {
-                IDocumentReference documentReference = CrossFirebaseFirestore.Current.GetCollection("UserData").GetDocument(user.sUserID);
+                IDocumentReference documentReference = CrossFirebaseFirestore.Current.GetCollection("UserData").GetDocument(user.UserID);
                 await documentReference.SetDataAsync(user);
             }
             catch (Exception)
@@ -185,27 +185,27 @@ namespace Spots.Models.DatabaseManagement
                 .GetDocument(firebaseUser.Uid)
                 .GetDocumentSnapshotAsync<User>();
 
-            User user = new() { sUserID = firebaseUser.Uid, sEmail = firebaseUser.Email };
+            User user = new() { UserID = firebaseUser.Uid, Email = firebaseUser.Email };
             // If there is no _user data in the database
             if (documentSnapshot.Data != null)
             {
-                user.sFirstName = documentSnapshot.Data.sFirstName;
-                user.sLastName = documentSnapshot.Data.sLastName;
-                user.dtBirthDate = documentSnapshot.Data.dtBirthDate;
-                user.sProfilePictureAddress = documentSnapshot.Data.sProfilePictureAddress;
-                user.sDescription = documentSnapshot.Data.sDescription;
-                user.sPhoneNumber = documentSnapshot.Data.sPhoneNumber;
-                user.sPhoneCountryCode = documentSnapshot.Data.sPhoneCountryCode;
+                user.FirstName = documentSnapshot.Data.FirstName;
+                user.LastName = documentSnapshot.Data.LastName;
+                user.BirthDate = documentSnapshot.Data.BirthDate;
+                user.ProfilePictureAddress = documentSnapshot.Data.ProfilePictureAddress;
+                user.Description = documentSnapshot.Data.Description;
+                user.PhoneNumber = documentSnapshot.Data.PhoneNumber;
+                user.PhoneCountryCode = documentSnapshot.Data.PhoneCountryCode;
                 user.bUserDataRetrieved = true;
                 // Getting profile picture
                 ImageSource imageSource = null;
-                if (!documentSnapshot.Data.sProfilePictureAddress.Equals("null"))
+                if (!documentSnapshot.Data.ProfilePictureAddress.Equals("null"))
                 {
-                    Uri imageUri = new( await GetImageDownloadLink(documentSnapshot.Data.sProfilePictureAddress) );
+                    Uri imageUri = new( await GetImageDownloadLink(documentSnapshot.Data.ProfilePictureAddress) );
 
                     imageSource = ImageSource.FromUri(imageUri);
                 }
-                user.imProfilePictureSource = imageSource;
+                user.ProfilePictureSource = imageSource;
             }
 
             return user;

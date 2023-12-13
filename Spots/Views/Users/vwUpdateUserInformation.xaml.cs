@@ -70,19 +70,19 @@ public partial class vwUpdateUserInformation : ContentPage
             HideErrorSection();
 
             if(_userIsEmpty)
-                _user.sEmail = _email;
-            _user.sFirstName = firstName;
-            _user.sLastName = lastName;
+                _user.Email = _email;
+            _user.FirstName = firstName;
+            _user.LastName = lastName;
             if(_birhtdateSelected)
-                _user.dtBirthDate = birthdate;
+                _user.BirthDate = birthdate;
             //_user.profilePictureAddress
-            _user.sPhoneNumber = phoneNumber;
-            _user.sPhoneCountryCode = phoneCountryCode;
-            _user.sDescription = description;
+            _user.PhoneNumber = phoneNumber;
+            _user.PhoneCountryCode = phoneCountryCode;
+            _user.Description = description;
             if (_profilePictureChanged)
             {
-                _user.sProfilePictureAddress = await DatabaseManager.SaveProfilePicture(isBusiness: false, _user.sUserID, _profilePictureFile);
-                _user.imProfilePictureSource = ImageSource.FromStream( () => ImageManagement.ByteArrayToStream(_profilePictureFile.Bytes) );
+                _user.ProfilePictureAddress = await DatabaseManager.SaveProfilePicture(isBusiness: false, _user.UserID, _profilePictureFile);
+                _user.ProfilePictureSource = ImageSource.FromStream( () => ImageManagement.ByteArrayToStream(_profilePictureFile.Bytes) );
             }
 
             if (await DatabaseManager.SaveUserDataAsync(_user))
@@ -156,11 +156,11 @@ public partial class vwUpdateUserInformation : ContentPage
     private void InitializeControllers()
     {
         // Load _user data
-        _entryFirstName.Text = _user.sFirstName;
-        _entryLastName.Text = _user.sLastName;
-        _entryPhoneNumber.Text = _user.sPhoneNumber;
-        _entryPhoneCountryCode.Text = _user.sPhoneCountryCode;
-        _editorDescription.Text = _user.sDescription;
+        _entryFirstName.Text = _user.FirstName;
+        _entryLastName.Text = _user.LastName;
+        _entryPhoneNumber.Text = _user.PhoneNumber;
+        _entryPhoneCountryCode.Text = _user.PhoneCountryCode;
+        _editorDescription.Text = _user.Description;
         // Initialize BirthDate field
         if (_userIsEmpty)
         {
@@ -175,7 +175,7 @@ public partial class vwUpdateUserInformation : ContentPage
         }
         else
         {
-            _dateBirthdate.Date = _user.dtBirthDate.Date;
+            _dateBirthdate.Date = _user.BirthDate.Date;
         }
     }
 
@@ -183,15 +183,15 @@ public partial class vwUpdateUserInformation : ContentPage
     {
         if(_profilePictureChanged)
             return true;
-        if (_user.sFirstName != ToTitleCase(_entryFirstName.Text.Trim()))
+        if (_user.FirstName != ToTitleCase(_entryFirstName.Text.Trim()))
             return true;
-        if (_user.sLastName != ToTitleCase(_entryLastName.Text.Trim()))
+        if (_user.LastName != ToTitleCase(_entryLastName.Text.Trim()))
             return true;
-        if (_user.sDescription != _editorDescription.Text.Trim())
+        if (_user.Description != _editorDescription.Text.Trim())
             return true;
-        if (_user.sPhoneNumber != _entryPhoneNumber.Text)
+        if (_user.PhoneNumber != _entryPhoneNumber.Text)
             return true;
-        if(_user.sPhoneCountryCode != _entryPhoneCountryCode.Text)
+        if(_user.PhoneCountryCode != _entryPhoneCountryCode.Text)
             return true;
         if (_birhtdateSelected)
             return true;
