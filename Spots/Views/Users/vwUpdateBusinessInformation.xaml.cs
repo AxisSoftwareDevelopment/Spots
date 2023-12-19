@@ -1,7 +1,10 @@
+using Microsoft.Maui.Controls.Maps;
+using Microsoft.Maui.Maps;
 using Spots.Models.DatabaseManagement;
 using Spots.Models.ResourceManagement;
 using Spots.Models.SessionManagement;
 using Spots.Views.MainMenu;
+using Spots.Views.Maps;
 using System.Globalization;
 
 namespace Spots.Views.Users;
@@ -12,6 +15,7 @@ public partial class vwUpdateBusinessInformation : ContentPage
     private bool _userIsEmpty;
     private string _password, _email, _phoneNumber, _phoneCountryCode;
     private bool _profilePictureChanged = false;
+    private bool _locationChanged = false;
     private ImageFile _profilePictureFile;
 
     public vwUpdateBusinessInformation(BusinessUser user, string email = null, string password = null, string phoneNumber = null, string phoneCountryCode = null)
@@ -28,13 +32,43 @@ public partial class vwUpdateBusinessInformation : ContentPage
 
         InitializeComponent();
 
+        if(LocationManager.CurrentLocation != null)
+        {
+            _cvMiniMap.Pins.Clear();
+            _cvMiniMap.MoveToRegion(new MapSpan(LocationManager.CurrentLocation, 0.01, 0.01));
+            _cvMiniMap.Pins.Add(new Pin() { Label = "", Location = LocationManager.CurrentLocation });
+        }
+
         _FrameProfilePicture.HeightRequest = profilePictureDimensions;
         _FrameProfilePicture.WidthRequest = profilePictureDimensions;
+        _cvMiniMap.HeightRequest = profilePictureDimensions * 0.75;
+        _cvMiniMap.MapClicked += _cvMiniMap_MapClicked;
 
         if (_userIsEmpty)
             NavigationPage.SetHasBackButton(this, false);
 
         InitializeControllers();
+
+        _cvMiniMap.Pins[0].MarkerClicked += _cvMiniMap_MarkerClicked;
+    }
+
+    private void _cvMiniMap_MarkerClicked(object sender, PinClickedEventArgs e)
+    {
+        Navigation.PushAsync(new vwMapLocationSelector(() => _cvMiniMap.VisibleRegion, SetMiniMapVisibleArea, _entryAddress.Text ?? ""));
+    }
+
+    private void _cvMiniMap_MapClicked(object sender, MapClickedEventArgs e)
+    {
+        Navigation.PushAsync(new vwMapLocationSelector(()=>_cvMiniMap.VisibleRegion, SetMiniMapVisibleArea, _entryAddress.Text ?? ""));
+    }
+
+    private void SetMiniMapVisibleArea(MapSpan mapSpan, string address)
+    {
+        _locationChanged = true;
+        _cvMiniMap.MoveToRegion(mapSpan);
+        _cvMiniMap.Pins.Clear();
+        _cvMiniMap.Pins.Add(new Pin() { Label = address, Location = mapSpan.Center });
+        _entryAddress.Text = address;
     }
 
     protected override bool OnBackButtonPressed()
@@ -52,23 +86,17 @@ public partial class vwUpdateBusinessInformation : ContentPage
 
     private async void SaveOnCLickAsync(object sender, EventArgs e)
     {
-        // We update the _user data
-        string brandName = ToTitleCase(_entryBrandName.Text.Trim());
-        string BusinessName = ToTitleCase(_entryBusinessName.Text.Trim());
-        string description =  _editorDescription.Text.Trim();
-        string phoneNumber = _entryPhoneNumber.Text;
-        string phoneCountryCode = _entryPhoneCountryCode.Text;
+        BusinessUser newData = new BusinessUser()
+        {
+            BrandName = ToTitleCase(_entryBrandName.Text.Trim()),
+            BusinessName = ToTitleCase(_entryBusinessName.Text.Trim()),
+            Location = new FirebaseLocation(_entryAddress.Text.Trim(), 0, 0),
+            Description = _editorDescription.Text.Trim(),
+            PhoneNumber = _entryPhoneNumber.Text,
+            PhoneCountryCode = _entryPhoneCountryCode.Text
+        };
 
-        bool thereAreEmptyFields = brandName.Length == 0 ||
-                            BusinessName.Length == 0;
-        bool descriptionUnder150Chars = description.Length <= 150;
-        bool validPhoneNumber;
-        if (_userIsEmpty)
-            validPhoneNumber = true;
-        else
-            validPhoneNumber = (phoneNumber.Length == 10 && phoneCountryCode.Length == 2) || (phoneNumber.Length == 0 && phoneCountryCode.Length == 0);
-
-        if (!thereAreEmptyFields && descriptionUnder150Chars && validPhoneNumber)
+        if (ValidateFields(newData))
         {
             HideErrorSection();
 
@@ -78,68 +106,50 @@ public partial class vwUpdateBusinessInformation : ContentPage
                 _user.PhoneNumber = _phoneNumber;
                 _user.PhoneCountryCode = _phoneCountryCode;
             }
+            else if(DataChanged(newData))
+            {
+                _user.PhoneNumber = newData.PhoneNumber;
+                _user.PhoneCountryCode = newData.PhoneCountryCode;
+                _user.BrandName = newData.BrandName;
+                _user.BusinessName = newData.BusinessName;
+                _user.Description = newData.Description;
+                Location locationSelected = _cvMiniMap.Pins[0].Location;
+                _user.Location = new FirebaseLocation(newData.Location.Address, locationSelected.Latitude, locationSelected.Longitude);
+                if (_profilePictureChanged)
+                {
+                    _user.ProfilePictureAddress = await DatabaseManager.SaveProfilePicture(isBusiness: true, _user.UserID, _profilePictureFile);
+                    _user.ProfilePictureSource = ImageSource.FromStream(() => ImageManagement.ByteArrayToStream(_profilePictureFile.Bytes));
+                }
+
+                if (await DatabaseManager.SaveBusinessDataAsync(_user))
+                {
+                    _user.userDataRetrieved = true;
+                    await Application.Current.MainPage.DisplayAlert("Success", "Your information has been updated. Way to go!", "OK");
+                    // If the business was empty, it meas we came from the log in.
+                    if (_userIsEmpty)
+                    {
+                        // We then have to log in and go to main page.
+                        await DatabaseManager.LogInBusinessAsync(_email, _password, getUser: false);
+                        Application.Current.MainPage = new vwMainShell(_user);
+                    }
+                    else
+                    {
+                        // If the business was just updating information, then we just pop the page from navigation
+                        CurrentSession.currentBusiness.UpdateUserData(_user);
+
+                        await Navigation.PopAsync();
+                    }
+                }
+            }
             else
             {
-                _user.PhoneNumber = phoneNumber;
-                _user.PhoneCountryCode = phoneCountryCode;
-            }
-            _user.BrandName = brandName;
-            _user.BusinessName = BusinessName;
-            //_user.profilePictureAddress
-            _user.Description = description;
-            if (_profilePictureChanged)
-            {
-                _user.ProfilePictureAddress = await DatabaseManager.SaveProfilePicture(isBusiness: true, _user.UserID, _profilePictureFile);
-                _user.ProfilePictureSource = ImageSource.FromStream(() => ImageManagement.ByteArrayToStream(_profilePictureFile.Bytes));
+                // If the business was updating information, but didnt change any data, we do nothing
+                await Application.Current.MainPage.DisplayAlert("Alert", "No information was changed", "OK");
+                await Navigation.PopAsync();
             }
 
-            if (await DatabaseManager.SaveBusinessDataAsync(_user))
-            {
-                _user.userDataRetrieved = true;
-                await Application.Current.MainPage.DisplayAlert("Success", "Your information has been updated. Way to go!", "OK");
-                // If the business was empty, it meas we came from the log in.
-                if (_userIsEmpty)
-                {
-                    // We then have to log in and go to main page.
-                    await DatabaseManager.LogInBusinessAsync(_email, _password, getUser: false);
-                    Application.Current.MainPage = new vwMainShell(_user);
-                }
-                else if(DataChanged())
-                {
-                    // If the business was just updating information, then we just pop the page from navigation
-                    CurrentSession.currentBusiness.UpdateUserData(_user);
-
-                    await Navigation.PopAsync();
-                }
-                else
-                {
-                    // If the business was updating information, but didnt change any data, we do nothing
-                    await Application.Current.MainPage.DisplayAlert("Alert", "No information was changed", "OK");
-                    await Navigation.PopAsync();
-                }
-            }
         }
-        else
-        {
-            string errorMessageID = "txt_Error_UnkownError";
-
-            #region Error message calculation
-            if (thereAreEmptyFields)
-            {
-                errorMessageID = "txt_RegisterError_EmptyFields";
-            }
-            else if (!descriptionUnder150Chars)
-            {
-                errorMessageID = "txt_UserInfoError_DescriptionTooLong";
-            }
-            else if (!validPhoneNumber)
-            {
-                errorMessageID = "txt_UserInfoError_InvalidPhoneNumber";
-            }
-            #endregion
-
-            DisplayErrorSection(errorMessageID);
-        }
+        
     }
 
     public async void LoadImageOnClickAsync(object sender, EventArgs e)
@@ -162,6 +172,8 @@ public partial class vwUpdateBusinessInformation : ContentPage
         _entryBrandName.Text = _user.BrandName;
         _entryBusinessName.Text = _user.BusinessName;
         _editorDescription.Text = _user.Description;
+        _ProfileImage.Source = _user.ProfilePictureSource;
+
         // Initialize BirthDate field
         if (_userIsEmpty)
         {
@@ -172,26 +184,86 @@ public partial class vwUpdateBusinessInformation : ContentPage
             _entryPhoneNumber.Text = _phoneNumber;
             _entryPhoneCountryCode.Text = _phoneCountryCode;
         }
-        else if (_user.PhoneNumber.Length > 0)
+        else 
         {
-            _entryPhoneNumber.Text = _user.PhoneNumber;
-            _entryPhoneCountryCode.Text = _user.PhoneCountryCode;
+            _entryAddress.Text = _user.Location.Address;
+            _cvMiniMap.MoveToRegion(new MapSpan(_user.Geolocation, 0.01, 0.01));
+            _cvMiniMap.Pins.Clear();
+            _cvMiniMap.Pins.Add(new Pin()
+            {
+                Label = _user.Location.Address,
+                Location = _user.Geolocation
+            });
+            if (_user.PhoneNumber.Length > 0)
+            {
+                _entryPhoneNumber.Text = _user.PhoneNumber;
+                _entryPhoneCountryCode.Text = _user.PhoneCountryCode;
+            }
         }
     }
 
-    private bool DataChanged()
+    private bool ValidateFields(BusinessUser business)
+    {
+        bool thereAreEmptyFields = business.BrandName.Length == 0 ||
+                            business.BusinessName.Length == 0 ||
+                            business.Location.Address.Length == 0;
+        bool validLocationSelected = _cvMiniMap.Pins.Count == 1;
+        bool descriptionUnder150Chars = business.Description.Length <= 150;
+        bool validPhoneNumber;
+        if (_userIsEmpty)
+            validPhoneNumber = true;
+        else
+            validPhoneNumber = (business.PhoneNumber.Length == 8 && business.PhoneCountryCode.Length == 2) 
+                || (business.PhoneNumber.Length == 0 && business.PhoneCountryCode.Length == 0);
+
+        if(thereAreEmptyFields || !descriptionUnder150Chars || !validPhoneNumber || !validLocationSelected)
+        {
+            string errorMessageID = "txt_Error_UnkownError";
+
+            #region Error message calculation
+            if (!validLocationSelected)
+            {
+                errorMessageID = "txt_BussinessError_NoValidLocationSelected";
+            }
+            else if (thereAreEmptyFields)
+            {
+                errorMessageID = "txt_RegisterError_EmptyFields";
+            }
+            else if (!descriptionUnder150Chars)
+            {
+                errorMessageID = "txt_UserInfoError_DescriptionTooLong";
+            }
+            else if (!validPhoneNumber)
+            {
+                errorMessageID = "txt_UserInfoError_InvalidPhoneNumber";
+            }
+            #endregion
+
+            DisplayErrorSection(errorMessageID);
+
+            return false;
+        }
+
+        return true;
+    }
+
+    private bool DataChanged(BusinessUser business)
     {
         if (_profilePictureChanged)
             return true;
-        if (_user.BrandName != ToTitleCase(_entryBrandName.Text.Trim()))
+        if (_locationChanged)
             return true;
-        if (_user.BusinessName != ToTitleCase(_entryBusinessName.Text.Trim()))
+        if (_user.BrandName != business.BrandName)
             return true;
-        if (_user.Description != _editorDescription.Text.Trim())
+        if (_user.BusinessName != business.BusinessName)
             return true;
-        if (_user.PhoneNumber != _entryPhoneNumber.Text)
+        if (_user.Description != business.Description)
             return true;
-        if (_user.PhoneCountryCode != _entryPhoneCountryCode.Text)
+        if (_user.PhoneNumber != business.PhoneNumber)
+            return true;
+        if (_user.PhoneCountryCode != business.PhoneCountryCode)
+            return true;
+        if (_user.Location.Address != business.Location.Address)
             return true;
 
         return false;

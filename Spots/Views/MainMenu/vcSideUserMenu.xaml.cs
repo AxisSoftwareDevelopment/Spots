@@ -57,14 +57,14 @@ public partial class vcSideUserMenu : ContentPage
         if(sessionMode == SessionMode.UserSession)
         {
             BindingContext = CurrentSession.currentUser;
-            _ProfileImage.SetBinding(Image.SourceProperty, "profilePictureSource");
-            _lblUserName.SetBinding(Label.TextProperty, "fullName");
+            _ProfileImage.SetBinding(Image.SourceProperty, "ProfilePictureSource");
+            _lblUserName.SetBinding(Label.TextProperty, "FullName");
         }
         else
         {
             BindingContext = CurrentSession.currentBusiness;
-            _ProfileImage.SetBinding(Image.SourceProperty, "profilePictureSource");
-            _lblUserName.SetBinding(Label.TextProperty, "businessName");
+            _ProfileImage.SetBinding(Image.SourceProperty, "ProfilePictureSource");
+            _lblUserName.SetBinding(Label.TextProperty, "BusinessName");
         }
     }
 }

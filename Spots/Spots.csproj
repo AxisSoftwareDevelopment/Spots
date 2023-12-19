@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<TargetFrameworks>net7.0-android</TargetFrameworks>
@@ -163,10 +163,6 @@
 	  <MauiXaml Update="Views\vwWaitForValidation.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Folder Include="Models\DatabaseItems\" />
 	</ItemGroup>
 
 </Project>

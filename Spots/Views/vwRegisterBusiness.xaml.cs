@@ -109,6 +109,8 @@ public partial class vwRegisterBusiness : ContentPage
         _entryConfirmEmail.IsEnabled = false;
         _entryPassword.IsEnabled = false;
         _entryConfirmPassword.IsEnabled = false;
+        _entryPhoneCountryCode.IsEnabled = false;
+        _entryPhoneNumber.IsEnabled = false;
     }
 
     private void UnlockInputs()
@@ -118,6 +120,8 @@ public partial class vwRegisterBusiness : ContentPage
         _entryConfirmEmail.IsEnabled = true;
         _entryPassword.IsEnabled = true;
         _entryConfirmPassword.IsEnabled = true;
+        _entryPhoneCountryCode.IsEnabled = true;
+        _entryPhoneNumber.IsEnabled = true;
     }
     #endregion
 }

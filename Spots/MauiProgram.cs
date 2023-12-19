@@ -4,6 +4,14 @@ using Plugin.Firebase.Auth;
 using Spots.Models.DatabaseManagement;
 using Spots.Models.SessionManagement;
 using Microsoft.Maui;
+using Spots.Views.MainMenu;
+
+using Spots.Views;
+using Spots.Models.ResourceManagement;
+using static Microsoft.Maui.ApplicationModel.Permissions;
+
+
+
 #if IOS
 using Plugin.Firebase.Core.Platforms.iOS;
 #else
@@ -14,7 +22,6 @@ namespace Spots;
 
 public static class MauiProgram
 {
-    public static event EventHandler<bool> SignInValidated;
     public static MauiApp CreateMauiApp()
     {
         var builder = MauiApp.CreateBuilder();
@@ -34,9 +41,18 @@ public static class MauiProgram
 
         Task.Run( async () =>
         {
+            
             bool userSignedIn = await DatabaseManager.ValidateCurrentSession();
-            await Task.Delay(3000);
-            SignInValidated.Invoke(null, userSignedIn);
+            // Load First View
+            MainThread.BeginInvokeOnMainThread( async () =>
+            {
+                await LocationManager.UpdateLocationAsync();
+                //await ValidatePermissions();
+                if (userSignedIn)
+                    Application.Current.MainPage = new vwMainShell( DatabaseManager.firebaseAuth.CurrentUser.DisplayName.Equals("Business") );
+                else
+                    Application.Current.MainPage = new NavigationPage( new vwLogIn() );
+            });
         });
 
         return builder.Build();
@@ -61,4 +77,45 @@ public static class MauiProgram
         builder.Services.AddSingleton(_ => CrossFirebaseAuth.Current);
         return builder;
     }
+
+    //private static async Task ValidatePermissions()
+    //{
+    //    while (!InternetPermissionsAreValid())
+    //    {
+    //        string[] stringResources = ResourceManagement.GetStringResources(Application.Current.Resources, new string[] { "lbl_ConnectionError", "txt_ConnectionError", "lbl_Retry" });
+    //        await Application.Current.MainPage.DisplayAlert(stringResources[0], stringResources[1], stringResources[2]);
+
+    //    }
+
+    //    bool geolocationAllowed = await GeolocationPermissionsAreValidAsync();
+    //    while (!geolocationAllowed)
+    //    {
+    //        geolocationAllowed = await AskForGeolocationPermissions();
+    //    }
+    //}
+
+    //public static bool InternetPermissionsAreValid()
+    //{
+    //    NetworkAccess accessType = Connectivity.Current.NetworkAccess;
+
+    //    return accessType == NetworkAccess.Internet;
+    //}
+
+    //public static async Task<bool> GeolocationPermissionsAreValidAsync()
+    //{
+    //    PermissionStatus locationWhenInUse = await Permissions.CheckStatusAsync<Permissions.LocationWhenInUse>();
+    //    PermissionStatus locationAlways = await Permissions.CheckStatusAsync<Permissions.LocationAlways>();
+
+    //    return locationWhenInUse == PermissionStatus.Granted
+    //        || locationAlways == PermissionStatus.Granted;
+    //}
+
+    //public static async Task<bool> AskForGeolocationPermissions()
+    //{
+    //    PermissionStatus locationWhenInUse = await Permissions.RequestAsync<Permissions.LocationWhenInUse>();
+    //    PermissionStatus locationAlways = await Permissions.CheckStatusAsync<Permissions.LocationAlways>();
+
+    //    return locationWhenInUse == PermissionStatus.Granted
+    //       || locationAlways == PermissionStatus.Granted;
+    //}
 }

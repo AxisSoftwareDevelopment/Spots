@@ -128,6 +128,16 @@ namespace Spots.Models.SessionManagement
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Location)));
             }
         }
+        public Location Geolocation
+        {
+            get => new Location(Location.Latitude, Location.Longitude);
+            set
+            {
+                Location = new FirebaseLocation(Location.Address,
+                    value.Latitude,
+                    value.Longitude);
+            }
+        }
         [FirestoreProperty(nameof(ProfilePictureAddress))]
         public string ProfilePictureAddress
         {

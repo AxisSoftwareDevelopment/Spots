@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- IMPORTANT NOTE: Wen cloning this repo, remember to create a copy of this file named AndroidManidest.xml instead, and add your Sensible information there.
+	 Remember to always update the AndroidManidest_CENSORED.xml and AndroidManidest.xml files at the same time, since the uncensored file is not visible on git.
+	 We update the CENSORED file to track changes to android manifest without exposing our Keys -->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.axissoftwaredevelopment.Spots">
+	<application android:allowBackup="true" android:icon="@mipmap/appicon" android:supportsRtl="true">
+		<meta-data android:name="com.google.android.geo.API_KEY" android:value="GOOGLE_API_KEY"/>
+	</application>
+	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+	<uses-permission android:name="android.permission.INTERNET" />
+	<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+	<uses-feature android:name="android.hardware.location" android:required="true" />
+	<uses-feature android:name="android.hardware.location.gps" android:required="true" />
+	<uses-feature android:name="android.hardware.location.network" android:required="true" />
+</manifest>

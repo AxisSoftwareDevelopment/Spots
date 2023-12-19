@@ -48,7 +48,8 @@ public partial class vwLogIn : ContentPage
             if (business.userDataRetrieved)
             {
                 // Check if the _user has updated its basic information yet
-                await Application.Current.MainPage.DisplayAlert("Welcome!", "Welcome to spots!", "OK");
+                string[] stringResources = ResourceManagement.GetStringResources(Application.Current.Resources, new string[] { "lbl_Welcome", "lbl_WelcomeToSpots", "lbl_Ok" });
+                await Application.Current.MainPage.DisplayAlert(stringResources[0], stringResources[1], stringResources[2]);
                 Application.Current.MainPage = new vwMainShell(business);
             }
             else

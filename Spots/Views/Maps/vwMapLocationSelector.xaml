@@ -4,9 +4,16 @@
              xmlns:maps="clr-namespace:Microsoft.Maui.Controls.Maps;assembly=Microsoft.Maui.Controls.Maps"
              x:Class="Spots.Views.Maps.vwMapLocationSelector"
              Title="vwMapLocationSelector">
+    <NavigationPage.TitleView>
+        <Label Text="{DynamicResource lbl_SelectLocation}" TextColor="{DynamicResource PrimaryAccent}" FontSize="24" FontAttributes="Bold" HorizontalOptions="Start" VerticalOptions="Center"></Label>
+    </NavigationPage.TitleView>
     <StackLayout>
         <maps:Map x:Name="_cvMap" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" Margin="5,5,5,0"/>
-        <Button x:Name="_btnReturnLocation" Text="{DynamicResource lbl_Save}" Margin="50,5"
+        <StackLayout Orientation="Horizontal" Margin="25,5">
+            <Editor x:Name="_editorAddress" Placeholder="{DynamicResource lbl_AddressPlaceholder}" HorizontalOptions="FillAndExpand" AutoSize="TextChanges"/>
+            <Label Text=" *" VerticalOptions="Center" FontAttributes="Bold" TextColor="{DynamicResource ErrorAccent}"/>
+        </StackLayout>
+        <Button x:Name="_btnReturnLocation" Text="{DynamicResource lbl_Save}" Margin="75,0,75,5"
                 BackgroundColor="{DynamicResource Primary}" TextColor="{DynamicResource PrimaryAccent}"/>
     </StackLayout>
     

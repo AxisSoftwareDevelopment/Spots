@@ -50,92 +50,66 @@ public partial class vwUpdateUserInformation : ContentPage
 
     private async void SaveOnCLickAsync(object sender, EventArgs e)
     {
-        // We update the _user data
-        string firstName = ToTitleCase(_entryFirstName.Text.Trim());
-        string lastName = ToTitleCase(_entryLastName.Text.Trim());
-        string description = _editorDescription.Text.Trim();
-        string phoneNumber = _entryPhoneNumber.Text;
-        string phoneCountryCode = _entryPhoneCountryCode.Text;
-        DateTimeOffset birthdate = _dateBirthdate.Date;
-
-        bool thereAreEmptyFields = firstName.Length == 0 ||
-                            lastName.Length == 0 ||
-                            (!_birhtdateSelected && _userIsEmpty);
-        bool descriptionUnder150Chars = description.Length <= 150;
-        bool validPhoneNumber = (phoneNumber.Length == 10 && phoneCountryCode.Length == 2) || (phoneNumber.Length == 0 && phoneCountryCode.Length == 0);
-        bool birthdateIsValid = (DateTime.Today.Year - _dateBirthdate.Date.Year) > 12;
-
-        if (!thereAreEmptyFields && birthdateIsValid && descriptionUnder150Chars && validPhoneNumber)
+        User newData = new User()
+        {
+            FirstName = ToTitleCase(_entryFirstName.Text.Trim()),
+            LastName = ToTitleCase(_entryLastName.Text.Trim()),
+            Description = _editorDescription.Text.Trim(),
+            PhoneNumber = _entryPhoneNumber.Text,
+            PhoneCountryCode = _entryPhoneCountryCode.Text,
+            BirthDate = _dateBirthdate.Date
+        };
+        
+        if (ValidateFields(newData))
         {
             HideErrorSection();
 
             if(_userIsEmpty)
+            {
                 _user.Email = _email;
-            _user.FirstName = firstName;
-            _user.LastName = lastName;
-            if(_birhtdateSelected)
-                _user.BirthDate = birthdate;
-            //_user.profilePictureAddress
-            _user.PhoneNumber = phoneNumber;
-            _user.PhoneCountryCode = phoneCountryCode;
-            _user.Description = description;
-            if (_profilePictureChanged)
-            {
-                _user.ProfilePictureAddress = await DatabaseManager.SaveProfilePicture(isBusiness: false, _user.UserID, _profilePictureFile);
-                _user.ProfilePictureSource = ImageSource.FromStream( () => ImageManagement.ByteArrayToStream(_profilePictureFile.Bytes) );
             }
-
-            if (await DatabaseManager.SaveUserDataAsync(_user))
+            else if(DataChanged(newData))
             {
-                
-                _user.bUserDataRetrieved = true;
-                await Application.Current.MainPage.DisplayAlert("Success", "Your information has been updated. Way to go!", "OK");
-                // If the business was empty, it meas we came from the log in.
-                if (_userIsEmpty)
+                _user.FirstName = newData.FirstName;
+                _user.LastName = newData.LastName;
+                if (_birhtdateSelected)
+                    _user.BirthDate = newData.BirthDate;
+                _user.PhoneNumber = newData.PhoneNumber;
+                _user.PhoneCountryCode = newData.PhoneCountryCode;
+                _user.Description = newData.Description;
+                if (_profilePictureChanged)
                 {
-                    // We then have to log in and go to main page.
-                    await DatabaseManager.LogInBusinessAsync(_email, _password, getUser: false);
-                    Application.Current.MainPage = new vwMainShell(_user);
+                    _user.ProfilePictureAddress = await DatabaseManager.SaveProfilePicture(isBusiness: false, _user.UserID, _profilePictureFile);
+                    _user.ProfilePictureSource = ImageSource.FromStream(() => ImageManagement.ByteArrayToStream(_profilePictureFile.Bytes));
                 }
-                else if(DataChanged())
+
+                if (await DatabaseManager.SaveUserDataAsync(_user))
                 {
-                    // If the business was just updating information, then we just pop the page from navigation
-                    CurrentSession.currentUser.UpdateUserData(_user);
-                    
-                    await Navigation.PopAsync();
-                }
-                else
-                {
-                    // If the business was updating information, but didnt change any data, we do nothing
-                    await Application.Current.MainPage.DisplayAlert("Alert", "No information was changed", "OK");
-                    await Navigation.PopAsync();
+
+                    _user.bUserDataRetrieved = true;
+                    await Application.Current.MainPage.DisplayAlert("Success", "Your information has been updated. Way to go!", "OK");
+                    // If the business was empty, it meas we came from the log in.
+                    if (_userIsEmpty)
+                    {
+                        // We then have to log in and go to main page.
+                        await DatabaseManager.LogInUserAsync(_email, _password, getUser: false);
+                        Application.Current.MainPage = new vwMainShell(_user);
+                    }
+                    else
+                    {
+                        // If the business was just updating information, then we just pop the page from navigation
+                        CurrentSession.currentUser.UpdateUserData(_user);
+
+                        await Navigation.PopAsync();
+                    }
                 }
             }
-        }
-        else
-        {
-            string errorMessageID = "txt_Error_UnkownError";
-
-            #region Error message calculation
-            if (thereAreEmptyFields)
+            else
             {
-                errorMessageID = "txt_RegisterError_EmptyFields";
+                // If the business was updating information, but didnt change any data, we do nothing
+                await Application.Current.MainPage.DisplayAlert("Alert", "No information was changed", "OK");
+                await Navigation.PopAsync();
             }
-            else if (!birthdateIsValid)
-            {
-                errorMessageID = "txt_UserInfoError_InvalidBirthdate";
-            }
-            else if (!descriptionUnder150Chars)
-            {
-                errorMessageID = "txt_UserInfoError_DescriptionTooLong";
-            }
-            else if (!validPhoneNumber)
-            {
-                errorMessageID = "txt_UserInfoError_InvalidPhoneNumber";
-            }
-            #endregion
-
-            DisplayErrorSection(errorMessageID);
         }
     }
 
@@ -161,6 +135,7 @@ public partial class vwUpdateUserInformation : ContentPage
         _entryPhoneNumber.Text = _user.PhoneNumber;
         _entryPhoneCountryCode.Text = _user.PhoneCountryCode;
         _editorDescription.Text = _user.Description;
+        _ProfileImage.Source = _user.ProfilePictureSource;
         // Initialize BirthDate field
         if (_userIsEmpty)
         {
@@ -179,19 +154,58 @@ public partial class vwUpdateUserInformation : ContentPage
         }
     }
 
-    private bool DataChanged()
+    private bool ValidateFields(User newData)
+    {
+        bool thereAreEmptyFields = newData.FirstName.Length == 0 ||
+                            newData.LastName.Length == 0 ||
+                            (!_birhtdateSelected && _userIsEmpty);
+        bool descriptionUnder150Chars = newData.Description.Length <= 150;
+        bool validPhoneNumber = (newData.PhoneNumber.Length == 10 && newData.PhoneCountryCode.Length == 2) || (newData.PhoneNumber.Length == 0 && newData.PhoneCountryCode.Length == 0);
+        bool birthdateIsValid = (DateTime.Today.Year - _dateBirthdate.Date.Year) > 12;
+
+        if (thereAreEmptyFields && !birthdateIsValid && !descriptionUnder150Chars && !validPhoneNumber)
+        {
+            string errorMessageID = "txt_Error_UnkownError";
+
+            #region Error message calculation
+            if (thereAreEmptyFields)
+            {
+                errorMessageID = "txt_RegisterError_EmptyFields";
+            }
+            else if (!birthdateIsValid)
+            {
+                errorMessageID = "txt_UserInfoError_InvalidBirthdate";
+            }
+            else if (!descriptionUnder150Chars)
+            {
+                errorMessageID = "txt_UserInfoError_DescriptionTooLong";
+            }
+            else if (!validPhoneNumber)
+            {
+                errorMessageID = "txt_UserInfoError_InvalidPhoneNumber";
+            }
+            #endregion
+
+            DisplayErrorSection(errorMessageID);
+
+            return false;
+        }
+
+        return true;
+    }
+    private bool DataChanged(User newData)
     {
         if(_profilePictureChanged)
             return true;
-        if (_user.FirstName != ToTitleCase(_entryFirstName.Text.Trim()))
+        if (_user.FirstName != newData.FirstName)
             return true;
-        if (_user.LastName != ToTitleCase(_entryLastName.Text.Trim()))
+        if (_user.LastName != newData.LastName)
             return true;
-        if (_user.Description != _editorDescription.Text.Trim())
+        if (_user.Description != newData.Description)
             return true;
-        if (_user.PhoneNumber != _entryPhoneNumber.Text)
+        if (_user.PhoneNumber != newData.PhoneNumber)
             return true;
-        if(_user.PhoneCountryCode != _entryPhoneCountryCode.Text)
+        if(_user.PhoneCountryCode != newData.PhoneCountryCode)
             return true;
         if (_birhtdateSelected)
             return true;
