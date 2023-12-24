@@ -151,13 +151,13 @@
 	  <MauiXaml Update="Views\vwAppPreferences.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="Views\vwLogIn.xaml">
+	  <MauiXaml Update="Views\Authorization\vwLogIn.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="Views\vwRegister.xaml">
+	  <MauiXaml Update="Views\Authorization\vwRegister.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="Views\vwRegisterBusiness.xaml">
+	  <MauiXaml Update="Views\Authorization\vwRegisterBusiness.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\vwWaitForValidation.xaml">
