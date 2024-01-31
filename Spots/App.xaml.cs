@@ -1,9 +1,4 @@
-﻿using Spots.Models.DatabaseManagement;
-using Spots.Views;
-using Spots.Views.MainMenu;
-using Spots.Views.Maps;
-
-#if ANDROID
+﻿#if ANDROID
 using AndroidX.AppCompat.App;
 #endif
 
@@ -13,14 +8,12 @@ public partial class App : Application
 {
 	public App()
 	{
-        
-        InitializeComponent();
+		InitializeComponent();
 
-        UserAppTheme = AppTheme.Light;
+		UserAppTheme = AppTheme.Light;
 #if ANDROID
         AppCompatDelegate.DefaultNightMode = AppCompatDelegate.ModeNightNo;
 #endif
-        MainPage = new vwWaitForValidation();
-        //MainPage = new vwMapLocationSelector();
-    }
+		MainPage = new CP_WaitForValidation();
+	}
 }

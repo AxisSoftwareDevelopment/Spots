@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Spots.CP_RegisterBusiness"
+             Title="CP_RegisterBusiness"
+             BackgroundColor="{DynamicResource Primary}">
+
+    <NavigationPage.TitleView>
+        <Label Text="{DynamicResource lbl_Register}" TextColor="{DynamicResource PrimaryAccent}" FontSize="24" FontAttributes="Bold" HorizontalOptions="Start" VerticalOptions="Center"></Label>
+    </NavigationPage.TitleView>
+    
+    <ContentPage.Content>
+        <Frame x:Name="_frameRegisterForm" Margin="20, 30" HasShadow="True" CornerRadius="50" BackgroundColor="{DynamicResource Secondary}">
+            <ScrollView x:Name="_scrollviewMain" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" HorizontalScrollBarVisibility="Never" VerticalScrollBarVisibility="Never">
+                <StackLayout VerticalOptions="CenterAndExpand">
+                    <!-- Error Message -->
+                    <Label x:Name="_lblRegisterError" Text="" IsVisible="False" TextColor="{DynamicResource ErrorAccent}"></Label>
+                    <!-- Email -->
+                    <Label Text="{DynamicResource lbl_RegisterEmailField}" TextColor="{DynamicResource SecondaryAccent}" HorizontalOptions="FillAndExpand" HorizontalTextAlignment="Center"></Label>
+                    <Entry x:Name="_entryEmail" Placeholder="{DynamicResource lbl_eMailPlaceHolder}" HorizontalOptions="FillAndExpand" 
+                            Keyboard="Email" ReturnType="Next"></Entry>
+                    <!-- Confirmation Email -->
+                    <Label Text="{DynamicResource lbl_RegisterConfirmEmailField}" TextColor="{DynamicResource SecondaryAccent}" HorizontalOptions="FillAndExpand" HorizontalTextAlignment="Center"></Label>
+                    <Entry x:Name="_entryConfirmEmail" Placeholder="{DynamicResource lbl_eMailPlaceHolder}" HorizontalOptions="FillAndExpand" 
+                            Keyboard="Email" ReturnType="Next"></Entry>
+                    <!-- PassWord -->
+                    <Label Text="{DynamicResource lbl_RegisterPasswordField}" TextColor="{DynamicResource SecondaryAccent}" HorizontalOptions="FillAndExpand" HorizontalTextAlignment="Center"></Label>
+                    <Entry x:Name="_entryPassword" Placeholder="{DynamicResource lbl_PwdPlaceHolder}" HorizontalOptions="FillAndExpand" ReturnType="Next" 
+                           IsPassword="True"></Entry>
+                    <!-- Confirmation Pwd-->
+                    <Label Text="{DynamicResource lbl_RegisterConfirmPasswordField}" TextColor="{DynamicResource SecondaryAccent}" HorizontalOptions="FillAndExpand" HorizontalTextAlignment="Center"></Label>
+                    <Entry x:Name="_entryConfirmPassword" Placeholder="{DynamicResource lbl_PwdPlaceHolder}" HorizontalOptions="FillAndExpand" ReturnType="Done" 
+                           IsPassword="True"></Entry>
+                    <!-- Phone number -->
+                    <Label Text="{DynamicResource lbl_PhoneField}" TextColor="{DynamicResource SecondaryAccent}" HorizontalOptions="Center" HorizontalTextAlignment="Center"/>
+                    <StackLayout Orientation="Horizontal">
+                        <Label Text="+" TextColor="{DynamicResource SecondaryAccent}" VerticalOptions="Center"/>
+                        <Entry x:Name="_entryPhoneCountryCode" Placeholder="01" Keyboard="Telephone" Margin="5,0,5,0" ReturnType="Next" MaxLength="2"/>
+                        <Entry x:Name="_entryPhoneNumber" Placeholder="000 000 0000" HorizontalOptions="FillAndExpand"  MaxLength="10" Keyboard="Telephone" ReturnType="Done"/>
+                    </StackLayout>
+                    
+                    <Button x:Name="_btnRegister" Text="{DynamicResource lbl_Register}" CornerRadius="20" BackgroundColor="{DynamicResource Tertiary}" TextColor="{DynamicResource PrimaryAccent}"
+                            Margin="0,50,0,20" VerticalOptions="End" Clicked="BtnRegisterOnClick"></Button>
+                </StackLayout>
+            </ScrollView>
+        </Frame>
+
+    </ContentPage.Content>
+
+</ContentPage>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Spots.CP_SideUserMenu"
+             Title="CP_SideUserMenu"
+             BackgroundColor="{DynamicResource Primary}">
+    
+    <StackLayout x:Name="_LayoutView">
+        <Border x:Name="_FrameProfilePicture" Padding="0" Margin="15,15,15,0" StrokeShape="RoundRectangle 500">
+            <ImageButton x:Name="_ProfileImage" Aspect="AspectFill" Clicked="ProfilePictureOrMyProfileOnClicked"/>
+        </Border>
+        
+        <Label x:Name="_lblUserName" Grid.Row="1" HorizontalOptions="FillAndExpand" TextColor="{DynamicResource PrimaryAccent}"
+            FontAttributes="Bold" FontSize="25" VerticalOptions="Start" HorizontalTextAlignment="Center"/>
+
+        <Frame Grid.Row="1" VerticalOptions="FillAndExpand" Margin="10,15" HasShadow="True" CornerRadius="25" BackgroundColor="{DynamicResource Secondary}">
+            <StackLayout x:Name="_ButtonStack" >
+                <StackLayout VerticalOptions="FillAndExpand">
+                    <Button HorizontalOptions="FillAndExpand" Text="{DynamicResource lbl_MyProfile}" BackgroundColor="{DynamicResource Tertiary}"
+                            Clicked="ProfilePictureOrMyProfileOnClicked" TextColor="{DynamicResource PrimaryAccent}" CornerRadius="20" Margin="0,0,0,15"/>
+                    <Button HorizontalOptions="FillAndExpand" Text="{DynamicResource lbl_Preferences}" BackgroundColor="{DynamicResource Tertiary}"
+                            Clicked="PreferencesOnClicked" TextColor="{DynamicResource PrimaryAccent}" CornerRadius="20" Margin="0,0,0,15"/>
+                </StackLayout>
+                <Button x:Name="_ButtonLogOut" HorizontalOptions="FillAndExpand" Text="{DynamicResource lbl_LogOut}" BackgroundColor="{DynamicResource Tertiary}"
+                        Clicked="LogOutOnClickedAsync" TextColor="{DynamicResource PrimaryAccent}" CornerRadius="20" />
+            </StackLayout>
+        </Frame>
+    </StackLayout>
+
+</ContentPage>

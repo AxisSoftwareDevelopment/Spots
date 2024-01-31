@@ -1,43 +1,46 @@
-﻿namespace Spots.Models.ResourceManagement
-{
-    public static class ImageManagement
-    {
-        public static async Task<ImageFile> PickImageFromInternalStorage()
-        {
-            try
-            {
-                FileResult result = await MediaPicker.PickPhotoAsync(new MediaPickerOptions
-                {
-                    // TODO: use dynamic resources
-                    Title = "Select an image"
-                });
+﻿namespace Spots;
 
-                if (result.ContentType == "image/pgn" ||
-                    result.ContentType == "image/jpeg" ||
-                    result.ContentType == "image/jpg")
-                {
-                    return await FileResultToImageFile(result);
-                }
-                else
-                {
-                    //TODO: Error handling
-                    return null;
-                }
-            }
-            catch (Exception ex)
+public static class ImageManagement
+{
+    public static async Task<ImageFile?> PickImageFromInternalStorage()
+    {
+        try
+        {
+            FileResult result = await MediaPicker.PickPhotoAsync(new MediaPickerOptions
             {
-                Console.WriteLine("ERROR --------------------> " + ex.Message);
-                // TODO: Exception Handling
+                // TODO: use dynamic resources
+                Title = "Select an image"
+            });
+
+            if (result.ContentType == "image/pgn" ||
+                result.ContentType == "image/jpeg" ||
+                result.ContentType == "image/jpg")
+            {
+                return await FileResultToImageFile(result);
+            }
+            else
+            {
+                //TODO: Error handling
                 return null;
             }
         }
-
-        private static async Task<ImageFile> FileResultToImageFile(FileResult file)
+        catch (Exception ex)
         {
-            try
+            Console.WriteLine("ERROR --------------------> " + ex.Message);
+            // TODO: Exception Handling
+            return null;
+        }
+    }
+
+    private static async Task<ImageFile?> FileResultToImageFile(FileResult file)
+    {
+        try
+        {
+            MemoryStream memStream = new();
+            Stream? stream = await FileResultToStream(file);
+
+            if(stream != null)
             {
-                MemoryStream memStream = new();
-                Stream stream = await FileResultToStream(file);
                 stream.CopyTo(memStream);
 
                 return new ImageFile()
@@ -47,24 +50,26 @@
                     FileName = file.FileName
                 };
             }
-            catch (Exception ex)
-            {
-                // TODO: ERROR HANDLING
-                Console.WriteLine("ERROR ------------> " +  ex.Message);
-                return null;
-            }
-        }
 
-        #region Utilities
-        public static Stream ByteArrayToStream(byte[] bytes)
-        {
-            return new MemoryStream(bytes);
+            return null;
         }
-
-        private static async Task<Stream> FileResultToStream(FileResult file)
+        catch (Exception ex)
         {
-            return await file?.OpenReadAsync();
+            // TODO: ERROR HANDLING
+            Console.WriteLine("ERROR ------------> " +  ex.Message);
+            return null;
         }
-        #endregion
     }
+
+    #region Utilities
+    public static Stream ByteArrayToStream(byte[] bytes)
+    {
+        return new MemoryStream(bytes);
+    }
+
+    private static async Task<Stream?> FileResultToStream(FileResult file)
+    {
+        return await file.OpenReadAsync();
+    }
+    #endregion
 }

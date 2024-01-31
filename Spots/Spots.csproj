@@ -1,69 +1,53 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net8.0-android</TargetFrameworks>
+		<TargetFrameworks>net8.0-android;net8.0-ios</TargetFrameworks>
 		<!-- Uncomment to also build the tizen app. You will need to install tizen by following this: https://github.com/Samsung/Tizen.NET -->
 		<!-- <TargetFrameworks>$(TargetFrameworks);net8.0-tizen</TargetFrameworks> -->
+
+		<!-- Note for MacCatalyst:
+		The default runtime is maccatalyst-x64, except in Release config, in which case the default is maccatalyst-x64;maccatalyst-arm64.
+		When specifying both architectures, use the plural <RuntimeIdentifiers> instead of the singular <RuntimeIdentifier>.
+		The Mac App Store will NOT accept apps with ONLY maccatalyst-arm64 indicated;
+		either BOTH runtimes must be indicated or ONLY macatalyst-x64. -->
+		<!-- For example: <RuntimeIdentifiers>maccatalyst-x64;maccatalyst-arm64</RuntimeIdentifiers> -->
+
 		<OutputType>Exe</OutputType>
 		<RootNamespace>Spots</RootNamespace>
 		<UseMaui>true</UseMaui>
 		<SingleProject>true</SingleProject>
 		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
 
 		<!-- Display name -->
 		<ApplicationTitle>Spots</ApplicationTitle>
 
 		<!-- App Identifier -->
 		<ApplicationId>com.axissoftwaredevelopment.Spots</ApplicationId>
-		<ApplicationIdGuid>9a5da310-f92a-43f7-bf68-30b233af1944</ApplicationIdGuid>
 
 		<!-- Versions -->
 		<ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
 		<ApplicationVersion>1</ApplicationVersion>
 
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">11.0</SupportedOSPlatformVersion>
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">13.1</SupportedOSPlatformVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">21.0</SupportedOSPlatformVersion>
-		<Platforms>AnyCPU;x64</Platforms>
-		<BaseOutputPath></BaseOutputPath>
-	  <UserSecretsId>687b7327-d2a2-42d7-aee6-ce8bf3548e90</UserSecretsId>
-  </PropertyGroup>
-
-	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-android|AnyCPU'">
-	  <AndroidPackageFormat>apk</AndroidPackageFormat>
-	  <AndroidKeyStore>False</AndroidKeyStore>
-	  <AndroidSigningStorePass>KSytgx5d</AndroidSigningStorePass>
-	  <AndroidSigningKeyAlias>SpotsKey_v0</AndroidSigningKeyAlias>
-	  <AndroidSigningKeyPass>SPytgx5d</AndroidSigningKeyPass>
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</SupportedOSPlatformVersion>
+		<TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-android|x64'">
-	  <AndroidPackageFormat>apk</AndroidPackageFormat>
-	  <AndroidKeyStore>False</AndroidKeyStore>
-	  <AndroidSigningStorePass>KSytgx5d</AndroidSigningStorePass>
-	  <AndroidSigningKeyAlias>SpotsKey_v0</AndroidSigningKeyAlias>
-	  <AndroidSigningKeyPass>SPytgx5d</AndroidSigningKeyPass>
-	</PropertyGroup>
-
-	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-android|AnyCPU'">
-	  <AndroidKeyStore>False</AndroidKeyStore>
-	  <AndroidSigningStorePass>KSytgx5d</AndroidSigningStorePass>
-	  <AndroidSigningKeyAlias>SpotsKey_v0</AndroidSigningKeyAlias>
-	  <AndroidSigningKeyPass>SPytgx5d</AndroidSigningKeyPass>
-	</PropertyGroup>
-
-	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-android|x64'">
-	  <AndroidKeyStore>False</AndroidKeyStore>
-	  <AndroidSigningStorePass>KSytgx5d</AndroidSigningStorePass>
-	  <AndroidSigningKeyAlias>SpotsKey_v0</AndroidSigningKeyAlias>
-	  <AndroidSigningKeyPass>SPytgx5d</AndroidSigningKeyPass>
-	</PropertyGroup>
+	<!-- iOS Services -->
+	<PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">
+        <CodesignEntitlements>Platforms\iOS\Entitlements.plist</CodesignEntitlements>
+    </PropertyGroup>
 
 	<ItemGroup>
 		<!-- App Icon -->
 		<MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#512BD4" />
 
 		<!-- Splash Screen -->
-		<MauiSplashScreen Include="Resources\Splash\placeholder_logo.jpg" Color="#FFA500" BaseSize="128,128" />
+		<MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#512BD4" BaseSize="128,128" />
 
 		<!-- Images -->
 		<MauiImage Include="Resources\Images\*" />
@@ -75,12 +59,6 @@
 		<MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
 	</ItemGroup>
 
-	<!-- MAUI -->
-	<ItemGroup>
-		<PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
-		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="$(MauiVersion)" />
-	</ItemGroup>
-	
 	<!-- Google Services -->
 	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
 		<GoogleServicesJson Include="google-services.json" />
@@ -90,81 +68,25 @@
 		<BundleResource Include="GoogleService-Info.plist" />
 	</ItemGroup>
 
+	<!-- NuGets -->
 	<ItemGroup>
-	  <None Remove="Platforms\Android\Resources\values\strings.xml" />
-	  <None Remove="Resources\Images\placeholder_Logo.jpg" />
-	  <None Remove="Resources\Splash\placeholder_logo.jpg" />
-	</ItemGroup>
-	<!-- Google Services -->
-
-	<ItemGroup>
-		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="7.0.0" />
-		<PackageReference Include="Microsoft.Maui.Controls.Maps" Version="7.0.101" />
-		<PackageReference Include="Plugin.Firebase" Version="2.0.6" />
-		<PackageReference Include="Xamarin.Build.Download" Version="0.11.4" />
+		<PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
+		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="$(MauiVersion)" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0" />
+		<PackageReference Include="Microsoft.Maui.Controls.Maps" Version="8.0.3+2-sha.1ebb238ff3-azdo.8651303" />
+		<PackageReference Include="Plugin.Firebase" Version="2.0.11" />
 	</ItemGroup>
 
+	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
+		<PackageReference Include="Xamarin.AndroidX.Core" Version="1.12.0.2" />
+		<PackageReference Include="Xamarin.AndroidX.Collection" Version="1.3.0.1" />
+		<PackageReference Include="Xamarin.AndroidX.Collection.Ktx" Version="1.3.0.1" />
+		<PackageReference Include="Xamarin.AndroidX.Activity.Ktx" Version="1.8.0.1" />
+		<PackageReference Include="Xamarin.AndroidX.Browser" Version="1.6.0.2" />
+	</ItemGroup>
+
 	<ItemGroup>
-	  <MauiXaml Update="Resources\Styles\Colors.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="Resources\Styles\CurrentLanguage.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="Resources\Styles\Languages.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="Resources\Styles\Styles.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="Views\MainMenu\Feeds\cvDiscoverFeed.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="Views\MainMenu\Feeds\cvMainFeed.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="Views\MainMenu\vcFeedViews.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="Views\MainMenu\vcSideUserMenu.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="Views\MainMenu\vwMainShell.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="Views\Maps\vwMapLocationSelector.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="Views\Navigation\cvFlyoutUserNavigationBar.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="Views\Users\vwBusinessProfile.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="Views\Users\vwUpdateBusinessInformation.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="Views\Users\vwUpdateUserInformation.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="Views\Users\vwUserProfile.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="Views\vwAppPreferences.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="Views\Authorization\vwLogIn.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="Views\Authorization\vwRegister.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="Views\Authorization\vwRegisterBusiness.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="Views\vwWaitForValidation.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
+	  <Folder Include="Resources/Images/" />
 	</ItemGroup>
 
 </Project>
