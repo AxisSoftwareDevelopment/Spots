@@ -78,7 +78,7 @@ public static class DatabaseManager
         return user;
     }
 
-    public static async Task<bool> CreateUserAsync(string email, string password, bool isBusinessUser, string? phoneNunber = null, string? phoneCountryCode = null)
+    public static async Task<bool> CreateUserAsync(string email, string password, bool isBusinessUser, string phoneNunber = "", string phoneCountryCode = "")
     {
         await CrossFirebaseAuth.Current.CreateUserAsync(email, password);
         await CrossFirebaseAuth.Current.CurrentUser.UpdateProfileAsync(displayName: isBusinessUser ? "Business" : "User");

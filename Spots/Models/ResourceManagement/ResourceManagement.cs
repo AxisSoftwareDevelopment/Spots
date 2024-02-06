@@ -9,7 +9,7 @@ namespace Spots;
             for (int i = 0; i < ids.Length; i++)
             {
                 if (resources.TryGetValue(ids[i], out object retrievedValue))
-                    strings.Add(retrievedValue.ToString());
+                    strings.Add(retrievedValue.ToString() ?? "");
                     //TODO: strings.Add((string)retrievedValue);
                 else
                     strings.Add(ids[i]);

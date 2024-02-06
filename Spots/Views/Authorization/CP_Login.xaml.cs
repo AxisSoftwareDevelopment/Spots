@@ -8,7 +8,7 @@ public partial class CP_Login : ContentPage
 	public CP_Login()
 	{
         InitializeComponent();
-        Resources = Application.Current.Resources;
+        Resources = Application.Current?.Resources;
     }
 
 	private async void BtnLogInOnClickAsync(object sender, EventArgs e)

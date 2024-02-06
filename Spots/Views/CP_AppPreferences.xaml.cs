@@ -11,19 +11,19 @@ public partial class CP_AppPreferences : ContentPage
 	{
 		InitializeComponent();
 
-        Resources = Application.Current.Resources;
+        Resources = Application.Current?.Resources;
         LoadPickerElements();
 
         _PickerLanguage.SelectedIndexChanged += _PickerLanguage_SelectedIndexChanged;
         _PickerTheme.SelectedIndexChanged += _PickerTheme_SelectedIndexChanged;
 	}
 
-    private void _PickerTheme_SelectedIndexChanged(object sender, EventArgs e)
+    private void _PickerTheme_SelectedIndexChanged(object? sender, EventArgs e)
     {
         _ThemeChanged = true;
     }
 
-    private void _PickerLanguage_SelectedIndexChanged(object sender, EventArgs e)
+    private void _PickerLanguage_SelectedIndexChanged(object? sender, EventArgs e)
     {
         _LanguageChanged = true;
     }

@@ -14,22 +14,25 @@ public static class ThemeManager
 
     private static void UpdateColors(string theme) 
     {
-        foreach (ResourceDictionary dictionary in Application.Current.Resources.MergedDictionaries)
+        if(Application.Current != null)
         {
-            if(dictionary.TryGetValue($"{theme}Primary", out var primary))
-                dictionary["Primary"] = primary;
+            foreach (ResourceDictionary dictionary in Application.Current.Resources.MergedDictionaries)
+            {
+                if(dictionary.TryGetValue($"{theme}Primary", out var primary))
+                    dictionary["Primary"] = primary;
 
-            if (dictionary.TryGetValue($"{theme}Secondary", out var Secondary))
-                dictionary["Secondary"] = Secondary;
+                if (dictionary.TryGetValue($"{theme}Secondary", out var Secondary))
+                    dictionary["Secondary"] = Secondary;
 
-            if (dictionary.TryGetValue($"{theme}Tertiary", out var Tertiary))
-                dictionary["Tertiary"] = Tertiary;
-            
-            if (dictionary.TryGetValue($"{theme}PrimaryAccent", out var PrimaryAccent))
-                dictionary["PrimaryAccent"] = PrimaryAccent;
+                if (dictionary.TryGetValue($"{theme}Tertiary", out var Tertiary))
+                    dictionary["Tertiary"] = Tertiary;
+                
+                if (dictionary.TryGetValue($"{theme}PrimaryAccent", out var PrimaryAccent))
+                    dictionary["PrimaryAccent"] = PrimaryAccent;
 
-            if (dictionary.TryGetValue($"{theme}SecondaryAccent", out var SecondaryAccent))
-                dictionary["SecondaryAccent"] = SecondaryAccent;
+                if (dictionary.TryGetValue($"{theme}SecondaryAccent", out var SecondaryAccent))
+                    dictionary["SecondaryAccent"] = SecondaryAccent;
+            }
         }
     }
 }

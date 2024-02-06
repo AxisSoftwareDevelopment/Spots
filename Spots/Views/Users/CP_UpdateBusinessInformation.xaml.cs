@@ -13,7 +13,7 @@ public partial class CP_UpdateBusinessInformation : ContentPage
     private bool _locationChanged = false;
     private ImageFile _profilePictureFile;
 
-    public CP_UpdateBusinessInformation(BusinessUser user, string email = null, string password = null, string phoneNumber = null, string phoneCountryCode = null)
+    public CP_UpdateBusinessInformation(BusinessUser user, string email = "", string password = "", string phoneNumber = "", string phoneCountryCode = "")
     {
         _user = user;
         _userIsEmpty = password != null && email != null && !user.userDataRetrieved;
@@ -44,12 +44,7 @@ public partial class CP_UpdateBusinessInformation : ContentPage
 
         InitializeControllers();
 
-        _cvMiniMap.Pins[0].MarkerClicked += _cvMiniMap_MarkerClicked;
-    }
-
-    private void _cvMiniMap_MarkerClicked(object sender, PinClickedEventArgs e)
-    {
-        Navigation.PushAsync(new CP_MapLocationSelector(() => _cvMiniMap.VisibleRegion, SetMiniMapVisibleArea, _entryAddress.Text ?? ""));
+        //_cvMiniMap.Pins[0].MarkerClicked += _cvMiniMap_MarkerClicked;
     }
 
     private void _cvMiniMap_MapClicked(object sender, MapClickedEventArgs e)

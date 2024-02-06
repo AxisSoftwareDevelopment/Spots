@@ -52,12 +52,17 @@ public static class CurrentSession
 
     public static void CloseSession( bool shouldUpdateMainPage = true)
     {
-        currentUser = new();
-        currentBusiness = new();
-        sessionOnline = false;
-        Task.Run( DatabaseManager.LogOutAsync );
+        if(Application.Current != null)
+        {
+            currentUser = new();
+            currentBusiness = new();
+            sessionOnline = false;
+            Task.Run( DatabaseManager.LogOutAsync );
 
-        if (shouldUpdateMainPage)
-            Application.Current.MainPage = new NavigationPage( new CP_Login() );
+            if (shouldUpdateMainPage)
+            {
+                Application.Current.MainPage = new NavigationPage( new CP_Login() );
+            }
+        }
     }
 }

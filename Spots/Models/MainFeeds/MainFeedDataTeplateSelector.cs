@@ -2,9 +2,9 @@
 
 public class MainFeedDataTemplateSelector : DataTemplateSelector
 {
-    public DataTemplate tEmptySpotPraise { get; set; }
-    public DataTemplate tSmallSpotPraise { get; set; }
-    public DataTemplate tLargeSpotPraise { get; set; }
+    public DataTemplate? tEmptySpotPraise { get; set; }
+    public DataTemplate? tSmallSpotPraise { get; set; }
+    public DataTemplate? tLargeSpotPraise { get; set; }
 
     protected override DataTemplate OnSelectTemplate(object item, BindableObject container)
     {
@@ -13,6 +13,13 @@ public class MainFeedDataTemplateSelector : DataTemplateSelector
 
     private DataTemplate GetDataTemplate(SpotPraise praise)
     {
+        if(tEmptySpotPraise == null
+        || tSmallSpotPraise == null
+        || tLargeSpotPraise == null)
+        {
+            return new DataTemplate();
+        }
+
         DataTemplate retVal = tEmptySpotPraise;
 
         if (praise.sComment.Length > 0)
