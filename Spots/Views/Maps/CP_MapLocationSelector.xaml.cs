@@ -5,11 +5,11 @@ namespace Spots;
 
 public partial class CP_MapLocationSelector : ContentPage
 {
-	private Func<MapSpan> _MapSpanGetter;
+	private Func<MapSpan?> _MapSpanGetter;
     private Action<MapSpan, string> _MapSpanSetter;
     private bool _FieldsEnabled = true;
 
-    public CP_MapLocationSelector(Func<MapSpan> mapSpanGetter, Action<MapSpan, string> mapSpanSetter, string address = "")
+    public CP_MapLocationSelector(Func<MapSpan?> mapSpanGetter, Action<MapSpan, string> mapSpanSetter, string address = "")
 	{
 		InitializeComponent();
 
@@ -17,12 +17,18 @@ public partial class CP_MapLocationSelector : ContentPage
         _MapSpanSetter = mapSpanSetter;
         _editorAddress.Text = address;
 
-        _cvMap.MoveToRegion(_MapSpanGetter());
+        MapSpan? mapSpan = _MapSpanGetter();
+        if(mapSpan == null)
+        {
+            return;
+        }
+
+        _cvMap.MoveToRegion(mapSpan);
         _cvMap.Pins.Clear();
         _cvMap.Pins.Add(new Pin()
         {
             Label = address,
-            Location = _MapSpanGetter().Center
+            Location = mapSpan.Center
         });
 
         _cvMap.MapClicked += _cvMap_MapClicked;

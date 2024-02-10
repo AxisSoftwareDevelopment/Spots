@@ -11,12 +11,12 @@ public partial class CP_UpdateBusinessInformation : ContentPage
     private string _password, _email, _phoneNumber, _phoneCountryCode;
     private bool _profilePictureChanged = false;
     private bool _locationChanged = false;
-    private ImageFile _profilePictureFile;
+    private ImageFile? _profilePictureFile = null;
 
     public CP_UpdateBusinessInformation(BusinessUser user, string email = "", string password = "", string phoneNumber = "", string phoneCountryCode = "")
     {
         _user = user;
-        _userIsEmpty = password != null && email != null && !user.userDataRetrieved;
+        _userIsEmpty = !password.Equals("") && !email.Equals("") && !user.userDataRetrieved;
         _password = password;
         _email = email;
         _phoneNumber = phoneNumber;
@@ -47,7 +47,7 @@ public partial class CP_UpdateBusinessInformation : ContentPage
         //_cvMiniMap.Pins[0].MarkerClicked += _cvMiniMap_MarkerClicked;
     }
 
-    private void _cvMiniMap_MapClicked(object sender, MapClickedEventArgs e)
+    private void _cvMiniMap_MapClicked(object? sender, MapClickedEventArgs e)
     {
         Navigation.PushAsync(new CP_MapLocationSelector(()=>_cvMiniMap.VisibleRegion, SetMiniMapVisibleArea, _entryAddress.Text ?? ""));
     }
@@ -105,10 +105,10 @@ public partial class CP_UpdateBusinessInformation : ContentPage
                 _user.Description = newData.Description;
                 Location locationSelected = _cvMiniMap.Pins[0].Location;
                 _user.Location = new FirebaseLocation(newData.Location.Address, locationSelected.Latitude, locationSelected.Longitude);
-                if (_profilePictureChanged)
+                if (_profilePictureChanged && _profilePictureFile != null)
                 {
                     _user.ProfilePictureAddress = await DatabaseManager.SaveProfilePicture(isBusiness: true, _user.UserID, _profilePictureFile);
-                    _user.ProfilePictureSource = ImageSource.FromStream(() => ImageManagement.ByteArrayToStream(_profilePictureFile.Bytes));
+                    _user.ProfilePictureSource = ImageSource.FromStream(() => ImageManagement.ByteArrayToStream(_profilePictureFile.Bytes?? []));
                 }
 
                 if (await DatabaseManager.SaveBusinessDataAsync(_user))
@@ -144,12 +144,12 @@ public partial class CP_UpdateBusinessInformation : ContentPage
 
     public async void LoadImageOnClickAsync(object sender, EventArgs e)
     {
-        ImageFile image = await ImageManagement.PickImageFromInternalStorage();
+        ImageFile? image = await ImageManagement.PickImageFromInternalStorage();
 
         if (image != null)
         {
             _profilePictureFile = image;
-            _ProfileImage.Source = ImageSource.FromStream(() => ImageManagement.ByteArrayToStream(image.Bytes));
+            _ProfileImage.Source = ImageSource.FromStream(() => ImageManagement.ByteArrayToStream(image.Bytes?? []));
             _profilePictureChanged = true;
         }
 

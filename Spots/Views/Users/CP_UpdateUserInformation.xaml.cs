@@ -8,12 +8,12 @@ public partial class CP_UpdateUserInformation : ContentPage
 	private bool _userIsEmpty;
     private string _password, _email;
     private bool _birhtdateSelected, _profilePictureChanged = false;
-    private ImageFile _profilePictureFile;
+    private ImageFile? _profilePictureFile = null;
 
-    public CP_UpdateUserInformation(User user, string email = null, string password = null)
+    public CP_UpdateUserInformation(User user, string email = "", string password = "")
 	{
         _user = user;
-        _userIsEmpty = password != null && email != null && !user.bUserDataRetrieved;
+        _userIsEmpty = !password.Equals("") && !email.Equals("") && !user.bUserDataRetrieved;
         _password = password;
         _email = email;
 
@@ -73,10 +73,10 @@ public partial class CP_UpdateUserInformation : ContentPage
                 _user.PhoneNumber = newData.PhoneNumber;
                 _user.PhoneCountryCode = newData.PhoneCountryCode;
                 _user.Description = newData.Description;
-                if (_profilePictureChanged)
+                if (_profilePictureChanged && _profilePictureFile != null)
                 {
                     _user.ProfilePictureAddress = await DatabaseManager.SaveProfilePicture(isBusiness: false, _user.UserID, _profilePictureFile);
-                    _user.ProfilePictureSource = ImageSource.FromStream(() => ImageManagement.ByteArrayToStream(_profilePictureFile.Bytes));
+                    _user.ProfilePictureSource = ImageSource.FromStream(() => ImageManagement.ByteArrayToStream(_profilePictureFile.Bytes?? []));
                 }
 
                 if (await DatabaseManager.SaveUserDataAsync(_user))
@@ -111,12 +111,12 @@ public partial class CP_UpdateUserInformation : ContentPage
 
     public async void LoadImageOnClickAsync(object sender, EventArgs e)
     {
-        ImageFile image = await ImageManagement.PickImageFromInternalStorage();
+        ImageFile? image = await ImageManagement.PickImageFromInternalStorage();
 
         if (image != null) 
         {
             _profilePictureFile = image;
-            _ProfileImage.Source = ImageSource.FromStream( () => ImageManagement.ByteArrayToStream(image.Bytes) );
+            _ProfileImage.Source = ImageSource.FromStream( () => ImageManagement.ByteArrayToStream(image.Bytes?? []) );
             _profilePictureChanged = true;
         }
         
