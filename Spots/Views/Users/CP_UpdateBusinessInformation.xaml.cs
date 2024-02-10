@@ -76,6 +76,11 @@ public partial class CP_UpdateBusinessInformation : ContentPage
 
     private async void SaveOnCLickAsync(object sender, EventArgs e)
     {
+        if (Application.Current == null)
+        {
+            return;
+        }
+
         BusinessUser newData = new BusinessUser()
         {
             BrandName = ToTitleCase(_entryBrandName.Text.Trim()),
@@ -114,7 +119,7 @@ public partial class CP_UpdateBusinessInformation : ContentPage
                 if (await DatabaseManager.SaveBusinessDataAsync(_user))
                 {
                     _user.userDataRetrieved = true;
-                    await Application.Current.MainPage.DisplayAlert("Success", "Your information has been updated. Way to go!", "OK");
+                    await UserInterface.DisplayPopUp("Success", "Your information has been updated. Way to go!", "OK");
                     // If the business was empty, it meas we came from the log in.
                     if (_userIsEmpty)
                     {
@@ -134,7 +139,7 @@ public partial class CP_UpdateBusinessInformation : ContentPage
             else
             {
                 // If the business was updating information, but didnt change any data, we do nothing
-                await Application.Current.MainPage.DisplayAlert("Alert", "No information was changed", "OK");
+                await UserInterface.DisplayPopUp("Alert", "No information was changed", "OK");
                 await Navigation.PopAsync();
             }
 

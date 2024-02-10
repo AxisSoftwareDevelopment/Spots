@@ -37,57 +37,49 @@ public partial class CP_Login : ContentPage
 
     private async Task LookForBusinessDataInDBAsync(string email, string password)
     {
+        
         try
         {
-            BusinessUser business = await DatabaseManager.LogInBusinessAsync(email, password);
+            if (Application.Current != null)
+            {
+                BusinessUser business = await DatabaseManager.LogInBusinessAsync(email, password);
 
-            if (business.userDataRetrieved)
-            {
-                // Check if the _user has updated its basic information yet
-                string[] stringResources = ResourceManagement.GetStringResources(Application.Current.Resources, new string[] { "lbl_Welcome", "lbl_WelcomeToSpots", "lbl_Ok" });
-                await Application.Current.MainPage.DisplayAlert(stringResources[0], stringResources[1], stringResources[2]);
-                Application.Current.MainPage = new FP_MainShell(business);
-            }
-            else
-            {
-                // Setup User Data
-                string[] strings = ResourceManagement.GetStringResources(Resources, new string[3] { "lbl_FirstTime", "txt_FirstTime", "lbl_Ok" });
-                await Application.Current.MainPage.DisplayAlert(strings[0], strings[1], strings[2]);
-                await Navigation.PushAsync(new CP_UpdateBusinessInformation(business, email, password, business.PhoneNumber, business.PhoneCountryCode));
+                if (business.userDataRetrieved)
+                {
+                    // Check if the _user has updated its basic information yet
+                    string[] stringResources = ResourceManagement.GetStringResources(Application.Current.Resources, ["lbl_Welcome", "lbl_WelcomeToSpots", "lbl_Ok"]);
+                    await UserInterface.DisplayPopUp(stringResources[0], stringResources[1], stringResources[2]);
+
+                    Application.Current.MainPage = new FP_MainShell(business);
+                }
+                else
+                {
+                    // Setup User Data
+                    string[] strings = ResourceManagement.GetStringResources(Resources, ["lbl_FirstTime", "txt_FirstTime", "lbl_Ok"]);
+                    await UserInterface.DisplayPopUp(strings[0], strings[1], strings[2]);
+                    await Navigation.PushAsync(new CP_UpdateBusinessInformation(business, email, password, business.PhoneNumber, business.PhoneCountryCode));
+                }
             }
         }
         catch (FirebaseAuthException ex)
         {
             #region Error Message Calculation
-            string errorID;
-            switch (ex.Reason)
+            string errorID = ex.Reason switch
             {
-                case FIRAuthError.InvalidEmail:
-                    errorID = "txt_LogInError_WrongCredentials";
-                    break;
-                case FIRAuthError.WrongPassword:
-                    errorID = "txt_LogInError_WrongCredentials";
-                    break;
-                case FIRAuthError.InvalidCredential:
-                    errorID = "txt_LogInError_InvalidCredential";
-                    break;
-                case FIRAuthError.UserNotFound:
-                    errorID = "txt_LogInError_WrongCredentials";
-                    break;
-                case FIRAuthError.EmailAlreadyInUse:
-                    errorID = ex.Message.Split("->")[0].Trim();
-                    break;
-                default:
-                    errorID = "txt_LogInError_Undefined";
-                    break;
-            }
+                FIRAuthError.InvalidEmail => "txt_LogInError_WrongCredentials",
+                FIRAuthError.WrongPassword => "txt_LogInError_WrongCredentials",
+                FIRAuthError.InvalidCredential => "txt_LogInError_InvalidCredential",
+                FIRAuthError.UserNotFound => "txt_LogInError_WrongCredentials",
+                FIRAuthError.EmailAlreadyInUse => ex.Message.Split("->")[0].Trim(),
+                _ => "txt_LogInError_Undefined",
+            };
             #endregion
 
             DisplayErrorSection(errorID);
         }
         catch (Exception ex)
         {
-            await Application.Current.MainPage.DisplayAlert("Unhandled Error", ex.Message, "OK");
+            await UserInterface.DisplayPopUp("Unhandled Error", ex.Message, "OK");
         }
     }
 
@@ -95,54 +87,45 @@ public partial class CP_Login : ContentPage
     {
         try
         {
-            User user = await DatabaseManager.LogInUserAsync(email, password);
+            if (Application.Current != null)
+            {
+                User user = await DatabaseManager.LogInUserAsync(email, password);
 
-            if (user.bUserDataRetrieved)
-            {
-                // Check if the _user has updated its basic information yet
-                await Application.Current.MainPage.DisplayAlert("Welcome!", "Welcome to spots!", "OK");
-                Application.Current.MainPage = new FP_MainShell(user);
-            }
-            else
-            {
-                // Setup User Data
-                string[] strings = ResourceManagement.GetStringResources(Resources, new string[3] { "lbl_FirstTime", "txt_FirstTime", "lbl_Ok" });
-                await Application.Current.MainPage.DisplayAlert(strings[0], strings[1], strings[2]);
-                await Navigation.PushAsync(new CP_UpdateUserInformation(user, email, password));
+                if (user.bUserDataRetrieved)
+                {
+                    // Check if the _user has updated its basic information yet
+                    await UserInterface.DisplayPopUp("Welcome!", "Welcome to spots!", "OK");
+
+                    Application.Current.MainPage = new FP_MainShell(user);
+                }
+                else
+                {
+                    // Setup User Data
+                    string[] strings = ResourceManagement.GetStringResources(Resources, ["lbl_FirstTime", "txt_FirstTime", "lbl_Ok"]);
+                    await UserInterface.DisplayPopUp(strings[0], strings[1], strings[2]);
+                    await Navigation.PushAsync(new CP_UpdateUserInformation(user, email, password));
+                }
             }
         }
         catch (FirebaseAuthException ex)
         {
             #region Error Message Calculation
-            string errorID;
-            switch (ex.Reason)
+            string errorID = ex.Reason switch
             {
-                case FIRAuthError.InvalidEmail:
-                    errorID = "txt_LogInError_WrongCredentials";
-                    break;
-                case FIRAuthError.WrongPassword:
-                    errorID = "txt_LogInError_WrongCredentials";
-                    break;
-                case FIRAuthError.InvalidCredential:
-                    errorID = "txt_LogInError_InvalidCredential";
-                    break;
-                case FIRAuthError.UserNotFound:
-                    errorID = "txt_LogInError_WrongCredentials";
-                    break;
-                case FIRAuthError.EmailAlreadyInUse:
-                    errorID = ex.Message.Split("->")[0].Trim();
-                    break;
-                default:
-                    errorID = "txt_LogInError_Undefined";
-                    break;
-            }
+                FIRAuthError.InvalidEmail => "txt_LogInError_WrongCredentials",
+                FIRAuthError.WrongPassword => "txt_LogInError_WrongCredentials",
+                FIRAuthError.InvalidCredential => "txt_LogInError_InvalidCredential",
+                FIRAuthError.UserNotFound => "txt_LogInError_WrongCredentials",
+                FIRAuthError.EmailAlreadyInUse => ex.Message.Split("->")[0].Trim(),
+                _ => "txt_LogInError_Undefined",
+            };
             #endregion
 
             DisplayErrorSection(errorID);
         }
         catch (Exception ex)
         {
-            await Application.Current.MainPage.DisplayAlert("Unhandled Error", ex.Message, "OK");
+            await UserInterface.DisplayPopUp("Unhandled Error", ex.Message, "OK");
         }
     }
 
@@ -184,8 +167,15 @@ public partial class CP_Login : ContentPage
 
     private void DisplayErrorSection(string errorID)
     {
-        _lblSignInError.SetDynamicResource(Label.TextProperty, errorID);
-        _lblSignInError.IsVisible = true;
+        if(Resources.TryGetValue(errorID, out object error))
+        {
+            _lblSignInError.Text = error.ToString();
+            _lblSignInError.IsVisible = true;
+        }
+        else
+        {
+            _lblSignInError.IsVisible = false;
+        }
     }
 
     private void HideErrorSection()
@@ -193,7 +183,7 @@ public partial class CP_Login : ContentPage
         _lblSignInError.IsVisible = false;
     }
 
-    private bool CredentialsAreValid(string email, string password, out string errorMessage)
+    private static bool CredentialsAreValid(string email, string password, out string errorMessage)
     {
         bool credentialsAreValid = true;
         errorMessage = "";

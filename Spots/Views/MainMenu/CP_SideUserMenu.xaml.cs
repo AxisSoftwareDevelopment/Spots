@@ -49,7 +49,7 @@ public partial class CP_SideUserMenu : ContentPage
 
     private async void LogOutOnClickedAsync(object sender, EventArgs e)
     {
-        if (await Application.Current.MainPage.DisplayAlert("Log Out", "Are you sure?", "Yes", "Cancel"))
+        if (await UserInterface.DisplayPopUp("Log Out", "Are you sure?", "Yes", "Cancel"))
             CurrentSession.CloseSession(shouldUpdateMainPage: true);
     }
 

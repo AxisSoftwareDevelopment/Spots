@@ -31,7 +31,7 @@ public class BusinessUser : BindableObject, INotifyPropertyChanged
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ProfilePictureSource)));
         }
     }
-    public string fullPhoneNumber
+    public string FullPhoneNumber
     {
         get => (PhoneNumber?.Length < 10 || PhoneCountryCode.Length < 2) ? "+ -- --- --- ----" : $"+({_phoneCountryCode}) {PhoneNumber?[..3]} {PhoneNumber?.Substring(3, 3)} {PhoneNumber?.Substring(6, 4)}";
     }
@@ -117,7 +117,7 @@ public class BusinessUser : BindableObject, INotifyPropertyChanged
     }
     public Location Geolocation
     {
-        get => new Location(Location.Latitude, Location.Longitude);
+        get => new(Location.Latitude, Location.Longitude);
         set
         {
             Location = new FirebaseLocation(Location.Address,
@@ -158,7 +158,7 @@ public class BusinessUser : BindableObject, INotifyPropertyChanged
         PhoneNumber = "";
         Description = "";
         Location = new FirebaseLocation();
-        Praises = new List<string>();
+        Praises = [];
     }
 
     public BusinessUser(string userID, string brandName, string businessName, string email, string? profilePictureAddress = null, ImageSource? profilePictureSource = null,

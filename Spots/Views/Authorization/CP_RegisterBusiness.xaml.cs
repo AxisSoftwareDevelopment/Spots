@@ -36,7 +36,7 @@ public partial class CP_RegisterBusiness : ContentPage
             {
                 if (await DatabaseManager.CreateUserAsync(email, password, isBusinessUser: true, phoneNumber, phoneNumberCountryCode))
                 {
-                    await Application.Current.MainPage.DisplayAlert("Success", "User created successfully.", "OK");
+                    await UserInterface.DisplayPopUp("Success", "User created successfully.", "OK");
                     await Navigation.PopToRootAsync();
                 }
                 else
@@ -46,7 +46,7 @@ public partial class CP_RegisterBusiness : ContentPage
             }
             catch (Exception ex)
             {
-                await Application.Current.MainPage.DisplayAlert("Error", ex.Message.ToString(), "OK");
+                await UserInterface.DisplayPopUp("Error", ex.Message.ToString(), "OK");
             }
         }
         else
