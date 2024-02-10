@@ -11,65 +11,63 @@
     </NavigationPage.TitleView>
 
     <ContentPage.Content>
-        <Frame x:Name="_framePersonalInformation" Margin="20, 30" HasShadow="True" CornerRadius="50" BackgroundColor="{DynamicResource Secondary}">
-            <StackLayout>
-                <ScrollView x:Name="_scrollviewMain" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" HorizontalScrollBarVisibility="Never" VerticalScrollBarVisibility="Never">
-                    <StackLayout>
-                        <!-- Error Message -->
-                        <Label x:Name="_lblRegisterError" Text="" IsVisible="False" TextColor="{DynamicResource ErrorAccent}"/>
-                        <!-- Profile Picture -->
-                        <Label Text="{DynamicResource lbl_ProfilePictureField}" TextColor="{DynamicResource SecondaryAccent}" HorizontalOptions="FillAndExpand" HorizontalTextAlignment="Center" Margin="0,20,0,0"/>
-                        <StackLayout Orientation="Horizontal">
-                            <Border x:Name="_FrameProfilePicture" Padding="0" Margin="15,15,15,0" StrokeShape="RoundRectangle 500" BackgroundColor="{DynamicResource Tertiary}">
-                                <Image x:Name="_ProfileImage" Aspect="AspectFill"/>
-                            </Border>
-                            <Button x:Name="_btnLoadImage" Text="{DynamicResource lbl_LoadImage}" BackgroundColor="{DynamicResource Tertiary}" TextColor="{DynamicResource PrimaryAccent}" VerticalOptions="Center"
+        <StackLayout BackgroundColor="{DynamicResource Secondary}">
+            <ScrollView x:Name="_scrollviewMain" Margin="20, 30" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" HorizontalScrollBarVisibility="Never" VerticalScrollBarVisibility="Never">
+                <StackLayout>
+                    <!-- Error Message -->
+                    <Label x:Name="_lblRegisterError" Text="" IsVisible="False" TextColor="{DynamicResource ErrorAccent}"/>
+                    <!-- Profile Picture -->
+                    <Label Text="{DynamicResource lbl_ProfilePictureField}" TextColor="{DynamicResource SecondaryAccent}" HorizontalOptions="FillAndExpand" HorizontalTextAlignment="Center" Margin="0,20,0,0"/>
+                    <StackLayout Orientation="Horizontal">
+                        <Border x:Name="_FrameProfilePicture" Padding="0" Margin="15,15,15,0" StrokeShape="RoundRectangle 500" BackgroundColor="{DynamicResource Tertiary}">
+                            <Image x:Name="_ProfileImage" Aspect="AspectFill"/>
+                        </Border>
+                        <Button x:Name="_btnLoadImage" Text="{DynamicResource lbl_LoadImage}" BackgroundColor="{DynamicResource Tertiary}" TextColor="{DynamicResource PrimaryAccent}" VerticalOptions="Center"
                                     Clicked="LoadImageOnClickAsync"/>
-                        </StackLayout>
-                        <!-- Brand Name -->
-                        <StackLayout Orientation="Horizontal">
-                            <Label Text="{DynamicResource lbl_BrandName}" TextColor="{DynamicResource SecondaryAccent}" HorizontalOptions="Center" HorizontalTextAlignment="Center"
-                                Margin="0,20,0,0"/>
-                            <Label Text=" *" VerticalOptions="Center" FontAttributes="Bold" TextColor="{DynamicResource ErrorAccent}" Margin="0,20,0,0"/>
-                        </StackLayout>
-                        <Entry x:Name="_entryBrandName" Placeholder="{DynamicResource lbl_BrandName}" HorizontalOptions="FillAndExpand" 
-                            Keyboard="Email" ReturnType="Next"/>
-                        <!-- Business Name -->
-                        <StackLayout Orientation="Horizontal">
-                            <Label Text="{DynamicResource lbl_BusinessName}" TextColor="{DynamicResource SecondaryAccent}" HorizontalOptions="Center" HorizontalTextAlignment="Center"/>
-                            <Label Text=" *" VerticalOptions="Center" FontAttributes="Bold" TextColor="{DynamicResource ErrorAccent}"/>
-                        </StackLayout>
-                        <Entry x:Name="_entryBusinessName" Placeholder="{DynamicResource lbl_BusinessName}" HorizontalOptions="FillAndExpand" 
-                            Keyboard="Email" ReturnType="Next"/>
-                        <!-- Location -->
-                        <StackLayout Orientation="Horizontal">
-                            <Label Text="Location" TextColor="{DynamicResource SecondaryAccent}" HorizontalOptions="Center" HorizontalTextAlignment="Center"/>
-                            <Label Text=" *" VerticalOptions="Center" FontAttributes="Bold" TextColor="{DynamicResource ErrorAccent}"/>
-                        </StackLayout>
-                        <maps:Map x:Name="_cvMiniMap" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" Margin="15,15,15,15" IsZoomEnabled="False" IsScrollEnabled ="False"/>
-                        <Entry x:Name="_entryAddress" Placeholder="{DynamicResource lbl_AddressPlaceholder}" TextColor="{DynamicResource SecondaryAccent}"/>
-                        <!-- User Description -->
-                        <Label Text="{DynamicResource lbl_DescriptionField}" TextColor="{DynamicResource SecondaryAccent}" HorizontalOptions="FillAndExpand" HorizontalTextAlignment="Start"/>
-                        <Editor x:Name="_editorDescription" Placeholder="{DynamicResource lbl_Description}" HorizontalOptions="FillAndExpand" AutoSize="TextChanges"/>
-                        <!-- Main Phone number -->
-                        <Label x:Name="_lblPhoneNumber" Text="{DynamicResource lbl_PhoneField}" TextColor="{DynamicResource SecondaryAccent}" HorizontalOptions="FillAndExpand" HorizontalTextAlignment="Start"/>
-                        <StackLayout Orientation="Horizontal">
-                            <Label x:Name="_lblPlusPhoneNumber" Text="+" TextColor="{DynamicResource SecondaryAccent}" VerticalOptions="Center"/>
-                            <Entry x:Name="_entryPhoneCountryCode" Placeholder="01" Keyboard="Telephone" Margin="5,0,5,0" ReturnType="Next" MaxLength="2"/>
-                            <Entry x:Name="_entryPhoneNumber" Placeholder="000 000 0000" HorizontalOptions="FillAndExpand"  MaxLength="10" Keyboard="Telephone" ReturnType="Done"/>
-                        </StackLayout>
-                        <!-- Note -->
-                        <Label Text="{DynamicResource txt_NotePersonalInfo}" TextColor="{DynamicResource Tertiary}" HorizontalOptions="FillAndExpand" HorizontalTextAlignment="Center"
-                               FontAttributes="Italic"/>
                     </StackLayout>
-                </ScrollView>
-
-                <StackLayout Orientation="Horizontal" HorizontalOptions="Center">
-                    <Button x:Name="_btnSave" CornerRadius="20" BackgroundColor="{DynamicResource Tertiary}" TextColor="{DynamicResource PrimaryAccent}" FontSize="Medium"
-                           Text="{DynamicResource lbl_Save}" Margin="20,20,20,20" Clicked="SaveOnCLickAsync"/>
+                    <!-- Brand Name -->
+                    <StackLayout Orientation="Horizontal">
+                        <Label Text="{DynamicResource lbl_BrandName}" TextColor="{DynamicResource SecondaryAccent}" HorizontalOptions="Center" HorizontalTextAlignment="Center"
+                                Margin="0,20,0,0"/>
+                        <Label Text=" *" VerticalOptions="Center" FontAttributes="Bold" TextColor="{DynamicResource ErrorAccent}" Margin="0,20,0,0"/>
+                    </StackLayout>
+                    <Entry x:Name="_entryBrandName" Placeholder="{DynamicResource lbl_BrandName}" HorizontalOptions="FillAndExpand" 
+                            Keyboard="Email" ReturnType="Next"/>
+                    <!-- Business Name -->
+                    <StackLayout Orientation="Horizontal">
+                        <Label Text="{DynamicResource lbl_BusinessName}" TextColor="{DynamicResource SecondaryAccent}" HorizontalOptions="Center" HorizontalTextAlignment="Center"/>
+                        <Label Text=" *" VerticalOptions="Center" FontAttributes="Bold" TextColor="{DynamicResource ErrorAccent}"/>
+                    </StackLayout>
+                    <Entry x:Name="_entryBusinessName" Placeholder="{DynamicResource lbl_BusinessName}" HorizontalOptions="FillAndExpand" 
+                            Keyboard="Email" ReturnType="Next"/>
+                    <!-- Location -->
+                    <StackLayout Orientation="Horizontal">
+                        <Label Text="Location" TextColor="{DynamicResource SecondaryAccent}" HorizontalOptions="Center" HorizontalTextAlignment="Center"/>
+                        <Label Text=" *" VerticalOptions="Center" FontAttributes="Bold" TextColor="{DynamicResource ErrorAccent}"/>
+                    </StackLayout>
+                    <maps:Map x:Name="_cvMiniMap" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" Margin="15,15,15,15" IsZoomEnabled="False" IsScrollEnabled ="False"/>
+                    <Entry x:Name="_entryAddress" Placeholder="{DynamicResource lbl_AddressPlaceholder}" TextColor="{DynamicResource SecondaryAccent}"/>
+                    <!-- User Description -->
+                    <Label Text="{DynamicResource lbl_DescriptionField}" TextColor="{DynamicResource SecondaryAccent}" HorizontalOptions="FillAndExpand" HorizontalTextAlignment="Start"/>
+                    <Editor x:Name="_editorDescription" Placeholder="{DynamicResource lbl_Description}" HorizontalOptions="FillAndExpand" AutoSize="TextChanges"/>
+                    <!-- Main Phone number -->
+                    <Label x:Name="_lblPhoneNumber" Text="{DynamicResource lbl_PhoneField}" TextColor="{DynamicResource SecondaryAccent}" HorizontalOptions="FillAndExpand" HorizontalTextAlignment="Start"/>
+                    <StackLayout Orientation="Horizontal">
+                        <Label x:Name="_lblPlusPhoneNumber" Text="+" TextColor="{DynamicResource SecondaryAccent}" VerticalOptions="Center"/>
+                        <Entry x:Name="_entryPhoneCountryCode" Placeholder="01" Keyboard="Telephone" Margin="5,0,5,0" ReturnType="Next" MaxLength="2"/>
+                        <Entry x:Name="_entryPhoneNumber" Placeholder="000 000 0000" HorizontalOptions="FillAndExpand"  MaxLength="10" Keyboard="Telephone" ReturnType="Done"/>
+                    </StackLayout>
+                    <!-- Note -->
+                    <Label Text="{DynamicResource txt_NotePersonalInfo}" TextColor="{DynamicResource Tertiary}" HorizontalOptions="FillAndExpand" HorizontalTextAlignment="Center"
+                               FontAttributes="Italic"/>
                 </StackLayout>
+            </ScrollView>
+
+            <StackLayout Orientation="Horizontal" HorizontalOptions="Center">
+                <Button x:Name="_btnSave" CornerRadius="20" BackgroundColor="{DynamicResource Tertiary}" TextColor="{DynamicResource PrimaryAccent}" FontSize="Medium"
+                           Text="{DynamicResource lbl_Save}" Margin="20,20,20,20" Clicked="SaveOnCLickAsync"/>
             </StackLayout>
-        </Frame>
+        </StackLayout>
     </ContentPage.Content>
 
 </ContentPage>
