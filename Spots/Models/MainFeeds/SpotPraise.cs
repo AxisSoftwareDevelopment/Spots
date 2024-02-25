@@ -3,8 +3,9 @@
 public class SpotPraise(string author, string spotReviewed, DateTimeOffset creationDate,
     string comment = "", Dictionary<string, ImageSource>? images = null)
 {
-    public string sAuthor { get; } = author;
-    public string sSpotReviewed { get; } = spotReviewed;
+    public string sPraiseID { get; }
+    public string sAuthorID { get; } = author;
+    public string sSpotReviewedID { get; } = spotReviewed;
     public DateTimeOffset dtCreationDate { get; } = creationDate;
     public string sComment { get; } = comment;
     /// <summary>

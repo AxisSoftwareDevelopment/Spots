@@ -88,7 +88,7 @@ public partial class CP_UpdateUserInformation : ContentPage
                 {
 
                     _user.bUserDataRetrieved = true;
-                    await UserInterface.DisplayPopUp("Success", "Your information has been updated. Way to go!", "OK");
+                    await UserInterface.DisplayPopUp_Regular("Success", "Your information has been updated. Way to go!", "OK");
                     // If the business was empty, it meas we came from the log in.
                     if (_userIsEmpty)
                     {
@@ -108,7 +108,7 @@ public partial class CP_UpdateUserInformation : ContentPage
             else
             {
                 // If the business was updating information, but didnt change any data, we do nothing
-                await UserInterface.DisplayPopUp("Alert", "No information was changed", "OK");
+                await UserInterface.DisplayPopUp_Regular("Alert", "No information was changed", "OK");
                 await Navigation.PopAsync();
             }
         }

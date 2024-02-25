@@ -48,7 +48,7 @@ public partial class CP_Login : ContentPage
                 {
                     // Check if the _user has updated its basic information yet
                     string[] stringResources = ResourceManagement.GetStringResources(Application.Current.Resources, ["lbl_Welcome", "lbl_WelcomeToSpots", "lbl_Ok"]);
-                    await UserInterface.DisplayPopUp(stringResources[0], stringResources[1], stringResources[2]);
+                    await UserInterface.DisplayPopUp_Regular(stringResources[0], stringResources[1], stringResources[2]);
 
                     Application.Current.MainPage = new FP_MainShell(business);
                 }
@@ -56,7 +56,7 @@ public partial class CP_Login : ContentPage
                 {
                     // Setup User Data
                     string[] strings = ResourceManagement.GetStringResources(Resources, ["lbl_FirstTime", "txt_FirstTime", "lbl_Ok"]);
-                    await UserInterface.DisplayPopUp(strings[0], strings[1], strings[2]);
+                    await UserInterface.DisplayPopUp_Regular(strings[0], strings[1], strings[2]);
                     await Navigation.PushAsync(new CP_UpdateBusinessInformation(business, email, password, business.PhoneNumber, business.PhoneCountryCode));
                 }
             }
@@ -79,7 +79,7 @@ public partial class CP_Login : ContentPage
         }
         catch (Exception ex)
         {
-            await UserInterface.DisplayPopUp("Unhandled Error", ex.Message, "OK");
+            await UserInterface.DisplayPopUp_Regular("Unhandled Error", ex.Message, "OK");
         }
     }
 
@@ -94,7 +94,7 @@ public partial class CP_Login : ContentPage
                 if (user.bUserDataRetrieved)
                 {
                     // Check if the _user has updated its basic information yet
-                    await UserInterface.DisplayPopUp("Welcome!", "Welcome to spots!", "OK");
+                    await UserInterface.DisplayPopUp_Regular("Welcome!", "Welcome to spots!", "OK");
 
                     Application.Current.MainPage = new FP_MainShell(user);
                 }
@@ -102,7 +102,7 @@ public partial class CP_Login : ContentPage
                 {
                     // Setup User Data
                     string[] strings = ResourceManagement.GetStringResources(Resources, ["lbl_FirstTime", "txt_FirstTime", "lbl_Ok"]);
-                    await UserInterface.DisplayPopUp(strings[0], strings[1], strings[2]);
+                    await UserInterface.DisplayPopUp_Regular(strings[0], strings[1], strings[2]);
                     await Navigation.PushAsync(new CP_UpdateUserInformation(user, email, password));
                 }
             }
@@ -125,7 +125,7 @@ public partial class CP_Login : ContentPage
         }
         catch (Exception ex)
         {
-            await UserInterface.DisplayPopUp("Unhandled Error", ex.Message, "OK");
+            await UserInterface.DisplayPopUp_Regular("Unhandled Error", ex.Message, "OK");
         }
     }
 

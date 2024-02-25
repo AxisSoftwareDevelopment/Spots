@@ -2,15 +2,15 @@ namespace Spots;
 
 public partial class CP_SideUserMenu : ContentPage
 {
-	INavigation _Navigation;
-    FlyoutPage _Flyout;
+	readonly INavigation _Navigation;
+    readonly FlyoutPage _Flyout;
     public CP_SideUserMenu(INavigation navigation, FlyoutPage flyoutPage)
     {
         _Navigation = navigation;
         _Flyout = flyoutPage;
         DisplayInfo displayInfo = DeviceDisplay.MainDisplayInfo;
         double profilePictureDimensions = displayInfo.Height * 0.065;
-        TapGestureRecognizer layoutTapRecognizer = new TapGestureRecognizer();
+        TapGestureRecognizer layoutTapRecognizer = new();
         layoutTapRecognizer.Tapped += (s, e) => {};
 
         InitializeComponent();
@@ -49,7 +49,7 @@ public partial class CP_SideUserMenu : ContentPage
 
     private async void LogOutOnClickedAsync(object sender, EventArgs e)
     {
-        if (await UserInterface.DisplayPopUp("Log Out", "Are you sure?", "Yes", "Cancel"))
+        if (await UserInterface.DisplayPopPup_Choice("Log Out", "Are you sure?", "Yes", "Cancel"))
             CurrentSession.CloseSession(shouldUpdateMainPage: true);
     }
 

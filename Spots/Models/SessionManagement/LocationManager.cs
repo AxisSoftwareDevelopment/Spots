@@ -39,7 +39,7 @@ public static class LocationManager
             if(Application.Current != null)
             {
                 string[] stringResources = ResourceManagement.GetStringResources(Application.Current.Resources, new string[] { "lbl_Error", "lbl_GeolocationError", "lbl_Ok" });
-                await UserInterface.DisplayPopUp(stringResources[0], stringResources[1], stringResources[2]);
+                await UserInterface.DisplayPopUp_Regular(stringResources[0], stringResources[1], stringResources[2]);
             }
         }
         return location;

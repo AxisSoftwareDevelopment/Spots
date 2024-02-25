@@ -8,11 +8,21 @@ namespace Spots;
 
 public static class UserInterface
 {
-    public static async Task DisplayPopUp(string title, string message, string button)
+    public static async Task DisplayPopUp_Regular(string title, string message, string button)
     {
         if (Application.Current != null && Application.Current.MainPage != null)
         {
             await Application.Current.MainPage.DisplayAlert(title, message, button);
         }
+    }
+
+    public static async Task<bool> DisplayPopPup_Choice(string title, string message, string button_True, string button_False)
+    {
+        if (Application.Current != null && Application.Current.MainPage != null)
+        {
+            return await Application.Current.MainPage.DisplayAlert(title, message, button_True, button_False);
+        }
+
+        return false;
     }
 }
