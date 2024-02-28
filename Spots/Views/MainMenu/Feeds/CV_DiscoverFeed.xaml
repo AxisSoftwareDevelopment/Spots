@@ -9,7 +9,9 @@
             <CollectionView.ItemTemplate>
                 <DataTemplate>
                     <StackLayout Orientation="Horizontal" BackgroundColor="{DynamicResource Secondary}" HorizontalOptions="FillAndExpand" Margin="5,5">
-                        <Image Source="{Binding ProfilePictureAddress}" HeightRequest="125" WidthRequest="125" BackgroundColor="{DynamicResource Primary}"/>
+                        <StackLayout>
+                            <Image Source="{Binding ProfilePictureAddress}" HeightRequest="125" WidthRequest="125" BackgroundColor="{DynamicResource Primary}"/>
+                        </StackLayout>
                         <StackLayout Orientation="Vertical" HorizontalOptions="FillAndExpand" Margin="5,5">
                             <Label Text="{Binding BusinessName}" FontSize="Title" FontAttributes="Bold" TextColor="{DynamicResource SecondaryAccent}" MaxLines="2"/>
                             <Label Text="{Binding BrandName}" FontSize="Small" FontAttributes="Italic" HorizontalTextAlignment="End" TextColor="{DynamicResource Tertiary}"

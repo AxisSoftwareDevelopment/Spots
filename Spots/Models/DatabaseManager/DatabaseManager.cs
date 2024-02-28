@@ -34,7 +34,7 @@ public static class DatabaseManager
         User user;
         if (getUser)
         {
-            user = await GetUserDataAsync(iFUser);
+            user = await GetUserDataAsync(iFUser.Uid);
             if (!user.bUserDataRetrieved)
                 await LogOutAsync();
         }
@@ -67,7 +67,7 @@ public static class DatabaseManager
         BusinessUser user;
         if (getUser)
         {
-            user = await GetBusinessDataAsync(iFUser);
+            user = await GetBusinessDataAsync(iFUser.Uid);
             if (!user.userDataRetrieved)
                 await LogOutAsync();
         }
@@ -102,12 +102,12 @@ public static class DatabaseManager
             {
                 if (CrossFirebaseAuth.Current.CurrentUser.DisplayName.Equals("Business"))
                 {
-                    BusinessUser user = await GetBusinessDataAsync(CrossFirebaseAuth.Current.CurrentUser);
+                    BusinessUser user = await GetBusinessDataAsync(CrossFirebaseAuth.Current.CurrentUser.Uid);
                     CurrentSession.StartSession(user);
                 }
                 else
                 {
-                    User user = await GetUserDataAsync(CrossFirebaseAuth.Current.CurrentUser);
+                    User user = await GetUserDataAsync(CrossFirebaseAuth.Current.CurrentUser.Uid);
                     CurrentSession.StartSession(user);
                 }
                 return true;
@@ -176,17 +176,18 @@ public static class DatabaseManager
     #endregion
 
     #region Private Methods
-    private async static Task<User> GetUserDataAsync(IFirebaseUser firebaseUser)
+    private async static Task<User> GetUserDataAsync(string userID)
     {
         IDocumentSnapshot<User> documentSnapshot = await CrossFirebaseFirestore.Current
             .GetCollection("UserData")
-            .GetDocument(firebaseUser.Uid)
+            .GetDocument(userID)
             .GetDocumentSnapshotAsync<User>();
 
-        User user = new() { UserID = firebaseUser.Uid, Email = firebaseUser.Email };
+        User user = new() { UserID = userID };
         // If there is no _user data in the database
         if (documentSnapshot.Data != null)
         {
+            user.Email = documentSnapshot.Data.Email;
             user.FirstName = documentSnapshot.Data.FirstName;
             user.LastName = documentSnapshot.Data.LastName;
             user.BirthDate = documentSnapshot.Data.BirthDate;
@@ -199,28 +200,28 @@ public static class DatabaseManager
             ImageSource? imageSource = null;
             if (!documentSnapshot.Data.ProfilePictureAddress.Equals("null"))
             {
-                Uri imageUri = new( await GetImageDownloadLink(documentSnapshot.Data.ProfilePictureAddress) );
+                Uri imageUri = new(await GetImageDownloadLink(documentSnapshot.Data.ProfilePictureAddress));
 
                 imageSource = ImageSource.FromUri(imageUri);
             }
-            if(imageSource != null)
+            if (imageSource != null)
                 user.ProfilePictureSource = imageSource;
         }
 
         return user;
     }
-
-    private async static Task<BusinessUser> GetBusinessDataAsync(IFirebaseUser firebaseUser)
+    private async static Task<BusinessUser> GetBusinessDataAsync(string bussinessID)
     {
         IDocumentSnapshot<BusinessUser> documentSnapshot = await CrossFirebaseFirestore.Current
             .GetCollection("BusinessData")
-            .GetDocument(firebaseUser.Uid)
+            .GetDocument(bussinessID)
             .GetDocumentSnapshotAsync<BusinessUser>();
 
-        BusinessUser user = new() { UserID = firebaseUser.Uid, Email = firebaseUser.Email };
+        BusinessUser user = new() { UserID = bussinessID };
         // If there is no _user data in the database
         if (documentSnapshot.Data != null)
         {
+            user.Email = documentSnapshot.Data.Email;
             user.BrandName = documentSnapshot.Data.BrandName;
             user.BusinessName = documentSnapshot.Data.BusinessName;
             user.Location = documentSnapshot.Data.Location;
