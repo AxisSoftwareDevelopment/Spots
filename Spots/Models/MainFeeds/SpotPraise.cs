@@ -64,19 +64,6 @@ public class SpotPraise
     //    }
     //}
 
-    public SpotPraise()
-    {
-        PraiseID = "";
-        AuthorID = "";
-        AuthorFullName = "";
-        AuthorPictureAddress = "placeholder_logo.jpg";
-        SpotID = "";
-        SpotFullName = "";
-        CreationDate = new DateTimeOffset();
-        Comment = "";
-        AttachedPictureAddress = "";
-    }
-
     public SpotPraise(string praiseID, string author, string authorFullName, string spotReviewed, string spotFullName, DateTimeOffset creationDate,
         string authorPicture = "placeholder_logo.jpg", string spotPicture = "placeholder_logo.jpg", string comment = "", string pictureAddress = "")
     {

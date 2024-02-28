@@ -1,41 +1,35 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:local="clr-namespace:Spots"
              x:Class="Spots.CV_MainFeed">
-    
-    <ContentView.Resources>
-        <DataTemplate x:Key="EmptyPraise_Template">
-        </DataTemplate>
-        <DataTemplate x:Key="SpotPraise_Template">
-            <Border Margin="5, 0, 5, 5" StrokeShape="RoundRectangle 5,5,5,5" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="{DynamicResource Secondary}">
-                <StackLayout Orientation="Horizontal" BackgroundColor="{DynamicResource Secondary}" HorizontalOptions="FillAndExpand" Margin="5,5">
-                    <StackLayout>
-                        <Image Source="{Binding AuthorPictureAddress}" HeightRequest="125" WidthRequest="125" BackgroundColor="{DynamicResource Primary}"/>
-                    </StackLayout>
-                    <StackLayout Orientation="Vertical" HorizontalOptions="FillAndExpand" Margin="5,5">
-                        <Label Text="{Binding SpotFullName}" FontSize="Title" FontAttributes="Bold" TextColor="{DynamicResource SecondaryAccent}" MaxLines="2"/>
-                        <Label Text="{Binding AuthorFullName}" FontSize="Small" FontAttributes="Italic" HorizontalTextAlignment="End" TextColor="{DynamicResource Tertiary}"
-                            MaxLines="1"/>
-                        <Label Text="{Binding Comment}" FontSize="Body" LineBreakMode="WordWrap" TextColor="{DynamicResource SecondaryAccent}" MaxLines="2"/>
-                        <Image Source="{Binding AttachedPictureAddress}"/>
-                    </StackLayout>
-                </StackLayout>
-            </Border>
-        </DataTemplate>
-        <local:MainFeedDataTemplateSelector x:Key="_MainFeedDataTemplateSelector"
-                                        tEmptyPraise="{StaticResource EmptyPraise_Template}"
-                                        tSpotPraise="{StaticResource SpotPraise_Template}"/>
-    </ContentView.Resources>
 
     <StackLayout Orientation="Vertical" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" BackgroundColor="{DynamicResource Tertiary}">
         <StackLayout Orientation="Horizontal" HorizontalOptions="Center">
             <Button x:Name="_btnWritePraise" CornerRadius="10" BackgroundColor="{DynamicResource Primary}" TextColor="{DynamicResource PrimaryAccent}" FontSize="Small"
-                Text="Write Praise" Margin="5,5,5,0" />
+                Text="Write Praise" Margin="5,5,5,5" />
         </StackLayout>
         <ScrollView HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
             <CollectionView x:Name="_colFeed" HorizontalOptions="FillAndExpand" HorizontalScrollBarVisibility="Never" VerticalScrollBarVisibility="Never" 
-                    BackgroundColor="{DynamicResource Tertiary}" ItemTemplate="{StaticResource _MainFeedDataTemplateSelector}"/>
+                    BackgroundColor="{DynamicResource Tertiary}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Border Margin="5, 0, 5, 5" StrokeShape="RoundRectangle 5,5,5,5" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="{DynamicResource Secondary}">
+                            <StackLayout Orientation="Horizontal" BackgroundColor="{DynamicResource Secondary}" HorizontalOptions="FillAndExpand" Margin="5,5">
+                                <StackLayout>
+                                    <Image Source="{Binding AuthorPictureAddress}" HeightRequest="125" WidthRequest="125" BackgroundColor="{DynamicResource Primary}"/>
+                                </StackLayout>
+                                <StackLayout Orientation="Vertical" HorizontalOptions="FillAndExpand" Margin="5,5">
+                                    <Label Text="{Binding SpotFullName}" FontSize="Title" FontAttributes="Bold" TextColor="{DynamicResource SecondaryAccent}" MaxLines="2"/>
+                                    <Label Text="{Binding AuthorFullName}" FontSize="Small" FontAttributes="Italic" HorizontalTextAlignment="End" TextColor="{DynamicResource Tertiary}"
+                    MaxLines="1"/>
+                                    <Label Text="{Binding Comment}" FontSize="Body" LineBreakMode="WordWrap" TextColor="{DynamicResource SecondaryAccent}" MaxLines="2"/>
+                                    <Image Source="{Binding AttachedPictureAddress}"/>
+                                </StackLayout>
+                            </StackLayout>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
         </ScrollView>
     </StackLayout>
     

@@ -9,7 +9,6 @@ public partial class CV_MainFeed : ContentView
 		InitializeComponent();
 		ObservableCollection<SpotPraise> spotPraises = new ObservableCollection<SpotPraise>
 		{
-			new SpotPraise(),
 			new SpotPraise("Test", "Gaston TV", "Gaston TV", "MC Donalds", "MC Donalds", new DateTimeOffset(),
 			comment: "Very Good Burgers!"),
             new SpotPraise("Test", "Gaston TV", "Gaston TV", "MC Donalds", "MC Donalds", new DateTimeOffset(),
