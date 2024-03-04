@@ -1,25 +1,27 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="Spots.CV_DiscoverFeed">
-             
-    <ScrollView HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
-        <CollectionView x:Name="_colFeed" HorizontalOptions="FillAndExpand" HorizontalScrollBarVisibility="Never" VerticalScrollBarVisibility="Never" 
-                    BackgroundColor="{DynamicResource Secondary}">
+             x:Class="Spots.CV_DiscoverFeed"
+             BackgroundColor="{DynamicResource Tertiary}">
+
+    <ScrollView HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" Margin="0,5,0,0">
+        <CollectionView x:Name="_colFeed" HorizontalOptions="FillAndExpand" HorizontalScrollBarVisibility="Never" VerticalScrollBarVisibility="Never">
             <CollectionView.ItemTemplate>
                 <DataTemplate>
                     <ContentView>
-                        <StackLayout Orientation="Horizontal" BackgroundColor="{DynamicResource Secondary}" HorizontalOptions="FillAndExpand" Margin="5,5">
-                            <StackLayout>
-                                <Image Source="{Binding ProfilePictureAddress}" HeightRequest="125" WidthRequest="125" BackgroundColor="{DynamicResource Primary}"/>
-                            </StackLayout>
-                            <StackLayout Orientation="Vertical" HorizontalOptions="FillAndExpand" Margin="5,5">
-                                <Label Text="{Binding BusinessName}" FontSize="Title" FontAttributes="Bold" TextColor="{DynamicResource SecondaryAccent}" MaxLines="2"/>
-                                <Label Text="{Binding BrandName}" FontSize="Small" FontAttributes="Italic" HorizontalTextAlignment="End" TextColor="{DynamicResource Tertiary}"
+                        <Border Margin="5, 0, 5, 5" StrokeShape="RoundRectangle 5,5,5,5" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="{DynamicResource Secondary}">
+                            <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" Margin="5,5">
+                                <StackLayout>
+                                    <Image Source="{Binding ProfilePictureAddress}" HeightRequest="125" WidthRequest="125" BackgroundColor="{DynamicResource Primary}"/>
+                                </StackLayout>
+                                <StackLayout Orientation="Vertical" HorizontalOptions="FillAndExpand" Margin="5,5">
+                                    <Label Text="{Binding BusinessName}" FontSize="Title" FontAttributes="Bold" TextColor="{DynamicResource SecondaryAccent}" MaxLines="2"/>
+                                    <Label Text="{Binding BrandName}" FontSize="Small" FontAttributes="Italic" HorizontalTextAlignment="End" TextColor="{DynamicResource Tertiary}"
                                        MaxLines="1"/>
-                                <Label Text="{Binding Location.Address}" FontSize="Body" LineBreakMode="WordWrap" TextColor="{DynamicResource SecondaryAccent}" MaxLines="2"/>
+                                    <Label Text="{Binding Location.Address}" FontSize="Body" LineBreakMode="WordWrap" TextColor="{DynamicResource SecondaryAccent}" MaxLines="2"/>
+                                </StackLayout>
                             </StackLayout>
-                        </StackLayout>
+                        </Border>
                     </ContentView>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
