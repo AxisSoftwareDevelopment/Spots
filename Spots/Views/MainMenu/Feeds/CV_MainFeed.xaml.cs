@@ -1,5 +1,3 @@
-using Kotlin;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 
 namespace Spots;
