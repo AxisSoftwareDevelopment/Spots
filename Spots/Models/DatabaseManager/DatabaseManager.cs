@@ -1,5 +1,4 @@
-﻿using Spots;
-using Plugin.Firebase.Auth;
+﻿using Plugin.Firebase.Auth;
 using Plugin.Firebase.Firestore;
 using Plugin.Firebase.Core.Exceptions;
 using Plugin.Firebase.Storage;
@@ -9,7 +8,7 @@ public static class DatabaseManager
 {
     const long MAX_IMAGE_STREAM_SIZE = 1 * 1024 * 1024;
 
-    public static IFirebaseAuth firebaseAuth = CrossFirebaseAuth.Current;
+    private static readonly IFirebaseAuth firebaseAuth = CrossFirebaseAuth.Current;
 
     #region Public Methods
     public static async Task<User> LogInUserAsync(string email, string password, bool getUser = true)
@@ -21,7 +20,7 @@ public static class DatabaseManager
 
         IFirebaseUser iFUser = await CrossFirebaseAuth.Current.SignInWithEmailAndPasswordAsync(email, password, false);
 
-        bool isBusinessUser = iFUser.DisplayName != null ? iFUser.DisplayName.Equals("Business") : false;
+        bool isBusinessUser = iFUser.DisplayName != null && iFUser.DisplayName.Equals("Business");
         if (isBusinessUser)
         {
             await LogOutAsync();
@@ -54,7 +53,7 @@ public static class DatabaseManager
 
         IFirebaseUser iFUser = await CrossFirebaseAuth.Current.SignInWithEmailAndPasswordAsync(email, password, false);
 
-        bool isBusinessUser = iFUser.DisplayName != null ? iFUser.DisplayName.Equals("Business") : false;
+        bool isBusinessUser = iFUser.DisplayName != null && iFUser.DisplayName.Equals("Business");
         if (!isBusinessUser)
         {
             await LogOutAsync();
@@ -82,9 +81,8 @@ public static class DatabaseManager
     {
         await CrossFirebaseAuth.Current.CreateUserAsync(email, password);
         await CrossFirebaseAuth.Current.CurrentUser.UpdateProfileAsync(displayName: isBusinessUser ? "Business" : "User");
-        bool x;
         if (isBusinessUser)
-            x = await SaveBusinessDataAsync(new BusinessUser() { UserID = CrossFirebaseAuth.Current.CurrentUser.Uid, Email = email, PhoneNumber = phoneNunber, PhoneCountryCode = phoneCountryCode });
+            await SaveBusinessDataAsync(new BusinessUser() { UserID = CrossFirebaseAuth.Current.CurrentUser.Uid, Email = email, PhoneNumber = phoneNunber, PhoneCountryCode = phoneCountryCode });
 
         string? id = CrossFirebaseAuth.Current.CurrentUser?.Uid;
         if (id == null || id.Length == 0 )
@@ -172,6 +170,37 @@ public static class DatabaseManager
         string imageStream = await storageRef.GetDownloadUrlAsync();
 
         return imageStream;
+    }
+
+    public static async Task<List<SpotPraise>> FetchSpotPraises(SpotPraise? lastPraise = null)
+    {
+        List<SpotPraise> spotPraises = [];
+        IQuerySnapshot<SpotPraise> documentReference;
+
+        if (lastPraise != null)
+        {
+            IDocumentSnapshot<SpotPraise> documentSnapshot = await CrossFirebaseFirestore.Current.GetCollection("SpotPraises").GetDocument(lastPraise?.SpotID).GetDocumentSnapshotAsync<SpotPraise>();
+
+            documentReference = await CrossFirebaseFirestore.Current.GetCollection("SpotPraises")
+            .OrderBy("CreationDate")
+            .StartingAt(documentSnapshot)
+            .LimitedTo(5)
+            .GetDocumentsAsync<SpotPraise>();
+        }
+        else
+        {
+            documentReference = await CrossFirebaseFirestore.Current.GetCollection("SpotPraises")
+            .OrderBy("CreationDate")
+            .LimitedTo(5)
+            .GetDocumentsAsync<SpotPraise>();
+        }
+
+        foreach(var document in documentReference.Documents)
+        {
+            spotPraises.Add(document.Data);
+        }
+
+        return spotPraises;
     }
     #endregion
 

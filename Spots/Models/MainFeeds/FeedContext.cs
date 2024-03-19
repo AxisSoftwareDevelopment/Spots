@@ -5,8 +5,11 @@ namespace Spots;
 
 public class FeedContext<T> : BindableObject, INotifyPropertyChanged
 {
+    private readonly object _syncRoot = new object();
+
     new public event PropertyChangedEventHandler? PropertyChanged;
     public ObservableCollection<T> ItemSource { get; }
+    public T? LastItemFetched { get; private set; }
 
     public FeedContext()
     {
@@ -15,20 +18,26 @@ public class FeedContext<T> : BindableObject, INotifyPropertyChanged
 
     public void AddElements(List<T> elements)
     {
-        foreach (T element in elements)
+        lock(_syncRoot)
         {
-            ItemSource.Add(element);
+            foreach (T element in elements)
+            {
+                ItemSource.Add(element);
+            }
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ItemSource)));
         }
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ItemSource)));
     }
 
     public void RefreshFeed(List<T> elements)
     {
-        ItemSource.Clear();
-        foreach (T element in elements)
+        lock(_syncRoot)
         {
-            ItemSource.Add(element);
+            ItemSource.Clear();
+            foreach (T element in elements)
+            {
+                ItemSource.Add(element);
+            }
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ItemSource)));
         }
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ItemSource)));
     }
 }
