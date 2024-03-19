@@ -2,9 +2,8 @@ using System.ComponentModel;
 
 namespace Spots;
 
-public partial class CV_MainFeed : ContentView, INotifyPropertyChanged
+public partial class CV_MainFeed : ContentView
 {
-    new public event PropertyChangedEventHandler? PropertyChanged;
 	private readonly FeedContext<SpotPraise> CurrentFeedContext = new();
 	private uint count = 0;
 
@@ -23,7 +22,12 @@ public partial class CV_MainFeed : ContentView, INotifyPropertyChanged
         MainThread.BeginInvokeOnMainThread(async () => await RefreshFeed());
 	}
 
-	private async Task RefreshFeed()
+    private void _btnWritePraise_Clicked(object? sender, EventArgs e)
+    {
+		Navigation.PushAsync(new CP_UpdateSpotPraise());
+    }
+
+    private async Task RefreshFeed()
 	{
 		count = 0;
 		CurrentFeedContext.RefreshFeed(await FetchPraises());

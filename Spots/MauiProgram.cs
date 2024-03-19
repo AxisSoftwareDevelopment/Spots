@@ -56,7 +56,7 @@ public static class MauiProgram
 
     private static CrossFirebaseSettings CreateCrossFirebaseSettings()
     {
-        CrossFirebaseSettings settings = new CrossFirebaseSettings(
+        CrossFirebaseSettings settings = new(
             isAnalyticsEnabled: true,
             isAuthEnabled: true,
             isCloudMessagingEnabled: false,

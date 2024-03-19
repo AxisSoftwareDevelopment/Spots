@@ -6,7 +6,7 @@
     <StackLayout Orientation="Vertical" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" BackgroundColor="{DynamicResource Tertiary}">
         <StackLayout Orientation="Horizontal" HorizontalOptions="Center">
             <Button x:Name="_btnWritePraise" CornerRadius="10" BackgroundColor="{DynamicResource Primary}" TextColor="{DynamicResource PrimaryAccent}" FontSize="Small"
-                Text="Write Praise" Margin="5,5,5,5" />
+                Text="Write Praise" Margin="5,5,5,5" Clicked="_btnWritePraise_Clicked"/>
         </StackLayout>
         <RefreshView x:Name="_refreshView">
             <CollectionView x:Name="_colFeed" HorizontalOptions="FillAndExpand" HorizontalScrollBarVisibility="Never" VerticalScrollBarVisibility="Never" BackgroundColor="{DynamicResource Tertiary}"

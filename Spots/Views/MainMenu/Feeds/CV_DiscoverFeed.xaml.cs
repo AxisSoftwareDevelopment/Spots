@@ -3,10 +3,9 @@ using System.ComponentModel;
 
 namespace Spots;
 
-public partial class CV_DiscoverFeed : ContentView, INotifyPropertyChanged
+public partial class CV_DiscoverFeed : ContentView
 {
-    new public event PropertyChangedEventHandler? PropertyChanged;
-    private FeedContext<BusinessUser> CurrentFeedContext = new();
+    private readonly FeedContext<BusinessUser> CurrentFeedContext = new();
     private uint count = 0;
 	public CV_DiscoverFeed()
 	{

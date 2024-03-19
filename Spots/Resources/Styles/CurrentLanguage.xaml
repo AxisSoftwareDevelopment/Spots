@@ -55,12 +55,18 @@
     <x:String x:Key="lbl_Apply">Apply</x:String> <!-- Label that indicates Apply changes -->
     <x:String x:Key="lbl_Cancel">Cancel</x:String> <!-- Label that indicates Cancelation -->
     <x:String x:Key="lbl_SelectLocation">Select Location</x:String> <!-- Label that indicates the user to select a location -->
-    <x:String x:Key="lbl_AddressPlaceholder">Street #0000 CP Country City</x:String> <!-- Label that contains a placeholder for a geographical Address -->
+    <x:String x:Key="lbl_AddressPlaceholder">Street #0000 CP Coulbl_Descriptionntry City</x:String> <!-- Label that contains a placeholder for a geographical Address -->
     <x:String x:Key="lbl_Welcome">Welcome!</x:String> <!-- Label that greets the user with short text -->
     <x:String x:Key="lbl_WelcomeToSpots">Welcome to Spots!</x:String> <!-- Label that greets the user to Spots App -->
     <x:String x:Key="lbl_ConnectionError">Connection Error</x:String> <!-- Label that indicates a Connection Error -->
     <x:String x:Key="lbl_Retry">Retry</x:String> <!-- Label that indicates to try again -->
     <x:String x:Key="lbl_Error">Error</x:String> <!-- Label that indicates an Error-->
+    <x:String x:Key="lbl_WriteSpotReview">Write Spot Review</x:String> <!-- Label that indicates an Error-->
+    <x:String x:Key="lbl_SpotSearchBar">Spot</x:String> <!-- Label that indicates business Brand Name -->
+    <x:String x:Key="lbl_Brand">Profile Picture:</x:String> <!-- Label that indicates the profile picture field -->
+    <x:String x:Key="lbl_SpotName">Spot Name</x:String> <!-- Label that indicates business Brand Name -->
+    <x:String x:Key="lbl_AddReviewComment">Add a comment:</x:String> <!-- Label that indicates the profile picture field -->
+    <x:String x:Key="lbl_YourComment">Your Comment</x:String> <!-- Label that indicates Description section -->
 
     <x:String x:Key="txt_ConfirmLogOut">Are you sure you want to want to log out?</x:String> <!-- Text that questions the user if is sure of logout action -->
     <x:String x:Key="txt_LogIn">Log in to your account</x:String> <!-- Log in text -->
