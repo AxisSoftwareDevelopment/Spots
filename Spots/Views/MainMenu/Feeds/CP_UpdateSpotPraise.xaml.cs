@@ -23,17 +23,14 @@ public partial class CP_UpdateSpotPraise : ContentPage
 
     private void _entrySpotSearchBar_TextChanged(object? sender, TextChangedEventArgs e)
     {
-        RefreshSearchResults(_entrySpotSearchBar.Text);
+        MainThread.BeginInvokeOnMainThread(async () => await RefreshSearchResults(_entrySpotSearchBar.Text));
     }
 
-    private void RefreshSearchResults(string searchInput)
+    private async Task RefreshSearchResults(string searchInput)
     {
         if(searchInput.Length > 0)
         {
-            Task.Run(async () =>
-            {
-                SearchBoxContext.RefreshFeed(await FetchBussinesses(searchInput));
-            });
+            SearchBoxContext.RefreshFeed(await FetchBussinesses(searchInput));
         }
         else
         {
