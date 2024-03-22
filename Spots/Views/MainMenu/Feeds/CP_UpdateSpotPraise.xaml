@@ -22,7 +22,7 @@
                         <Label Text=" *" VerticalOptions="Center" FontAttributes="Bold" TextColor="{DynamicResource ErrorAccent}" Margin="0,20,0,0"/>
                     </StackLayout>
                     <Entry x:Name="_entrySpotSearchBar"/>
-                    <CollectionView x:Name="_colSearchBarCollectionView" HorizontalOptions="FillAndExpand" BackgroundColor="Red" ItemsSource="{Binding ItemSource}">
+                    <CollectionView x:Name="_colSearchBarCollectionView" HorizontalOptions="FillAndExpand" BackgroundColor="Red" ItemsSource="{Binding ItemSource}" SelectionMode="Single">
                         <CollectionView.ItemTemplate>
                             <DataTemplate>
                                 <ContentView>
@@ -40,7 +40,7 @@
                             </DataTemplate>
                         </CollectionView.ItemTemplate>
                     </CollectionView>
-                    <Label Text="Brand" TextColor="{DynamicResource SecondaryAccent}" HorizontalOptions="FillAndExpand" HorizontalTextAlignment="Center" Margin="0,20,0,0"/>
+                    <Label x:Name="_lblBrand" Text="Brand" TextColor="{DynamicResource SecondaryAccent}" FontAttributes="Bold" HorizontalOptions="FillAndExpand" HorizontalTextAlignment="Center" Margin="0,20,0,0"/>
                     <!-- Profile Picture -->
                     <Border x:Name="_FrameSpotPicture" Padding="0" Margin="15,15,15,0" StrokeShape="RoundRectangle 500" BackgroundColor="{DynamicResource Tertiary}">
                         <Image x:Name="_SpotImage" Aspect="AspectFill"/>
@@ -49,8 +49,9 @@
                     <Label Text="{DynamicResource lbl_AddReviewComment}" TextColor="{DynamicResource SecondaryAccent}" HorizontalOptions="FillAndExpand" HorizontalTextAlignment="Start"/>
                     <Editor x:Name="_editorDescription" Placeholder="{DynamicResource lbl_YourComment}" HorizontalOptions="FillAndExpand" AutoSize="TextChanges"/>
                     <!-- Attachment Picture -->
-                    <Button x:Name="_btnLoadImage" Text="{DynamicResource lbl_LoadImage}" BackgroundColor="{DynamicResource Tertiary}" TextColor="{DynamicResource PrimaryAccent}" VerticalOptions="Center"/>
-                    <Image x:Name="_AttachmentImage" Aspect="AspectFill"/>
+                    <Button x:Name="_btnLoadImage" Text="{DynamicResource lbl_LoadImage}" BackgroundColor="{DynamicResource Tertiary}" TextColor="{DynamicResource PrimaryAccent}" VerticalOptions="Center"
+                            Clicked="LoadImageOnClickAsync"/>
+                    <Image x:Name="_imgAttachmentImage" Aspect="AspectFill" Margin="10, 10"/>
                 </StackLayout>
             </ScrollView>
         </StackLayout>

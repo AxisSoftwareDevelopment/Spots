@@ -161,14 +161,14 @@ public class BusinessUser : BindableObject, INotifyPropertyChanged
         Praises = [];
     }
 
-    public BusinessUser(string userID, string brandName, string businessName, string email, string? profilePictureAddress = null, ImageSource? profilePictureSource = null,
-        string? phoneNumber = null, string? phoneCountryCode = null, string? description = null, FirebaseLocation? location = null, List<string>? praises = null)
+    public BusinessUser(string userID, string brandName, string businessName, string email, string profilePictureAddress = "", ImageSource? profilePictureSource = null,
+        string phoneNumber = "", string phoneCountryCode = "", string description = "", FirebaseLocation? location = null, List<string>? praises = null)
     {
         UserID = userID;
         BrandName = brandName;
         BusinessName = businessName;
         Email = email;
-        ProfilePictureAddress = profilePictureAddress ?? "";
+        ProfilePictureAddress = profilePictureAddress;
         ProfilePictureSource = profilePictureSource ?? ImageSource.FromFile("placeholder_logo.jpg");
         PhoneNumber = phoneNumber ?? "";
         PhoneCountryCode = phoneCountryCode ?? "";

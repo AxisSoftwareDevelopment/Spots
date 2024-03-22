@@ -44,7 +44,7 @@ public partial class CV_MainFeed : ContentView
 	private async Task<List<SpotPraise>> FetchPraises(SpotPraise? lastItemFetched = null)
 	{
 		return [new SpotPraise("Test", "Gaston TV", "Gaston TV", "MC Donalds", count++.ToString() + "MC Donalds", new DateTimeOffset(), comment: "Very Good Burgers!"),
-			new SpotPraise("Test", "Gaston TV", "Gaston TV", "MC Donalds", count++.ToString() + "MC Donalds", new DateTimeOffset(), comment: "Very Good Burgers! Here is a picture:", pictureAddress: "placeholder_logo.jpg"),
+			new SpotPraise("Test", "Gaston TV", "Gaston TV", "MC Donalds", count++.ToString() + "MC Donalds", new DateTimeOffset(), comment: "Very Good Burgers! Here is a picture:", attachedPicture: ImageSource.FromFile("placeholder_logo.jpg")),
             new SpotPraise("Test", "Gaston TV", "Gaston TV", "MC Donalds", count++.ToString() + "MC Donalds", new DateTimeOffset(), comment: "Very Good Burgers!"),
             new SpotPraise("Test", "Gaston TV", "Gaston TV", "MC Donalds", count++.ToString() + "MC Donalds", new DateTimeOffset(), comment: "Very Good Burgers!"),
             new SpotPraise("Test", "Gaston TV", "Gaston TV", "MC Donalds", count++.ToString() + "MC Donalds", new DateTimeOffset(), comment: "Very Good Burgers!")];

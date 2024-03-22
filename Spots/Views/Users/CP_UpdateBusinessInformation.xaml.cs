@@ -275,7 +275,7 @@ public partial class CP_UpdateBusinessInformation : ContentPage
         _lblRegisterError.IsVisible = false;
     }
 
-    private string ToTitleCase(string inputText)
+    private static string ToTitleCase(string inputText)
     {
         return CultureInfo.CurrentCulture.TextInfo.ToTitleCase(inputText.ToLower());
     }

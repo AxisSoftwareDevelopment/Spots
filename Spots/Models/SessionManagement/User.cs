@@ -90,7 +90,7 @@ public class User : BindableObject, INotifyPropertyChanged
     [FirestoreProperty(nameof(PhoneNumber))]
     public string PhoneNumber
     {
-        get => _PhoneNumber ?? "null";
+        get => _PhoneNumber ?? "";
         set
         {
             _PhoneNumber = value;
@@ -100,7 +100,7 @@ public class User : BindableObject, INotifyPropertyChanged
     [FirestoreProperty(nameof(PhoneCountryCode))]
     public string PhoneCountryCode
     {
-        get => _PhoneCountryCode ?? "null";
+        get => _PhoneCountryCode ?? "";
         set
         {
             _PhoneCountryCode = value;
@@ -110,7 +110,7 @@ public class User : BindableObject, INotifyPropertyChanged
     [FirestoreProperty(nameof(Description))]
     public string Description
     {
-        get => _Description ?? "null";
+        get => _Description ?? "";
         set
         {
             _Description = value;
@@ -120,7 +120,7 @@ public class User : BindableObject, INotifyPropertyChanged
     [FirestoreProperty(nameof(ProfilePictureAddress))]
     public string ProfilePictureAddress
     {
-        get => _ProfilePictureAddress ?? "null";
+        get => _ProfilePictureAddress ?? "";
         set
         {
             _ProfilePictureAddress = value;
@@ -135,7 +135,7 @@ public class User : BindableObject, INotifyPropertyChanged
         LastName = "";
         BirthDate = DateTimeOffset.Now;
         Email = "";
-        ProfilePictureAddress = "null";
+        ProfilePictureAddress = "";
         PhoneCountryCode = "";
         PhoneNumber = "";
         Description = "";
@@ -173,7 +173,7 @@ public class User : BindableObject, INotifyPropertyChanged
     public async void UpdateProfilePicture(string address)
     {
         ProfilePictureAddress = address;
-        if(!ProfilePictureAddress.Equals("null"))
+        if(ProfilePictureAddress.Length > 0)
         {
             Uri imageUri = new( await DatabaseManager.GetImageDownloadLink(ProfilePictureAddress) );
 

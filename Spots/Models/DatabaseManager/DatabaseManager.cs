@@ -2,6 +2,7 @@
 using Plugin.Firebase.Firestore;
 using Plugin.Firebase.Core.Exceptions;
 using Plugin.Firebase.Storage;
+using Firebase.Firestore;
 
 namespace Spots;
 public static class DatabaseManager
@@ -202,6 +203,20 @@ public static class DatabaseManager
 
         return spotPraises;
     }
+
+    public static async Task<List<BusinessUser>> FetchBusinessUsers_ByNameAsync(string filterParams)
+    {
+        //TODO: Finish fetching
+        List<BusinessUser> retVal = [];
+
+        IQuerySnapshot<BusinessUser> documentReference;
+        documentReference = await CrossFirebaseFirestore.Current.GetCollection("BusinessData")
+            .OrderBy("CreationDate")
+            .LimitedTo(25)
+            .GetDocumentsAsync<BusinessUser>();
+
+        return retVal;
+    }
     #endregion
 
     #region Private Methods
@@ -227,7 +242,7 @@ public static class DatabaseManager
             user.bUserDataRetrieved = true;
             // Getting profile picture
             ImageSource? imageSource = null;
-            if (!documentSnapshot.Data.ProfilePictureAddress.Equals("null"))
+            if (documentSnapshot.Data.ProfilePictureAddress.Length > 0)
             {
                 Uri imageUri = new(await GetImageDownloadLink(documentSnapshot.Data.ProfilePictureAddress));
 
