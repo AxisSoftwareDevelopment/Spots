@@ -40,14 +40,14 @@ public class SpotPraise
     public string Comment { get; private set; }
     public ImageSource? AttachedPicture { get; private set; }
 
-    public SpotPraise(SpotPraise_Firebase spotPraise_FB, User author, BusinessUser spot, ImageSource? attachment = null)
+    public SpotPraise(SpotPraise_Firebase spotPraise_FB, User author, Spot spot, ImageSource? attachment = null)
     {
         PraiseID = spotPraise_FB.PraiseID;
         AuthorID = spotPraise_FB.AuthorID;
         AuthorFullName = author.FullName;
         AuthorProfilePicture = author.ProfilePictureSource;
         SpotID = spotPraise_FB.SpotID;
-        SpotFullName = spot.BusinessName + " - " + spot.BrandName;
+        SpotFullName = spot.SpotName + " - " + spot.BrandName;
         SpotProfilePicture = spot.ProfilePictureSource;
         CreationDate = spotPraise_FB.CreationDate;
         Comment = spotPraise_FB.Comment;
@@ -81,22 +81,22 @@ public class SpotPraise
 public class SpotPraise_Firebase
 {
     [FirestoreDocumentId]
-    public string PraiseID { get; }
+    public string PraiseID { get; set; }
 
     [FirestoreProperty(nameof(AuthorID))]
-    public string AuthorID { get; }
+    public string AuthorID { get; set; }
 
     [FirestoreProperty(nameof(SpotID))]
-    public string SpotID { get; }
+    public string SpotID { get; set; }
 
     [FirestoreProperty(nameof(CreationDate))]
-    public DateTimeOffset CreationDate { get; }
+    public DateTimeOffset CreationDate { get; set; }
 
     [FirestoreProperty(nameof(Comment))]
-    public string Comment { get; }
+    public string Comment { get; set; }
 
     [FirestoreProperty(nameof(AttachedPictureAddress))]
-    public string AttachedPictureAddress { get; }
+    public string AttachedPictureAddress { get; set; }
 
     public SpotPraise_Firebase(SpotPraise spotPraise, string attachmentAddress = "")
     {

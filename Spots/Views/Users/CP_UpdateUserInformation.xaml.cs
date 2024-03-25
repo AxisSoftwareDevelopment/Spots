@@ -13,7 +13,7 @@ public partial class CP_UpdateUserInformation : ContentPage
     public CP_UpdateUserInformation(User user, string email = "", string password = "")
 	{
         _user = user;
-        _userIsEmpty = !password.Equals("") && !email.Equals("") && !user.bUserDataRetrieved;
+        _userIsEmpty = !password.Equals("") && !email.Equals("") && !user.UserDataRetrieved;
         _password = password;
         _email = email;
 
@@ -51,7 +51,7 @@ public partial class CP_UpdateUserInformation : ContentPage
             return;
         }
 
-        User newData = new User()
+        User newData = new()
         {
             FirstName = ToTitleCase(_entryFirstName.Text.Trim()),
             LastName = ToTitleCase(_entryLastName.Text.Trim()),
@@ -65,11 +65,12 @@ public partial class CP_UpdateUserInformation : ContentPage
         {
             HideErrorSection();
 
-            if(_userIsEmpty)
+            string profilePictureAddress = "";
+            if (_userIsEmpty)
             {
                 _user.Email = _email;
             }
-            else if(DataChanged(newData))
+            if(DataChanged(newData))
             {
                 _user.FirstName = newData.FirstName;
                 _user.LastName = newData.LastName;
@@ -80,14 +81,12 @@ public partial class CP_UpdateUserInformation : ContentPage
                 _user.Description = newData.Description;
                 if (_profilePictureChanged && _profilePictureFile != null)
                 {
-                    _user.ProfilePictureAddress = await DatabaseManager.SaveProfilePicture(isBusiness: false, _user.UserID, _profilePictureFile);
+                    profilePictureAddress = await DatabaseManager.SaveProfilePicture(isBusiness: false, _user.UserID, _profilePictureFile);
                     _user.ProfilePictureSource = ImageSource.FromStream(() => ImageManagement.ByteArrayToStream(_profilePictureFile.Bytes?? []));
                 }
 
-                if (await DatabaseManager.SaveUserDataAsync(_user))
+                if (await DatabaseManager.SaveUserDataAsync(_user, profilePictureAddress))
                 {
-
-                    _user.bUserDataRetrieved = true;
                     await UserInterface.DisplayPopUp_Regular("Success", "Your information has been updated. Way to go!", "OK");
                     // If the business was empty, it meas we came from the log in.
                     if (_userIsEmpty)

@@ -6,17 +6,17 @@ namespace Spots;
 
 public partial class CP_UpdateBusinessInformation : ContentPage
 {
-	private BusinessUser _user;
+	private Spot _user;
     private bool _userIsEmpty;
     private string _password, _email, _phoneNumber, _phoneCountryCode;
     private bool _profilePictureChanged = false;
     private bool _locationChanged = false;
     private ImageFile? _profilePictureFile = null;
 
-    public CP_UpdateBusinessInformation(BusinessUser user, string email = "", string password = "", string phoneNumber = "", string phoneCountryCode = "")
+    public CP_UpdateBusinessInformation(Spot user, string email = "", string password = "", string phoneNumber = "", string phoneCountryCode = "")
     {
         _user = user;
-        _userIsEmpty = !password.Equals("") && !email.Equals("") && !user.userDataRetrieved;
+        _userIsEmpty = !password.Equals("") && !email.Equals("") && !user.UserDataRetrieved;
         _password = password;
         _email = email;
         _phoneNumber = phoneNumber;
@@ -81,14 +81,14 @@ public partial class CP_UpdateBusinessInformation : ContentPage
             return;
         }
 
-        BusinessUser newData = new BusinessUser()
+        Spot newData = new Spot()
         {
             BrandName = ToTitleCase(_entryBrandName.Text.Trim()),
-            BusinessName = ToTitleCase(_entryBusinessName.Text.Trim()),
+            SpotName = ToTitleCase(_entryBusinessName.Text.Trim()),
             Location = new FirebaseLocation(_entryAddress.Text.Trim(), 0, 0),
             Description = _editorDescription.Text.Trim(),
-            PhoneNumber = _entryPhoneNumber.Text,
-            PhoneCountryCode = _entryPhoneCountryCode.Text
+            PhoneNumber = _userIsEmpty ? _phoneNumber : _entryPhoneNumber.Text,
+            PhoneCountryCode = _userIsEmpty ? _phoneCountryCode : _entryPhoneCountryCode.Text
         };
 
         if (ValidateFields(newData))
@@ -98,33 +98,31 @@ public partial class CP_UpdateBusinessInformation : ContentPage
             if (_userIsEmpty)
             {
                 _user.Email = _email;
-                _user.PhoneNumber = _phoneNumber;
-                _user.PhoneCountryCode = _phoneCountryCode;
             }
-            else if(DataChanged(newData))
+            if(DataChanged(newData))
             {
+                string profilePictureAddress = "";
                 _user.PhoneNumber = newData.PhoneNumber;
                 _user.PhoneCountryCode = newData.PhoneCountryCode;
                 _user.BrandName = newData.BrandName;
-                _user.BusinessName = newData.BusinessName;
+                _user.SpotName = newData.SpotName;
                 _user.Description = newData.Description;
                 Location locationSelected = _cvMiniMap.Pins[0].Location;
                 _user.Location = new FirebaseLocation(newData.Location.Address, locationSelected.Latitude, locationSelected.Longitude);
                 if (_profilePictureChanged && _profilePictureFile != null)
                 {
-                    _user.ProfilePictureAddress = await DatabaseManager.SaveProfilePicture(isBusiness: true, _user.UserID, _profilePictureFile);
+                    profilePictureAddress = await DatabaseManager.SaveProfilePicture(isBusiness: true, _user.UserID, _profilePictureFile);
                     _user.ProfilePictureSource = ImageSource.FromStream(() => ImageManagement.ByteArrayToStream(_profilePictureFile.Bytes?? []));
                 }
 
-                if (await DatabaseManager.SaveBusinessDataAsync(_user))
+                if (await DatabaseManager.SaveBusinessDataAsync(_user, profilePictureAddress))
                 {
-                    _user.userDataRetrieved = true;
                     await UserInterface.DisplayPopUp_Regular("Success", "Your information has been updated. Way to go!", "OK");
                     // If the business was empty, it meas we came from the log in.
                     if (_userIsEmpty)
                     {
                         // We then have to log in and go to main page.
-                        await DatabaseManager.LogInBusinessAsync(_email, _password, getUser: false);
+                        await DatabaseManager.LogInSpotAsync(_email, _password, getUser: false);
                         Application.Current.MainPage = new FP_MainShell(_user);
                     }
                     else
@@ -165,7 +163,7 @@ public partial class CP_UpdateBusinessInformation : ContentPage
     {
         // Load _user data
         _entryBrandName.Text = _user.BrandName;
-        _entryBusinessName.Text = _user.BusinessName;
+        _entryBusinessName.Text = _user.SpotName;
         _editorDescription.Text = _user.Description;
         _ProfileImage.Source = _user.ProfilePictureSource;
 
@@ -197,10 +195,10 @@ public partial class CP_UpdateBusinessInformation : ContentPage
         }
     }
 
-    private bool ValidateFields(BusinessUser business)
+    private bool ValidateFields(Spot business)
     {
         bool thereAreEmptyFields = business.BrandName.Length == 0 ||
-                            business.BusinessName.Length == 0 ||
+                            business.SpotName.Length == 0 ||
                             business.Location.Address.Length == 0;
         bool validLocationSelected = _cvMiniMap.Pins.Count == 1;
         bool descriptionUnder150Chars = business.Description.Length <= 150;
@@ -242,7 +240,7 @@ public partial class CP_UpdateBusinessInformation : ContentPage
         return true;
     }
 
-    private bool DataChanged(BusinessUser business)
+    private bool DataChanged(Spot business)
     {
         if (_profilePictureChanged)
             return true;
@@ -250,7 +248,7 @@ public partial class CP_UpdateBusinessInformation : ContentPage
             return true;
         if (_user.BrandName != business.BrandName)
             return true;
-        if (_user.BusinessName != business.BusinessName)
+        if (_user.SpotName != business.SpotName)
             return true;
         if (_user.Description != business.Description)
             return true;

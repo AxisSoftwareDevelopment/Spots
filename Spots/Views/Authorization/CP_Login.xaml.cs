@@ -42,9 +42,9 @@ public partial class CP_Login : ContentPage
         {
             if (Application.Current != null)
             {
-                BusinessUser business = await DatabaseManager.LogInBusinessAsync(email, password);
+                Spot business = await DatabaseManager.LogInSpotAsync(email, password);
 
-                if (business.userDataRetrieved)
+                if (business.UserDataRetrieved)
                 {
                     // Check if the _user has updated its basic information yet
                     string[] stringResources = ResourceManagement.GetStringResources(Application.Current.Resources, ["lbl_Welcome", "lbl_WelcomeToSpots", "lbl_Ok"]);
@@ -66,10 +66,10 @@ public partial class CP_Login : ContentPage
             #region Error Message Calculation
             string errorID = ex.Reason switch
             {
-                FIRAuthError.InvalidEmail => "txt_LogInError_WrongCredentials",
-                FIRAuthError.WrongPassword => "txt_LogInError_WrongCredentials",
+                FIRAuthError.InvalidEmail => "txt_LogInError_WrongCredentials_Business",
+                FIRAuthError.WrongPassword => "txt_LogInError_WrongCredentials_Business",
                 FIRAuthError.InvalidCredential => "txt_LogInError_InvalidCredential",
-                FIRAuthError.UserNotFound => "txt_LogInError_WrongCredentials",
+                FIRAuthError.UserNotFound => "txt_LogInError_WrongCredentials_Business",
                 FIRAuthError.EmailAlreadyInUse => ex.Message.Split("->")[0].Trim(),
                 _ => "txt_LogInError_Undefined",
             };
@@ -91,7 +91,7 @@ public partial class CP_Login : ContentPage
             {
                 User user = await DatabaseManager.LogInUserAsync(email, password);
 
-                if (user.bUserDataRetrieved)
+                if (user.UserDataRetrieved)
                 {
                     // Check if the _user has updated its basic information yet
                     await UserInterface.DisplayPopUp_Regular("Welcome!", "Welcome to spots!", "OK");
@@ -112,10 +112,10 @@ public partial class CP_Login : ContentPage
             #region Error Message Calculation
             string errorID = ex.Reason switch
             {
-                FIRAuthError.InvalidEmail => "txt_LogInError_WrongCredentials",
-                FIRAuthError.WrongPassword => "txt_LogInError_WrongCredentials",
+                FIRAuthError.InvalidEmail => "txt_LogInError_WrongCredentials_User",
+                FIRAuthError.WrongPassword => "txt_LogInError_WrongCredentials_User",
                 FIRAuthError.InvalidCredential => "txt_LogInError_InvalidCredential",
-                FIRAuthError.UserNotFound => "txt_LogInError_WrongCredentials",
+                FIRAuthError.UserNotFound => "txt_LogInError_WrongCredentials_User",
                 FIRAuthError.EmailAlreadyInUse => ex.Message.Split("->")[0].Trim(),
                 _ => "txt_LogInError_Undefined",
             };

@@ -14,7 +14,7 @@ public static class CurrentSession
     public static SessionMode sessionMode {  get; private set; } = SessionMode.UserSession;
     public static bool sessionOnline { get; private set; } = false;
     public static User currentUser { get; private set; } = new();
-    public static BusinessUser currentBusiness { get; private set; } = new();
+    public static Spot currentBusiness { get; private set; } = new();
 
     public static bool StartSession(User user)
     {
@@ -33,7 +33,7 @@ public static class CurrentSession
         }
     }
 
-    public static bool StartSession(BusinessUser bussinesUser)
+    public static bool StartSession(Spot bussinesUser)
     {
         if (!sessionOnline)
         {

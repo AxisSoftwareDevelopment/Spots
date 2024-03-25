@@ -3,7 +3,7 @@ namespace Spots;
 public partial class CP_UpdateSpotPraise : ContentPage
 {
 	private SpotPraise? MainSpotPraise;
-    private readonly FeedContext<BusinessUser> SearchBoxContext = new();
+    private readonly FeedContext<Spot> SearchBoxContext = new();
     private ImageSource? _AttachmentSource;
     private ImageFile? _AttachmentFile;
     private bool _AttachmentChanged = false;
@@ -28,7 +28,7 @@ public partial class CP_UpdateSpotPraise : ContentPage
     private void _colSearchBarCollectionView_SelectionChanged(object? sender, SelectionChangedEventArgs e)
     {
         _entrySpotSearchBar.Text = "";
-        LoadSelectedSpot((BusinessUser)e.CurrentSelection[0]);
+        LoadSelectedSpot((Spot)e.CurrentSelection[0]);
     }
 
     private void _entrySpotSearchBar_TextChanged(object? sender, TextChangedEventArgs e)
@@ -48,9 +48,9 @@ public partial class CP_UpdateSpotPraise : ContentPage
         }
     }
 
-    private async Task<List<BusinessUser>> FetchBussinesses(string searchInput)
+    private async Task<List<Spot>> FetchBussinesses(string searchInput)
     {
-        List<BusinessUser> bussinesses = [];
+        List<Spot> bussinesses = [];
         foreach(char c in searchInput)
         {
             bussinesses.Add(new(c.ToString(), c.ToString(), c.ToString(), c.ToString()));
@@ -70,11 +70,11 @@ public partial class CP_UpdateSpotPraise : ContentPage
         }
     }
 
-    private void LoadSelectedSpot(BusinessUser spotSelected)
+    private void LoadSelectedSpot(Spot spotSelected)
     {
-        _lblBrand.Text = spotSelected.BrandName + " - " + spotSelected.BusinessName;
+        _lblBrand.Text = spotSelected.BrandName + " - " + spotSelected.SpotName;
         _SpotImage.Source = spotSelected.ProfilePictureSource;
-        MainSpotPraise = new("", CurrentSession.currentUser.UserID, CurrentSession.currentUser.FullName, spotSelected.UserID, spotSelected.BusinessName, DateTimeOffset.Now);
+        MainSpotPraise = new("", CurrentSession.currentUser.UserID, CurrentSession.currentUser.FullName, spotSelected.UserID, spotSelected.SpotName, DateTimeOffset.Now);
     }
 
 }

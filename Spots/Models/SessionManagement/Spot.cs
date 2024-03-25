@@ -2,7 +2,7 @@
 using System.ComponentModel;
 
 namespace Spots;
-public class BusinessUser : BindableObject, INotifyPropertyChanged
+public class Spot : BindableObject, INotifyPropertyChanged
 {
     new public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -11,7 +11,6 @@ public class BusinessUser : BindableObject, INotifyPropertyChanged
     private string? _businessName;
     private string? _userID;
     private string? _email;
-    private string? _profilePictureAddress;
     private ImageSource? _profilePictureSource;
     private string? _phoneNumber;
     private string? _phoneCountryCode;
@@ -21,7 +20,10 @@ public class BusinessUser : BindableObject, INotifyPropertyChanged
     #endregion
 
     #region Public Parameters
-    public bool userDataRetrieved = false;
+    public bool UserDataRetrieved
+    {
+        get => SpotName.Length > 0;
+    }
     public ImageSource ProfilePictureSource
     {
         get => _profilePictureSource ?? ImageSource.FromFile("placeholder_logo.jpg");
@@ -35,7 +37,6 @@ public class BusinessUser : BindableObject, INotifyPropertyChanged
     {
         get => (PhoneNumber?.Length < 10 || PhoneCountryCode.Length < 2) ? "+ -- --- --- ----" : $"+({_phoneCountryCode}) {PhoneNumber?[..3]} {PhoneNumber?.Substring(3, 3)} {PhoneNumber?.Substring(6, 4)}";
     }
-    [FirestoreDocumentId]
     public string UserID
     {
         get => _userID ?? "";
@@ -45,7 +46,6 @@ public class BusinessUser : BindableObject, INotifyPropertyChanged
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(UserID)));
         }
     }
-    [FirestoreProperty(nameof(BrandName))]
     public string BrandName
     {
         get => _brandName ?? "";
@@ -55,17 +55,15 @@ public class BusinessUser : BindableObject, INotifyPropertyChanged
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(BrandName)));
         }
     }
-    [FirestoreProperty(nameof(BusinessName))]
-    public string BusinessName
+    public string SpotName
     {
         get => _businessName ?? "";
         set
         {
             _businessName = value.Equals("") ? null : value;
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(BusinessName)));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SpotName)));
         }
     }
-    [FirestoreProperty(nameof(Email))]
     public string Email
     {
         get => _email ?? "";
@@ -75,7 +73,6 @@ public class BusinessUser : BindableObject, INotifyPropertyChanged
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Email)));
         }
     }
-    [FirestoreProperty(nameof(PhoneNumber))]
     public string PhoneNumber
     {
         get => _phoneNumber ?? "";
@@ -85,7 +82,6 @@ public class BusinessUser : BindableObject, INotifyPropertyChanged
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(PhoneNumber)));
         }
     }
-    [FirestoreProperty(nameof(PhoneCountryCode))]
     public string PhoneCountryCode
     {
         get => _phoneCountryCode ?? "";
@@ -95,7 +91,6 @@ public class BusinessUser : BindableObject, INotifyPropertyChanged
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(PhoneCountryCode)));
         }
     }
-    [FirestoreProperty(nameof(Description))]
     public string Description
     {
         get => _description ?? "";
@@ -105,7 +100,6 @@ public class BusinessUser : BindableObject, INotifyPropertyChanged
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Description)));
         }
     }
-    [FirestoreProperty(nameof(Location))]
     public FirebaseLocation Location
     {
         get => _location ?? new FirebaseLocation();
@@ -113,6 +107,7 @@ public class BusinessUser : BindableObject, INotifyPropertyChanged
         {
             _location = value;
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Location)));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Geolocation)));
         }
     }
     public Location Geolocation
@@ -125,17 +120,6 @@ public class BusinessUser : BindableObject, INotifyPropertyChanged
                 value.Longitude);
         }
     }
-    [FirestoreProperty(nameof(ProfilePictureAddress))]
-    public string ProfilePictureAddress
-    {
-        get => _profilePictureAddress ?? "";
-        set
-        {
-            _profilePictureAddress = value.Equals("") ? null : value;
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ProfilePictureAddress)));
-        }
-    }
-
     public List<string> Praises
     {
         get => _praises ?? [];
@@ -147,13 +131,12 @@ public class BusinessUser : BindableObject, INotifyPropertyChanged
     }
     #endregion
 
-    public BusinessUser()
+    public Spot()
     {
         UserID = "";
         BrandName = "";
-        BusinessName = "";
+        SpotName = "";
         Email = "";
-        ProfilePictureAddress = "";
         PhoneCountryCode = "";
         PhoneNumber = "";
         Description = "";
@@ -161,30 +144,41 @@ public class BusinessUser : BindableObject, INotifyPropertyChanged
         Praises = [];
     }
 
-    public BusinessUser(string userID, string brandName, string businessName, string email, string profilePictureAddress = "", ImageSource? profilePictureSource = null,
+    public Spot(string userID, string brandName, string businessName, string email, string profilePictureAddress = "", ImageSource? profilePictureSource = null,
         string phoneNumber = "", string phoneCountryCode = "", string description = "", FirebaseLocation? location = null, List<string>? praises = null)
     {
         UserID = userID;
         BrandName = brandName;
-        BusinessName = businessName;
+        SpotName = businessName;
         Email = email;
-        ProfilePictureAddress = profilePictureAddress;
         ProfilePictureSource = profilePictureSource ?? ImageSource.FromFile("placeholder_logo.jpg");
-        PhoneNumber = phoneNumber ?? "";
-        PhoneCountryCode = phoneCountryCode ?? "";
-        Description = description ?? "";
+        PhoneNumber = phoneNumber;
+        PhoneCountryCode = phoneCountryCode;
+        Description = description;
         Location = location ?? new FirebaseLocation();
         Praises = praises ?? [];
-
     }
 
-    public void UpdateUserData(BusinessUser userData)
+    public Spot(Spot_Firebase spotData)
+    {
+        UserID = spotData.UserID;
+        BrandName = spotData.BrandName;
+        SpotName = spotData.SpotName;
+        Email = spotData.Email;
+        UpdateProfilePicture(spotData.ProfilePictureAddress);
+        PhoneNumber = spotData.PhoneNumber;
+        PhoneCountryCode = spotData.PhoneCountryCode;
+        Description = spotData.Description;
+        Location = spotData.Location;
+        Praises = spotData.Praises.ToList();
+    }
+
+    public void UpdateUserData(Spot userData)
     {
         UserID = userData.UserID;
         BrandName = userData.BrandName;
-        BusinessName = userData.BusinessName;
+        SpotName = userData.SpotName;
         Email = userData.Email;
-        ProfilePictureAddress = userData.ProfilePictureAddress;
         ProfilePictureSource = userData.ProfilePictureSource;
         PhoneNumber = userData.PhoneNumber;
         PhoneCountryCode = userData.PhoneCountryCode;
@@ -192,9 +186,121 @@ public class BusinessUser : BindableObject, INotifyPropertyChanged
         Location = userData.Location;
         Praises = userData.Praises;
     }
+
+    public async void UpdateProfilePicture(string address)
+    {
+        if (address.Length > 0)
+        {
+            Uri imageUri = new(await DatabaseManager.GetImageDownloadLink(address));
+
+            ProfilePictureSource = ImageSource.FromUri(imageUri);
+        }
+        else
+        {
+            ImageSource.FromFile("placeholder_logo.jpg");
+        }
+    }
 }
 
-public class FirebaseLocation : IFirestoreObject
+public class Spot_Firebase
+{
+    [FirestoreDocumentId]
+    public string UserID { get; set; }
+    [FirestoreProperty(nameof(BrandName))]
+    public string BrandName { get; set; }
+    [FirestoreProperty(nameof(SpotName))]
+    public string SpotName { get; set; }
+    [FirestoreProperty(nameof(Email))]
+    public string Email { get; set; }
+    [FirestoreProperty(nameof(PhoneNumber))]
+    public string PhoneNumber { get; set; }
+    [FirestoreProperty(nameof(PhoneCountryCode))]
+    public string PhoneCountryCode { get; set; }
+    [FirestoreProperty(nameof(Description))]
+    public string Description { get; set; }
+    [FirestoreProperty(nameof(Location))]
+    public FirebaseLocation Location { get; set; }
+    [FirestoreProperty(nameof(ProfilePictureAddress))]
+    public string ProfilePictureAddress { get; set; }
+    [FirestoreProperty(nameof(Praises))]
+    public IList<string> Praises { get; set; }
+    [FirestoreProperty(nameof(SearchTerms))]
+    public IList<string> SearchTerms { get; set; }
+
+    public Spot_Firebase(string userID,
+        string brandName,
+        string businessName,
+        string email,
+        string phoneNumber,
+        string phoneCountryCode,
+        string description,
+        FirebaseLocation location,
+        string profilePictureAddress,
+        List<string> praises,
+        List<string> searchTerms)
+    {
+        UserID = userID;
+        BrandName = brandName;
+        SpotName = businessName;
+        Email = email;
+        PhoneNumber = phoneNumber;
+        PhoneCountryCode = phoneCountryCode;
+        Description = description;
+        Location = location;
+        ProfilePictureAddress = profilePictureAddress;
+        Praises = praises;
+        SearchTerms = searchTerms;
+    }
+
+    public Spot_Firebase()
+    {
+        UserID = "";
+        BrandName = "";
+        SpotName = "";
+        Email = "";
+        PhoneNumber = "";
+        PhoneCountryCode = "";
+        Description = "";
+        Location = new();
+        ProfilePictureAddress = "";
+        Praises = [];
+        SearchTerms = [];
+    }
+
+    public Spot_Firebase(Spot spotData, string profilePictureAddress)
+    {
+        UserID = spotData.UserID;
+        BrandName = spotData.BrandName;
+        SpotName = spotData.SpotName;
+        Email = spotData.Email;
+        PhoneNumber = spotData.PhoneNumber;
+        PhoneCountryCode = spotData.PhoneCountryCode;
+        Description = spotData.Description;
+        Location = spotData.Location;
+        ProfilePictureAddress = profilePictureAddress;
+        Praises = spotData.Praises;
+        SearchTerms = GenerateSearchTerms(BrandName, SpotName);
+    }
+
+    private List<string> GenerateSearchTerms(string brandName, string spotName)
+    {
+        List<string> retVal = [];
+
+        foreach (string word in brandName.Split(' ').Concat(spotName.Split(' ')))
+        {
+            string currentTerm = "";
+            foreach (char letter in word)
+            {
+                currentTerm += letter;
+                retVal.Add(currentTerm);
+            }
+        }
+
+        return retVal;
+    }
+}
+
+    public class FirebaseLocation : IFirestoreObject
 {
     [FirestoreProperty(nameof(Address))]
     public string Address { get; set; }

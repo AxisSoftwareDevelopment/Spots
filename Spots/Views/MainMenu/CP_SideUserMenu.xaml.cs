@@ -65,7 +65,7 @@ public partial class CP_SideUserMenu : ContentPage
         {
             BindingContext = CurrentSession.currentBusiness;
             _ProfileImage.SetBinding(Image.SourceProperty, "ProfilePictureSource");
-            _lblUserName.SetBinding(Label.TextProperty, "BusinessName");
+            _lblUserName.SetBinding(Label.TextProperty, "SpotName");
         }
     }
 }

@@ -2,8 +2,8 @@ namespace Spots;
 
 public partial class CP_BusinessProfile : ContentPage
 {
-	private BusinessUser business;
-    public CP_BusinessProfile(BusinessUser _user)
+	private Spot business;
+    public CP_BusinessProfile(Spot _user)
     {
         business = _user;
 

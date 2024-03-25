@@ -2,7 +2,6 @@
 using Plugin.Firebase.Firestore;
 using Plugin.Firebase.Core.Exceptions;
 using Plugin.Firebase.Storage;
-using Firebase.Firestore;
 
 namespace Spots;
 public static class DatabaseManager
@@ -31,21 +30,17 @@ public static class DatabaseManager
         //if(!firebaseUser.IsEmailVerified)
         //    throw new FirebaseAuthException(FIRAuthError.UserDisabled, "Custon Exception -> Email not verified.");
 
-        User user;
+        User user = new() { UserID = iFUser.Uid };
         if (getUser)
         {
             user = await GetUserDataAsync(iFUser.Uid);
-            if (!user.bUserDataRetrieved)
+            if (!user.UserDataRetrieved)
                 await LogOutAsync();
-        }
-        else
-        {
-            user = new();
         }
         return user;
     }
 
-    public static async Task<BusinessUser> LogInBusinessAsync(string email, string password, bool getUser = true)
+    public static async Task<Spot> LogInSpotAsync(string email, string password, bool getUser = true)
     {
         string[] userSignInMethods = await CrossFirebaseAuth.Current.FetchSignInMethodsAsync(email);
 
@@ -64,11 +59,11 @@ public static class DatabaseManager
         //if(!firebaseUser.IsEmailVerified)
         //    throw new FirebaseAuthException(FIRAuthError.UserDisabled, "Custon Exception -> Email not verified.");
 
-        BusinessUser user;
+        Spot user;
         if (getUser)
         {
-            user = await GetBusinessDataAsync(iFUser.Uid);
-            if (!user.userDataRetrieved)
+            user = await GetSpotDataAsync(iFUser.Uid);
+            if (!user.UserDataRetrieved)
                 await LogOutAsync();
         }
         else
@@ -83,7 +78,13 @@ public static class DatabaseManager
         await CrossFirebaseAuth.Current.CreateUserAsync(email, password);
         await CrossFirebaseAuth.Current.CurrentUser.UpdateProfileAsync(displayName: isBusinessUser ? "Business" : "User");
         if (isBusinessUser)
-            await SaveBusinessDataAsync(new BusinessUser() { UserID = CrossFirebaseAuth.Current.CurrentUser.Uid, Email = email, PhoneNumber = phoneNunber, PhoneCountryCode = phoneCountryCode });
+        {
+            await SaveBusinessDataAsync(new Spot() { UserID = CrossFirebaseAuth.Current.CurrentUser.Uid, Email = email, PhoneNumber = phoneNunber, PhoneCountryCode = phoneCountryCode });
+        }
+        else
+        {
+            await SaveUserDataAsync(new User() { UserID = CrossFirebaseAuth.Current.CurrentUser.Uid, Email = email });
+        }
 
         string? id = CrossFirebaseAuth.Current.CurrentUser?.Uid;
         if (id == null || id.Length == 0 )
@@ -101,7 +102,7 @@ public static class DatabaseManager
             {
                 if (CrossFirebaseAuth.Current.CurrentUser.DisplayName.Equals("Business"))
                 {
-                    BusinessUser user = await GetBusinessDataAsync(CrossFirebaseAuth.Current.CurrentUser.Uid);
+                    Spot user = await GetSpotDataAsync(CrossFirebaseAuth.Current.CurrentUser.Uid);
                     CurrentSession.StartSession(user);
                 }
                 else
@@ -124,27 +125,28 @@ public static class DatabaseManager
         await CrossFirebaseAuth.Current.SignOutAsync();
     }
 
-    public static async Task<bool> SaveUserDataAsync(User user)
+    public static async Task<bool> SaveUserDataAsync(User user, string profilePictureAddress = "")
     {
         try
         {
             IDocumentReference documentReference = CrossFirebaseFirestore.Current.GetCollection("UserData").GetDocument(user.UserID);
-            await documentReference.SetDataAsync(user);
+            await documentReference.SetDataAsync(new User_Firebase(user, profilePictureAddress));
         }
-        catch (Exception)
+        catch (Exception e)
         {
+            Console.WriteLine(e.Message);
             return false;
         }
 
         return true;
     }
 
-    public static async Task<bool> SaveBusinessDataAsync(BusinessUser user)
+    public static async Task<bool> SaveBusinessDataAsync(Spot user, string profilePictureAddress = "")
     {
         try
         {
             IDocumentReference documentReference = CrossFirebaseFirestore.Current.GetCollection("BusinessData").GetDocument(user.UserID);
-            await documentReference.SetDataAsync(user);
+            await documentReference.SetDataAsync(new Spot_Firebase(user, profilePictureAddress));
         }
         catch (Exception)
         {
@@ -176,44 +178,46 @@ public static class DatabaseManager
     public static async Task<List<SpotPraise>> FetchSpotPraises(SpotPraise? lastPraise = null)
     {
         List<SpotPraise> spotPraises = [];
-        IQuerySnapshot<SpotPraise> documentReference;
+        IQuerySnapshot<SpotPraise_Firebase> documentReference;
 
         if (lastPraise != null)
         {
-            IDocumentSnapshot<SpotPraise> documentSnapshot = await CrossFirebaseFirestore.Current.GetCollection("SpotPraises").GetDocument(lastPraise?.SpotID).GetDocumentSnapshotAsync<SpotPraise>();
+            IDocumentSnapshot<SpotPraise_Firebase> documentSnapshot = await CrossFirebaseFirestore.Current.GetCollection("SpotPraises").GetDocument(lastPraise?.SpotID).GetDocumentSnapshotAsync<SpotPraise_Firebase>();
 
             documentReference = await CrossFirebaseFirestore.Current.GetCollection("SpotPraises")
             .OrderBy("CreationDate")
             .StartingAt(documentSnapshot)
             .LimitedTo(5)
-            .GetDocumentsAsync<SpotPraise>();
+            .GetDocumentsAsync<SpotPraise_Firebase>();
         }
         else
         {
             documentReference = await CrossFirebaseFirestore.Current.GetCollection("SpotPraises")
             .OrderBy("CreationDate")
             .LimitedTo(5)
-            .GetDocumentsAsync<SpotPraise>();
+            .GetDocumentsAsync<SpotPraise_Firebase>();
         }
 
         foreach(var document in documentReference.Documents)
         {
-            spotPraises.Add(document.Data);
+            User author = await GetUserDataAsync(document.Data.AuthorID);
+            Spot spot = await GetSpotDataAsync(document.Data.SpotID);
+            spotPraises.Add(new(document.Data, author, spot));
         }
 
         return spotPraises;
     }
 
-    public static async Task<List<BusinessUser>> FetchBusinessUsers_ByNameAsync(string filterParams)
+    public static async Task<List<Spot>> FetchBusinessUsers_ByNameAsync(string filterParams)
     {
         //TODO: Finish fetching
-        List<BusinessUser> retVal = [];
+        List<Spot> retVal = [];
 
-        IQuerySnapshot<BusinessUser> documentReference;
+        IQuerySnapshot<Spot_Firebase> documentReference;
         documentReference = await CrossFirebaseFirestore.Current.GetCollection("BusinessData")
             .OrderBy("CreationDate")
             .LimitedTo(25)
-            .GetDocumentsAsync<BusinessUser>();
+            .GetDocumentsAsync<Spot_Firebase>();
 
         return retVal;
     }
@@ -222,59 +226,27 @@ public static class DatabaseManager
     #region Private Methods
     private async static Task<User> GetUserDataAsync(string userID)
     {
-        IDocumentSnapshot<User> documentSnapshot = await CrossFirebaseFirestore.Current
+        IDocumentSnapshot<User_Firebase> documentSnapshot = await CrossFirebaseFirestore.Current
             .GetCollection("UserData")
             .GetDocument(userID)
-            .GetDocumentSnapshotAsync<User>();
+            .GetDocumentSnapshotAsync<User_Firebase>();
 
-        User user = new() { UserID = userID };
-        // If there is no _user data in the database
-        if (documentSnapshot.Data != null)
-        {
-            user.Email = documentSnapshot.Data.Email;
-            user.FirstName = documentSnapshot.Data.FirstName;
-            user.LastName = documentSnapshot.Data.LastName;
-            user.BirthDate = documentSnapshot.Data.BirthDate;
-            user.ProfilePictureAddress = documentSnapshot.Data.ProfilePictureAddress;
-            user.Description = documentSnapshot.Data.Description;
-            user.PhoneNumber = documentSnapshot.Data.PhoneNumber;
-            user.PhoneCountryCode = documentSnapshot.Data.PhoneCountryCode;
-            user.bUserDataRetrieved = true;
-            // Getting profile picture
-            ImageSource? imageSource = null;
-            if (documentSnapshot.Data.ProfilePictureAddress.Length > 0)
-            {
-                Uri imageUri = new(await GetImageDownloadLink(documentSnapshot.Data.ProfilePictureAddress));
+        int x = 0;
 
-                imageSource = ImageSource.FromUri(imageUri);
-            }
-            if (imageSource != null)
-                user.ProfilePictureSource = imageSource;
-        }
+        // Even if documentSnapshot.Data doesnt support nullable returns, it is still possible to hold a null value.
+        User user = documentSnapshot.Data != null ? new(documentSnapshot.Data) : new() { UserID = userID };
 
         return user;
     }
-    private async static Task<BusinessUser> GetBusinessDataAsync(string bussinessID)
+    private async static Task<Spot> GetSpotDataAsync(string bussinessID)
     {
-        IDocumentSnapshot<BusinessUser> documentSnapshot = await CrossFirebaseFirestore.Current
+        IDocumentSnapshot<Spot_Firebase> documentSnapshot = await CrossFirebaseFirestore.Current
             .GetCollection("BusinessData")
             .GetDocument(bussinessID)
-            .GetDocumentSnapshotAsync<BusinessUser>();
+            .GetDocumentSnapshotAsync<Spot_Firebase>();
 
-        BusinessUser user = new() { UserID = bussinessID };
-        // If there is no _user data in the database
-        if (documentSnapshot.Data != null)
-        {
-            user.Email = documentSnapshot.Data.Email;
-            user.BrandName = documentSnapshot.Data.BrandName;
-            user.BusinessName = documentSnapshot.Data.BusinessName;
-            user.Location = documentSnapshot.Data.Location;
-            user.ProfilePictureAddress = documentSnapshot.Data.ProfilePictureAddress;
-            user.Description = documentSnapshot.Data.Description;
-            user.PhoneNumber = documentSnapshot.Data.PhoneNumber;
-            user.PhoneCountryCode = documentSnapshot.Data.PhoneCountryCode;
-            user.userDataRetrieved = documentSnapshot.Data.BrandName.Length > 0;
-        }
+        // Even if documentSnapshot.Data doesnt support nullable returns, it is still possible to hold a null value.
+        Spot user = documentSnapshot.Data != null ? new(documentSnapshot.Data) : new() { UserID = bussinessID };
 
         return user;
     }

@@ -12,7 +12,7 @@ public partial class FP_MainShell : FlyoutPage
         CurrentSession.StartSession(user);
     }
 
-    public FP_MainShell(BusinessUser user)
+    public FP_MainShell(Spot user)
     {
         InitializeComponent();
 
