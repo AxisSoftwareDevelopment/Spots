@@ -158,7 +158,7 @@ public static class DatabaseManager
 
     public static async Task<string> SaveProfilePicture(bool isBusiness, string userID, ImageFile imageFile)
     {
-        string filePath = $"{(isBusiness ? "Businesses" : "Users")}/{userID}/profilePicture.{imageFile.ContentType?.Split('/')[1] ?? ""}";
+        string filePath = $"{(isBusiness ? "Businesses" : "Users")}/{userID}/profilePicture.{imageFile.ContentType?.Replace("image/", "") ?? ""}";
 
         IStorageReference storageRef = CrossFirebaseStorage.Current.GetReferenceFromPath(filePath);
 
@@ -230,8 +230,6 @@ public static class DatabaseManager
             .GetCollection("UserData")
             .GetDocument(userID)
             .GetDocumentSnapshotAsync<User_Firebase>();
-
-        int x = 0;
 
         // Even if documentSnapshot.Data doesnt support nullable returns, it is still possible to hold a null value.
         User user = documentSnapshot.Data != null ? new(documentSnapshot.Data) : new() { UserID = userID };

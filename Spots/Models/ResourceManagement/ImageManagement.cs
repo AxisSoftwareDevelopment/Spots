@@ -14,7 +14,10 @@ public static class ImageManagement
 
             if (result.ContentType == "image/pgn" ||
                 result.ContentType == "image/jpeg" ||
-                result.ContentType == "image/jpg")
+                result.ContentType == "image/jpg" ||
+                result.ContentType == "pgn" ||
+                result.ContentType == "jpeg" ||
+                result.ContentType == "jpg")
             {
                 return await FileResultToImageFile(result);
             }
