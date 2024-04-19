@@ -1,11 +1,10 @@
 ﻿using Plugin.Firebase.Firestore;
-using Spots;
 using System.ComponentModel;
 
 namespace Spots;
-public class User : BindableObject, INotifyPropertyChanged
+public class Client : INotifyPropertyChanged, IUser
 {
-    new public event PropertyChangedEventHandler? PropertyChanged;
+    public event PropertyChangedEventHandler? PropertyChanged;
 
     #region Private Parameters
     private string? _UserID;
@@ -17,6 +16,7 @@ public class User : BindableObject, INotifyPropertyChanged
     private string? _PhoneCountryCode;
     private string? _Description;
     private ImageSource? _ProfilePictureSource;
+    private List<string>? _FollowedClients;
     #endregion
 
     #region Public Parameters
@@ -56,6 +56,7 @@ public class User : BindableObject, INotifyPropertyChanged
         set
         {
             _FirstName = value ?? "";
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(FirstName)));
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(FullName)));
         }
     }
@@ -65,6 +66,7 @@ public class User : BindableObject, INotifyPropertyChanged
         set
         {
             _LastName = value ?? "";
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(LastName)));
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(FullName)));
         }
     }
@@ -93,6 +95,7 @@ public class User : BindableObject, INotifyPropertyChanged
         {
             _PhoneNumber = value;
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(PhoneNumber)));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(FullPhoneNumber)));
         }
     }
     public string PhoneCountryCode
@@ -102,6 +105,7 @@ public class User : BindableObject, INotifyPropertyChanged
         {
             _PhoneCountryCode = value;
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(PhoneCountryCode)));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(FullPhoneNumber)));
         }
     }
     public string Description
@@ -113,8 +117,17 @@ public class User : BindableObject, INotifyPropertyChanged
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Description)));
         }
     }
+    public List<string> FollowedClients
+    {
+        get => _FollowedClients ?? [];
+        set
+        {
+            _FollowedClients = value ?? [];
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(FollowedClients)));
+        }
+    }
     #endregion
-    public User()
+    public Client()
     {
         UserID = "";
         FirstName = "";
@@ -124,10 +137,12 @@ public class User : BindableObject, INotifyPropertyChanged
         PhoneCountryCode = "";
         PhoneNumber = "";
         Description = "";
+        FollowedClients = [];
     }
 
-    public User(string userID, string firstName, string lastName, DateTimeOffset birthDate, string mail, 
-        ImageSource? profilePictureSrc = null, string phoneNumber = "", string phoneCountryCode = "", string description = "")
+    public Client(string userID, string firstName, string lastName, DateTimeOffset birthDate, string mail, 
+        ImageSource? profilePictureSrc = null, string phoneNumber = "", string phoneCountryCode = "", string description = "",
+        List<string>? followedClients = null)
     {
         UserID = userID;
         FirstName = firstName;
@@ -138,22 +153,24 @@ public class User : BindableObject, INotifyPropertyChanged
         PhoneNumber = phoneNumber;
         PhoneCountryCode = phoneCountryCode;
         Description = description;
+        FollowedClients = followedClients ?? [];
     }
 
-    public User(User_Firebase firebaseData)
+    public Client(User_Firebase firebaseData, ImageSource profilePictureSrc)
     {
         UserID = firebaseData.UserID;
         FirstName = firebaseData.FirstName;
         LastName = firebaseData.LastName;
         BirthDate = firebaseData.BirthDate;
         Email = firebaseData.Email;
-        UpdateProfilePicture(firebaseData.ProfilePictureAddress);
+        ProfilePictureSource = profilePictureSrc;
         PhoneNumber = firebaseData.PhoneNumber;
         PhoneCountryCode = firebaseData.PhoneCountryCode;
         Description = firebaseData.Description;
+        FollowedClients = firebaseData.FollowedClients.ToList();
     }
 
-    public void UpdateUserData(User userData)
+    public void UpdateUserData(Client userData)
     {
         UserID = userData.UserID;
         FirstName = userData.FirstName;
@@ -164,13 +181,15 @@ public class User : BindableObject, INotifyPropertyChanged
         PhoneNumber = userData.PhoneNumber;
         PhoneCountryCode = userData.PhoneCountryCode;
         Description = userData.Description;
+        FollowedClients = userData.FollowedClients;
     }
 
-    public async void UpdateProfilePicture(string address)
+    public async Task UpdateProfilePicture(string address)
     {
         if(address.Length > 0)
         {
-            Uri imageUri = new( await DatabaseManager.GetImageDownloadLink(address) );
+            string downloadAddress = await DatabaseManager.GetImageDownloadLink(address);
+            Uri imageUri = new( downloadAddress );
 
             ProfilePictureSource = ImageSource.FromUri(imageUri);
         }
@@ -213,6 +232,10 @@ public class User_Firebase
     [FirestoreProperty(nameof(SearchTerms))]
     public IList<string> SearchTerms { get; set; }
 
+    [FirestoreProperty(nameof(FollowedClients))]
+    public IList<string> FollowedClients { get; set; }
+
+
     public User_Firebase()
     {
         UserID = "";
@@ -225,6 +248,7 @@ public class User_Firebase
         Description = "";
         ProfilePictureAddress = "";
         SearchTerms = [];
+        FollowedClients = [];
     }
 
     public User_Firebase(string userID,
@@ -236,7 +260,8 @@ public class User_Firebase
         string phoneCountryCode,
         string description,
         string profilePictureAddress,
-        List<string> searchTerms)
+        List<string> searchTerms,
+        List<string> followedClients)
     {
         UserID = userID;
         FirstName = firstName;
@@ -248,9 +273,10 @@ public class User_Firebase
         Description = description;
         ProfilePictureAddress = profilePictureAddress;
         SearchTerms = searchTerms;
+        FollowedClients = followedClients;
     }
 
-    public User_Firebase(User userData, string profilePictureAddress)
+    public User_Firebase(Client userData, string profilePictureAddress)
     {
         UserID = userData.UserID;
         FirstName = userData.FirstName;
@@ -261,23 +287,62 @@ public class User_Firebase
         PhoneCountryCode = userData.PhoneCountryCode;
         Description = userData.Description;
         ProfilePictureAddress = profilePictureAddress;
-        SearchTerms = GenerateSearchTerms(FirstName, LastName);        
+        SearchTerms = GenerateSearchTerms(FirstName, LastName);
+        FollowedClients = userData.FollowedClients;
     }
 
     private List<string> GenerateSearchTerms(string firstName, string lastName)
     {
         List<string> retVal = [];
+        List<string> composedTerms = [];
 
         foreach (string word in firstName.Split(' ').Concat(lastName.Split(' ')))
         {
             string currentTerm = "";
             foreach (char letter in word)
             {
-                currentTerm += letter;
+                currentTerm += char.ToUpper(letter);
                 retVal.Add(currentTerm);
+
+                AttachComposedStrings(ref retVal, composedTerms.Concat([currentTerm]).ToList());
+                foreach (string term in composedTerms)
+                {
+                    retVal.Add(term + " " + currentTerm);
+                }
             }
+            composedTerms.Add(currentTerm);
         }
 
-        return retVal;
+        return retVal.Concat(composedTerms).ToList();
+    }
+
+    private static void AttachComposedStrings(ref List<string> retVal, List<string> composedTermsLeft, string currentTerm = "")
+    {
+        if(composedTermsLeft.Count > 0)
+        {
+            foreach (string term in composedTermsLeft)
+            {
+                AttachComposedStrings(ref retVal, composedTermsLeft.Where(compTerm => !compTerm.Equals(term)).ToList(), currentTerm + " " + term);
+            }
+        }
+        else
+        {
+            retVal.Add(currentTerm.Trim());
+        }
+    }
+
+    public async Task<ImageSource> GetImageSource()
+    {
+        if (ProfilePictureAddress.Length > 0)
+        {
+            string downloadAddress = await DatabaseManager.GetImageDownloadLink(ProfilePictureAddress);
+            Uri imageUri = new(downloadAddress);
+
+            return ImageSource.FromUri(imageUri);
+        }
+        else
+        {
+            return ImageSource.FromFile("placeholder_logo.jpg");
+        }
     }
 }

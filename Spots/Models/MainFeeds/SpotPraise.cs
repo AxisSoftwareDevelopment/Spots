@@ -36,17 +36,17 @@ public class SpotPraise
             _SpotProfilePicture = value;
         }
     }
-    public DateTimeOffset CreationDate { get; private set; }
-    public string Comment { get; private set; }
-    public ImageSource? AttachedPicture { get; private set; }
+    public DateTimeOffset CreationDate { get; set; }
+    public string Comment { get; set; }
+    public ImageSource? AttachedPicture { get; set; }
 
-    public SpotPraise(SpotPraise_Firebase spotPraise_FB, User author, Spot spot, ImageSource? attachment = null)
+    public SpotPraise(SpotPraise_Firebase spotPraise_FB, Client author, Spot spot, ImageSource? attachment = null)
     {
         PraiseID = spotPraise_FB.PraiseID;
-        AuthorID = spotPraise_FB.AuthorID;
+        AuthorID = spotPraise_FB.AuthorID[0];
         AuthorFullName = author.FullName;
         AuthorProfilePicture = author.ProfilePictureSource;
-        SpotID = spotPraise_FB.SpotID;
+        SpotID = spotPraise_FB.SpotID[0];
         SpotFullName = spot.SpotName + " - " + spot.BrandName;
         SpotProfilePicture = spot.ProfilePictureSource;
         CreationDate = spotPraise_FB.CreationDate;
@@ -83,11 +83,14 @@ public class SpotPraise_Firebase
     [FirestoreDocumentId]
     public string PraiseID { get; set; }
 
+    [FirestoreProperty(nameof(SearchCriteria_ID))]
+    public IList<string> SearchCriteria_ID { get; set; }
+
     [FirestoreProperty(nameof(AuthorID))]
-    public string AuthorID { get; set; }
+    public IList<string> AuthorID { get; set; }
 
     [FirestoreProperty(nameof(SpotID))]
-    public string SpotID { get; set; }
+    public IList<string> SpotID { get; set; }
 
     [FirestoreProperty(nameof(CreationDate))]
     public DateTimeOffset CreationDate { get; set; }
@@ -101,8 +104,9 @@ public class SpotPraise_Firebase
     public SpotPraise_Firebase(SpotPraise spotPraise, string attachmentAddress = "")
     {
         PraiseID = spotPraise.PraiseID;
-        AuthorID = spotPraise.AuthorID;
-        SpotID = spotPraise.SpotID;
+        SearchCriteria_ID = [spotPraise.PraiseID];
+        AuthorID = [spotPraise.AuthorID];
+        SpotID = [spotPraise.SpotID];
         CreationDate = spotPraise.CreationDate;
         Comment = spotPraise.Comment;
         AttachedPictureAddress = attachmentAddress;
@@ -111,8 +115,9 @@ public class SpotPraise_Firebase
     public SpotPraise_Firebase(string praiseID, string authorID, string spotID, DateTimeOffset creationDate, string comment, string attachedPictureAddress)
     {
         PraiseID = praiseID;
-        AuthorID = authorID;
-        SpotID = spotID;
+        SearchCriteria_ID = [praiseID];
+        AuthorID = [authorID];
+        SpotID = [spotID];
         CreationDate = creationDate;
         Comment = comment;
         AttachedPictureAddress = attachedPictureAddress;

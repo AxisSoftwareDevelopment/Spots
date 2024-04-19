@@ -1,3 +1,4 @@
+using Android.Hardware.Display;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 
@@ -5,68 +6,81 @@ namespace Spots;
 
 public partial class CV_DiscoverFeed : ContentView
 {
+    private readonly object _syncFeed = new object();
     private readonly FeedContext<Spot> CurrentFeedContext = new();
-    private uint count = 0;
+    private FirebaseLocation? CurrentLocation;
 	public CV_DiscoverFeed()
 	{
         
         InitializeComponent();
 
-        _colFeed.BindingContext = CurrentFeedContext;
-        _refreshView.Command = new Command(() =>
+        if(LocationManager.CurrentLocation != null)
         {
-            RefreshFeed();
+            CurrentLocation = new FirebaseLocation(LocationManager.CurrentLocation);
+        }
+        else
+        {
+            LocationManager.UpdateLocationAsync().ConfigureAwait(false);
+        }
+        _colFeed.BindingContext = CurrentFeedContext;
+        _refreshView.Command = new Command(async () =>
+        {
+            await Task.Run(RefreshFeed);
             _refreshView.IsRefreshing = false;
         });
         _colFeed.RemainingItemsThreshold = 1;
         _colFeed.RemainingItemsThresholdReached += OnItemThresholdReached;
-        RefreshFeed();
+
+        Task.Run(() =>
+        {
+            MainThread.BeginInvokeOnMainThread(async () =>
+            {
+                await RefreshFeed();
+            });
+        });
     }
 
-    private void RefreshFeed()
+    private async Task RefreshFeed()
     {
-        count = 0;
-        CurrentFeedContext.RefreshFeed(FetchBussinesses(0, 0));
+        if(CurrentLocation != null)
+        {
+            CurrentFeedContext.RefreshFeed(await DatabaseManager.FetchSpotsNearby_Async(CurrentLocation, 1));
+        }
+        else
+        {
+            Location? location = await LocationManager.GetUpdatedLocaionAsync();
+            if(location != null)
+            {
+                CurrentLocation = new FirebaseLocation(location);
+                CurrentFeedContext.RefreshFeed(await DatabaseManager.FetchSpotsNearby_Async(CurrentLocation, 1));
+            }
+            else
+            {
+                // TODO: Create strings
+                await UserInterface.DisplayPopUp_Regular("Error", "Couldnt calculate your location", "ok");
+            }
+        }
     }
 
-    private void OnItemThresholdReached(object? sender, EventArgs e)
+    private async void OnItemThresholdReached(object? sender, EventArgs e)
     {
-        CurrentFeedContext.AddElements(FetchBussinesses(0, 0));
-    }
-
-    private List<Spot> FetchBussinesses(uint startIndex, uint endIndex, List<uint>? alreadyFetchedPrisesIDs = null)
-    {
-        return [
-            new Spot()
+        if (CurrentLocation != null)
+        {
+            CurrentFeedContext.AddElements(await DatabaseManager.FetchSpotsNearby_Async(CurrentLocation, 1, CurrentFeedContext.LastItemFetched));
+        }
+        else
+        {
+            Location? location = await LocationManager.GetUpdatedLocaionAsync();
+            if (location != null)
             {
-                BrandName = count++.ToString()+"MacDonald's",
-                SpotName = "MacDonald's Lincoln street",
-                Location = new FirebaseLocation("Lincoln #239 Cumbres lalala lalala lala", 0, 0)
-            },
-            new Spot()
+                CurrentLocation = new FirebaseLocation(location);
+                CurrentFeedContext.AddElements(await DatabaseManager.FetchSpotsNearby_Async(CurrentLocation, 1, CurrentFeedContext.LastItemFetched));
+            }
+            else
             {
-                BrandName = count++.ToString() + "MacDonald's",
-                SpotName = "MacDonald's Lincoln street",
-                Location = new FirebaseLocation("Lincoln #239 Cumbres lalala lalala lala", 0, 0)
-            },
-            new Spot()
-            {
-                BrandName = count++.ToString() + "MacDonald's",
-                SpotName = "MacDonald's Lincoln street",
-                Location = new FirebaseLocation("Lincoln #239 Cumbres lalala lalala lala", 0, 0)
-            },
-            new Spot()
-            {
-                BrandName = count++.ToString() + "MacDonald's",
-                SpotName = "MacDonald's Lincoln street",
-                Location = new FirebaseLocation("Lincoln #239 Cumbres lalala lalala lala", 0, 0)
-            },
-            new Spot()
-            {
-                BrandName = count++.ToString() + "MacDonald's",
-                SpotName = "MacDonald's Lincoln street",
-                Location = new FirebaseLocation("Lincoln #239 Cumbres lalala lalala lala", 0, 0)
-            },
-        ];
+                // TODO: Create strings
+                await UserInterface.DisplayPopUp_Regular("Error", "Couldnt calculate your location", "ok");
+            }
+        }
     }
 }

@@ -1,10 +1,12 @@
-﻿using Plugin.Firebase.Firestore;
+﻿using Microsoft.Maui.Controls.Compatibility;
+using Microsoft.Maui.Platform;
+using Plugin.Firebase.Firestore;
 using System.ComponentModel;
 
 namespace Spots;
-public class Spot : BindableObject, INotifyPropertyChanged
+public class Spot : INotifyPropertyChanged, IUser
 {
-    new public event PropertyChangedEventHandler? PropertyChanged;
+    public event PropertyChangedEventHandler? PropertyChanged;
 
     #region Private Parameters
     private string? _brandName;
@@ -46,6 +48,10 @@ public class Spot : BindableObject, INotifyPropertyChanged
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(UserID)));
         }
     }
+    public string FullName
+    {
+        get => BrandName + " - " + SpotName;
+    }
     public string BrandName
     {
         get => _brandName ?? "";
@@ -53,6 +59,7 @@ public class Spot : BindableObject, INotifyPropertyChanged
         {
             _brandName = value.Equals("") ? null : value;
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(BrandName)));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(FullName)));
         }
     }
     public string SpotName
@@ -62,6 +69,7 @@ public class Spot : BindableObject, INotifyPropertyChanged
         {
             _businessName = value.Equals("") ? null : value;
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SpotName)));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(FullName)));
         }
     }
     public string Email
@@ -159,13 +167,13 @@ public class Spot : BindableObject, INotifyPropertyChanged
         Praises = praises ?? [];
     }
 
-    public Spot(Spot_Firebase spotData)
+    public Spot(Spot_Firebase spotData, ImageSource profilePictureSource)
     {
         UserID = spotData.UserID;
         BrandName = spotData.BrandName;
         SpotName = spotData.SpotName;
         Email = spotData.Email;
-        UpdateProfilePicture(spotData.ProfilePictureAddress);
+        ProfilePictureSource = profilePictureSource;
         PhoneNumber = spotData.PhoneNumber;
         PhoneCountryCode = spotData.PhoneCountryCode;
         Description = spotData.Description;
@@ -187,17 +195,18 @@ public class Spot : BindableObject, INotifyPropertyChanged
         Praises = userData.Praises;
     }
 
-    public async void UpdateProfilePicture(string address)
+    public async Task UpdateProfilePicture(string firebaseAddress)
     {
-        if (address.Length > 0)
+        if (firebaseAddress.Length > 0)
         {
-            Uri imageUri = new(await DatabaseManager.GetImageDownloadLink(address));
+            string downloadAddress = await DatabaseManager.GetImageDownloadLink(firebaseAddress);
+            Uri imageUri = new(downloadAddress);
 
             ProfilePictureSource = ImageSource.FromUri(imageUri);
         }
         else
         {
-            ImageSource.FromFile("placeholder_logo.jpg");
+            ProfilePictureSource = ImageSource.FromFile("placeholder_logo.jpg");
         }
     }
 }
@@ -285,34 +294,87 @@ public class Spot_Firebase
     private List<string> GenerateSearchTerms(string brandName, string spotName)
     {
         List<string> retVal = [];
+        List<string> composedTerms = [];
 
         foreach (string word in brandName.Split(' ').Concat(spotName.Split(' ')))
         {
             string currentTerm = "";
             foreach (char letter in word)
             {
-                currentTerm += letter;
+                currentTerm += char.ToUpper(letter);
                 retVal.Add(currentTerm);
+
+                foreach (string term in composedTerms)
+                {
+                    retVal.Add(term + " " + currentTerm);
+                }
             }
+            composedTerms.Add(currentTerm);
         }
 
-        return retVal;
+        return retVal.Concat(composedTerms).ToList();
+    }
+
+    public async Task<ImageSource> GetImageSource()
+    {
+        if (ProfilePictureAddress.Length > 0)
+        {
+            string downloadAddress = await DatabaseManager.GetImageDownloadLink(ProfilePictureAddress);
+            Uri imageUri = new(downloadAddress);
+
+            return ImageSource.FromUri(imageUri);
+        }
+        else
+        {
+            return ImageSource.FromFile("placeholder_logo.jpg");
+        }
     }
 }
 
-    public class FirebaseLocation : IFirestoreObject
+public class FirebaseLocation : IFirestoreObject
 {
+    private double _Latitude = 0;
+    private double _Longitude = 0;
+    
     [FirestoreProperty(nameof(Address))]
     public string Address { get; set; }
 
     [FirestoreProperty(nameof(Latitude))]
-    public double Latitude { get; set; }
+    public double Latitude
+    {
+        get
+        {
+            return _Latitude;
+        }
+
+        set
+        {
+            _Latitude = value;
+            Geohash = [LocationManager.Encoder.Encode(_Latitude, _Longitude)];
+        }
+    }
 
     [FirestoreProperty(nameof(Longitude))]
-    public double Longitude { get; set; }
+    public double Longitude
+    {
+        get
+        {
+            return _Longitude;
+        }
+
+        set
+        {
+            _Longitude = value;
+            Geohash = [LocationManager.Encoder.Encode(_Latitude, _Longitude)];
+        }
+    }
+
+    [FirestoreProperty(nameof(Geohash))]
+    public List<string> Geohash { get; private set; }
 
     public FirebaseLocation()
     {
+        Geohash = [""];
         Address = "";
         Latitude = 0;
         Longitude = 0;
@@ -320,8 +382,17 @@ public class Spot_Firebase
 
     public FirebaseLocation(string addr, double lat, double lng)
     {
+        Geohash = [""];
         Address = addr;
         Latitude = lat;
         Longitude = lng;
+    }
+
+    public FirebaseLocation(Location location)
+    {
+        Geohash = [""];
+        Address = "";
+        Latitude = location.Latitude;
+        Longitude = location.Longitude;
     }
 }

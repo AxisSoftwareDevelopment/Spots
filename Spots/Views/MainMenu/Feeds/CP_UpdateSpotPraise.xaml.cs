@@ -1,3 +1,5 @@
+using Microsoft.Extensions.Options;
+
 namespace Spots;
 
 public partial class CP_UpdateSpotPraise : ContentPage
@@ -6,6 +8,7 @@ public partial class CP_UpdateSpotPraise : ContentPage
     private readonly FeedContext<Spot> SearchBoxContext = new();
     private ImageSource? _AttachmentSource;
     private ImageFile? _AttachmentFile;
+    private List<string>? _SpotPraisers = null;
     private bool _AttachmentChanged = false;
     public CP_UpdateSpotPraise(SpotPraise? spotPraise = null)
 	{
@@ -23,6 +26,8 @@ public partial class CP_UpdateSpotPraise : ContentPage
 
         _FrameSpotPicture.HeightRequest = profilePictureDimensions;
         _FrameSpotPicture.WidthRequest = profilePictureDimensions;
+
+        _btnSave.Clicked += _btnSave_Clicked;
     }
 
     private void _colSearchBarCollectionView_SelectionChanged(object? sender, SelectionChangedEventArgs e)
@@ -31,31 +36,28 @@ public partial class CP_UpdateSpotPraise : ContentPage
         LoadSelectedSpot((Spot)e.CurrentSelection[0]);
     }
 
-    private void _entrySpotSearchBar_TextChanged(object? sender, TextChangedEventArgs e)
+    private async void _entrySpotSearchBar_TextChanged(object? sender, TextChangedEventArgs e)
     {
-        MainThread.BeginInvokeOnMainThread(async () => await RefreshSearchResults(_entrySpotSearchBar.Text));
+        await RefreshSearchResults(_entrySpotSearchBar.Text);
     }
 
     private async Task RefreshSearchResults(string searchInput)
     {
-        if(searchInput.Length > 0)
+        try
         {
-            SearchBoxContext.RefreshFeed(await FetchBussinesses(searchInput));
+            if (searchInput.Length > 0)
+            {
+                SearchBoxContext.RefreshFeed(await DatabaseManager.FetchSpots_ByNameAsync(searchInput));
+            }
+            else
+            {
+                SearchBoxContext.RefreshFeed([]);
+            }
         }
-        else
+        catch (Exception ex)
         {
-            SearchBoxContext.RefreshFeed([]);
+            await UserInterface.DisplayPopUp_Regular("Unhandled Error", ex.Message, "OK");
         }
-    }
-
-    private async Task<List<Spot>> FetchBussinesses(string searchInput)
-    {
-        List<Spot> bussinesses = [];
-        foreach(char c in searchInput)
-        {
-            bussinesses.Add(new(c.ToString(), c.ToString(), c.ToString(), c.ToString()));
-        }
-        return bussinesses;
     }
 
     public async void LoadImageOnClickAsync(object sender, EventArgs e)
@@ -74,7 +76,21 @@ public partial class CP_UpdateSpotPraise : ContentPage
     {
         _lblBrand.Text = spotSelected.BrandName + " - " + spotSelected.SpotName;
         _SpotImage.Source = spotSelected.ProfilePictureSource;
-        MainSpotPraise = new("", CurrentSession.currentUser.UserID, CurrentSession.currentUser.FullName, spotSelected.UserID, spotSelected.SpotName, DateTimeOffset.Now);
+        MainSpotPraise = new("", SessionManager.CurrentSession?.User?.UserID ?? "", SessionManager.CurrentSession?.User?.FullName ?? "", spotSelected.UserID, spotSelected.SpotName, DateTimeOffset.Now);
     }
 
+    private async void _btnSave_Clicked(object? sender, EventArgs e)
+    {
+        if(MainSpotPraise != null)
+        {
+            MainSpotPraise.Comment = _editorDescription.Text.Trim();
+
+            bool addToSpotPraises = _SpotPraisers != null && _SpotPraisers.Contains(MainSpotPraise.AuthorID);
+
+            if(await DatabaseManager.SaveSpotPraiseData(MainSpotPraise, addToSpotPraises, _AttachmentFile))
+            {
+                await Navigation.PopAsync();
+            }
+        }
+    }
 }

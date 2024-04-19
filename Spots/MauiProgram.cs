@@ -85,15 +85,22 @@ public static class MauiProgram
                 bool userSignedIn = await DatabaseManager.ValidateCurrentSession(); 
                 await LocationManager.UpdateLocationAsync(); 
                 //await ValidatePermissions(); 
-                if (userSignedIn) 
+                if (userSignedIn && SessionManager.CurrentSession != null) 
                 {
-                    if(CurrentSession.sessionMode == SessionMode.UserSession)
-                        Application.Current.MainPage = new FP_MainShell( CurrentSession.currentUser );
-                    else
-                        Application.Current.MainPage = new FP_MainShell( CurrentSession.currentBusiness );
+                    if (SessionManager.SessionMode == SessionModes.UserSession && SessionManager.CurrentSession.Client != null)
+                    {
+                        Application.Current.MainPage = new FP_MainShell(SessionManager.CurrentSession.Client);
+                    }
+                    else if (SessionManager.CurrentSession.Spot != null)
+                    {
+                        Application.Current.MainPage = new FP_MainShell(SessionManager.CurrentSession.Spot);
+                    }
                 }
-                else 
-                    Application.Current.MainPage = new NavigationPage( new CP_Login() ); 
+                else
+                {
+                    await DatabaseManager.LogOutAsync();
+                    Application.Current.MainPage = new NavigationPage(new CP_Login());
+                }
             }); 
         }); 
     }

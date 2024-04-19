@@ -1,8 +1,12 @@
-﻿namespace Spots;
+﻿using Geohash;
+using System.Reflection.Metadata;
+
+namespace Spots;
 
 public static class LocationManager
 {
     public static Location? CurrentLocation { get; private set; }
+    public static Geohasher Encoder { get; private set; } = new();
 
     public static async Task<Location?> GetUpdatedLocaionAsync()
     {

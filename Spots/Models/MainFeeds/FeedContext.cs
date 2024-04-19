@@ -3,11 +3,11 @@ using System.ComponentModel;
 
 namespace Spots;
 
-public class FeedContext<T> : BindableObject, INotifyPropertyChanged
+public class FeedContext<T> : INotifyPropertyChanged
 {
     private readonly object _syncRoot = new object();
 
-    new public event PropertyChangedEventHandler? PropertyChanged;
+    public event PropertyChangedEventHandler? PropertyChanged;
     public ObservableCollection<T> ItemSource { get; }
     public T? LastItemFetched { get; private set; }
 
@@ -23,7 +23,9 @@ public class FeedContext<T> : BindableObject, INotifyPropertyChanged
             foreach (T element in elements)
             {
                 ItemSource.Add(element);
+                LastItemFetched = element;
             }
+
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ItemSource)));
         }
     }
@@ -33,10 +35,14 @@ public class FeedContext<T> : BindableObject, INotifyPropertyChanged
         lock(_syncRoot)
         {
             ItemSource.Clear();
+            LastItemFetched = default;
+
             foreach (T element in elements)
             {
                 ItemSource.Add(element);
+                LastItemFetched = element;
             }
+
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ItemSource)));
         }
     }

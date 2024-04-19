@@ -2,8 +2,8 @@ namespace Spots;
 
 public partial class CP_UserProfile : ContentPage
 {
-	private User user;
-	public CP_UserProfile(User _user)
+	private Client user;
+	public CP_UserProfile(Client _user)
 	{
 		user = _user;
 

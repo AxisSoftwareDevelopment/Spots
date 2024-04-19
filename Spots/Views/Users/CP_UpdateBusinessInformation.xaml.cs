@@ -128,7 +128,7 @@ public partial class CP_UpdateBusinessInformation : ContentPage
                     else
                     {
                         // If the business was just updating information, then we just pop the page from navigation
-                        CurrentSession.currentBusiness.UpdateUserData(_user);
+                        SessionManager.CurrentSession?.UpdateUserData(_user);
 
                         await Navigation.PopAsync();
                     }

@@ -2,6 +2,9 @@
 using Plugin.Firebase.Firestore;
 using Plugin.Firebase.Core.Exceptions;
 using Plugin.Firebase.Storage;
+using Firebase.Abt;
+using Android.Hardware.Camera2;
+using Firebase.Firestore;
 
 namespace Spots;
 public static class DatabaseManager
@@ -11,7 +14,7 @@ public static class DatabaseManager
     private static readonly IFirebaseAuth firebaseAuth = CrossFirebaseAuth.Current;
 
     #region Public Methods
-    public static async Task<User> LogInUserAsync(string email, string password, bool getUser = true)
+    public static async Task<Client> LogInUserAsync(string email, string password, bool getUser = true)
     {
         string[] userSignInMethods = await CrossFirebaseAuth.Current.FetchSignInMethodsAsync(email);
 
@@ -30,7 +33,7 @@ public static class DatabaseManager
         //if(!firebaseUser.IsEmailVerified)
         //    throw new FirebaseAuthException(FIRAuthError.UserDisabled, "Custon Exception -> Email not verified.");
 
-        User user = new() { UserID = iFUser.Uid };
+        Client user = new() { UserID = iFUser.Uid };
         if (getUser)
         {
             user = await GetUserDataAsync(iFUser.Uid);
@@ -83,7 +86,7 @@ public static class DatabaseManager
         }
         else
         {
-            await SaveUserDataAsync(new User() { UserID = CrossFirebaseAuth.Current.CurrentUser.Uid, Email = email });
+            await SaveUserDataAsync(new Client() { UserID = CrossFirebaseAuth.Current.CurrentUser.Uid, Email = email });
         }
 
         string? id = CrossFirebaseAuth.Current.CurrentUser?.Uid;
@@ -103,19 +106,19 @@ public static class DatabaseManager
                 if (CrossFirebaseAuth.Current.CurrentUser.DisplayName.Equals("Business"))
                 {
                     Spot user = await GetSpotDataAsync(CrossFirebaseAuth.Current.CurrentUser.Uid);
-                    CurrentSession.StartSession(user);
+                    SessionManager.StartSession(user);
                 }
                 else
                 {
-                    User user = await GetUserDataAsync(CrossFirebaseAuth.Current.CurrentUser.Uid);
-                    CurrentSession.StartSession(user);
+                    Client user = await GetUserDataAsync(CrossFirebaseAuth.Current.CurrentUser.Uid);
+                    SessionManager.StartSession(user);
                 }
                 return true;
             }
         }
-        catch (Exception) 
+        catch (Exception e) 
         {
-            CurrentSession.CloseSession();
+            SessionManager.CloseSession();
         }
         return false;
     }
@@ -125,7 +128,7 @@ public static class DatabaseManager
         await CrossFirebaseAuth.Current.SignOutAsync();
     }
 
-    public static async Task<bool> SaveUserDataAsync(User user, string profilePictureAddress = "")
+    public static async Task<bool> SaveUserDataAsync(Client user, string profilePictureAddress = "")
     {
         try
         {
@@ -156,6 +159,75 @@ public static class DatabaseManager
         return true;
     }
 
+    public static async Task<bool> SaveSpotPraiseData(SpotPraise praise, bool addToSpotList, ImageFile? imageFile = null)
+    {
+        try
+        {
+            bool bAlreadySaved = false;
+            SpotPraise_Firebase praise_Firebase = new(praise);
+            IDocumentReference praiseDocumentReference;
+            if (praise_Firebase.PraiseID.Length > 0)
+            {
+                praiseDocumentReference = await CrossFirebaseFirestore.Current.GetCollection("Praises").AddDocumentAsync(praise_Firebase);
+                bAlreadySaved = true;
+            }
+            else
+            {
+                praiseDocumentReference = CrossFirebaseFirestore.Current.GetCollection("Praises").GetDocument(praise_Firebase.PraiseID);
+            }
+
+            if (praiseDocumentReference.Id.Length > 0 && imageFile != null)
+            {
+                string attachmentAddress = await SavePraiseAttachment(praiseDocumentReference.Id, praise_Firebase.AuthorID[0], imageFile);
+                praise_Firebase.AttachedPictureAddress = attachmentAddress;
+            }
+
+            if((praiseDocumentReference.Id.Length > 0) && (!bAlreadySaved || imageFile != null))
+            {
+                await praiseDocumentReference.SetDataAsync(praise_Firebase);
+            }
+            else
+            {
+                return false;
+            }
+
+            if(addToSpotList)
+            {
+                IDocumentSnapshot<Spot_Firebase> spotSnapshot = await CrossFirebaseFirestore.Current
+                    .GetCollection("BusinessData")
+                    .GetDocument(praise.SpotID)
+                    .GetDocumentSnapshotAsync<Spot_Firebase>();
+                if(spotSnapshot.Data != null && !spotSnapshot.Data.Praises.Contains(praise.AuthorID))
+                {
+                    Spot_Firebase spot = spotSnapshot.Data;
+                    spot.Praises.Add(praise.AuthorID);
+
+                    await CrossFirebaseFirestore.Current
+                    .GetCollection("BusinessData")
+                    .GetDocument(praise.SpotID)
+                    .SetDataAsync(spot);
+                }
+            }
+
+            return true;
+        }
+        catch(Exception)
+        {
+            return false;
+        }
+    }
+
+    public static async Task<string> SavePraiseAttachment(string praiseID, string userID, ImageFile imageFile)
+    {
+        string filePath = $"Users/{userID}/PraieAttachments/{praiseID}.{imageFile.ContentType?.Split('/')[1] ?? ""}";
+
+        IStorageReference storageRef = CrossFirebaseStorage.Current.GetReferenceFromPath(filePath);
+
+        //await storageRef.DeleteAsync();
+        await storageRef.PutBytes(imageFile.Bytes).AwaitAsync();
+        return filePath;
+    }
+
     public static async Task<string> SaveProfilePicture(bool isBusiness, string userID, ImageFile imageFile)
     {
         string filePath = $"{(isBusiness ? "Businesses" : "Users")}/{userID}/profilePicture.{imageFile.ContentType?.Replace("image/", "") ?? ""}";
@@ -175,56 +247,119 @@ public static class DatabaseManager
         return imageStream;
     }
 
-    public static async Task<List<SpotPraise>> FetchSpotPraises(SpotPraise? lastPraise = null)
+    public static async Task<List<SpotPraise>> FetchSpotPraises_FromFollowedClients(Client client, SpotPraise? lastPraise = null)
     {
         List<SpotPraise> spotPraises = [];
         IQuerySnapshot<SpotPraise_Firebase> documentReference;
 
         if (lastPraise != null)
         {
-            IDocumentSnapshot<SpotPraise_Firebase> documentSnapshot = await CrossFirebaseFirestore.Current.GetCollection("SpotPraises").GetDocument(lastPraise?.SpotID).GetDocumentSnapshotAsync<SpotPraise_Firebase>();
+            IDocumentSnapshot<SpotPraise_Firebase> documentSnapshot = await CrossFirebaseFirestore.Current.GetCollection("SpotPraises")
+                .GetDocument(lastPraise.SpotID)
+                .GetDocumentSnapshotAsync<SpotPraise_Firebase>();
 
             documentReference = await CrossFirebaseFirestore.Current.GetCollection("SpotPraises")
-            .OrderBy("CreationDate")
-            .StartingAt(documentSnapshot)
-            .LimitedTo(5)
-            .GetDocumentsAsync<SpotPraise_Firebase>();
+                .OrderBy("CreationDate")
+                .StartingAfter(documentSnapshot)
+                .WhereArrayContainsAny("AuthorID", client.FollowedClients.ToArray())
+                .LimitedTo(5)
+                .GetDocumentsAsync<SpotPraise_Firebase>();
         }
         else
         {
             documentReference = await CrossFirebaseFirestore.Current.GetCollection("SpotPraises")
-            .OrderBy("CreationDate")
-            .LimitedTo(5)
-            .GetDocumentsAsync<SpotPraise_Firebase>();
+                .OrderBy("CreationDate")
+                .WhereArrayContainsAny("AuthorID", client.FollowedClients.ToArray())
+                .LimitedTo(5)
+                .GetDocumentsAsync<SpotPraise_Firebase>();
         }
 
         foreach(var document in documentReference.Documents)
         {
-            User author = await GetUserDataAsync(document.Data.AuthorID);
-            Spot spot = await GetSpotDataAsync(document.Data.SpotID);
-            spotPraises.Add(new(document.Data, author, spot));
+            Client author = await GetUserDataAsync(document.Data.AuthorID[0]);
+            Spot spot = await GetSpotDataAsync(document.Data.SpotID[0]);
+            ImageSource? attachment = null;
+
+            if (document.Data.AttachedPictureAddress.Length > 0)
+            {
+                string downloadAddress = await GetImageDownloadLink(document.Data.AttachedPictureAddress);
+                Uri imageUri = new(downloadAddress);
+
+                attachment = ImageSource.FromUri(imageUri);
+            }
+
+            spotPraises.Add(new(document.Data, author, spot, attachment));
         }
 
         return spotPraises;
     }
 
-    public static async Task<List<Spot>> FetchBusinessUsers_ByNameAsync(string filterParams)
+    public static async Task<List<Spot>> FetchSpotsNearby_Async(FirebaseLocation referenceLocation, int searchAreaInKm, Spot? lastSpot = null)
     {
-        //TODO: Finish fetching
-        List<Spot> retVal = [];
-
+        List<Spot> spots = [];
         IQuerySnapshot<Spot_Firebase> documentReference;
-        documentReference = await CrossFirebaseFirestore.Current.GetCollection("BusinessData")
-            .OrderBy("CreationDate")
-            .LimitedTo(25)
-            .GetDocumentsAsync<Spot_Firebase>();
+
+        List<string> geohashesNearby = GenerateGeohashSearchGrid(referenceLocation, searchAreaInKm);
+        geohashesNearby.Add(referenceLocation.Geohash[0]);
+
+        if (lastSpot != null)
+        {
+            IDocumentSnapshot<SpotPraise_Firebase> documentSnapshot = await CrossFirebaseFirestore.Current.GetCollection("BusinessData")
+                .GetDocument(lastSpot.UserID)
+                .GetDocumentSnapshotAsync<SpotPraise_Firebase>();
+
+            documentReference = await CrossFirebaseFirestore.Current.GetCollection("BusinessData")
+                .WhereArrayContainsAny("Location.Geohash", geohashesNearby.ToArray())
+                .StartingAfter(documentSnapshot)
+                .LimitedTo(5)
+                .GetDocumentsAsync<Spot_Firebase>();
+        }
+        else
+        {
+            documentReference = await CrossFirebaseFirestore.Current.GetCollection("BusinessData")
+                .WhereArrayContainsAny("Location.Geohash", geohashesNearby.ToArray())
+                .LimitedTo(5)
+                .GetDocumentsAsync<Spot_Firebase>();
+        }
+
+        foreach (IDocumentSnapshot<Spot_Firebase> document in documentReference.Documents)
+        {
+            if (document.Data != null)
+            {
+                Spot_Firebase firebaseData = document.Data;
+                spots.Add(new(firebaseData, await firebaseData.GetImageSource()));
+            }
+        }
+
+        return spots;
+    }
+
+    public static async Task<List<Spot>> FetchSpots_ByNameAsync(string filterParams)
+    {
+        List<Spot> retVal = [];
+        string[] searchTerms = [filterParams.ToUpper().Trim()];
+
+        if (searchTerms[0].Length > 0)
+        {
+            IQuerySnapshot<Spot_Firebase> documentReference;
+            documentReference = await CrossFirebaseFirestore.Current.GetCollection("BusinessData")
+                .LimitedTo(25)
+                .WhereArrayContainsAny("SearchTerms", searchTerms)
+                .GetDocumentsAsync<Spot_Firebase>();
+
+            foreach (var document in documentReference.Documents)
+            {
+                ImageSource profilePictureImageSource = await document.Data.GetImageSource();
+                retVal.Add(new(document.Data, profilePictureImageSource));
+            }
+        }
 
         return retVal;
     }
     #endregion
 
     #region Private Methods
-    private async static Task<User> GetUserDataAsync(string userID)
+    private async static Task<Client> GetUserDataAsync(string userID)
     {
         IDocumentSnapshot<User_Firebase> documentSnapshot = await CrossFirebaseFirestore.Current
             .GetCollection("UserData")
@@ -232,7 +367,7 @@ public static class DatabaseManager
             .GetDocumentSnapshotAsync<User_Firebase>();
 
         // Even if documentSnapshot.Data doesnt support nullable returns, it is still possible to hold a null value.
-        User user = documentSnapshot.Data != null ? new(documentSnapshot.Data) : new() { UserID = userID };
+        Client user = documentSnapshot.Data != null ? new(documentSnapshot.Data, await documentSnapshot.Data.GetImageSource()) : new() { UserID = userID };
 
         return user;
     }
@@ -244,12 +379,78 @@ public static class DatabaseManager
             .GetDocumentSnapshotAsync<Spot_Firebase>();
 
         // Even if documentSnapshot.Data doesnt support nullable returns, it is still possible to hold a null value.
-        Spot user = documentSnapshot.Data != null ? new(documentSnapshot.Data) : new() { UserID = bussinessID };
+        Spot user = new() { UserID = bussinessID };
+        if (documentSnapshot.Data != null)
+        {
+            Spot_Firebase spot_Firebase = documentSnapshot.Data;
+            ImageSource profilePictureImageSource = await spot_Firebase.GetImageSource();
+            user = new(spot_Firebase, profilePictureImageSource);
+        }
 
         return user;
     }
     #endregion
 
     #region Utilities
+    private static List<string> GenerateGeohashSearchGrid(FirebaseLocation centerPoint, int searchAreaMagnitude)
+    {
+        List<string> retVal = [];
+
+        string lastGeohashPivot = centerPoint.Geohash[0];
+
+        for(int step = 0; step < searchAreaMagnitude; step++)
+        {
+            // Start at North neighbor
+            string currentGeohashPivot = LocationManager.Encoder.GetNeighbor(lastGeohashPivot, Geohash.Direction.North);
+            lastGeohashPivot = currentGeohashPivot;
+            retVal.Add(currentGeohashPivot);
+            // Get all neighbors between North and West
+            for(int neighborIndex = 0; neighborIndex <= step; neighborIndex++)
+            {
+                currentGeohashPivot = LocationManager.Encoder.GetNeighbor(currentGeohashPivot, Geohash.Direction.West);
+                retVal.Add(currentGeohashPivot);
+            }
+            for (int neighborIndex = 0; neighborIndex <= step; neighborIndex++)
+            {
+                currentGeohashPivot = LocationManager.Encoder.GetNeighbor(currentGeohashPivot, Geohash.Direction.South);
+                retVal.Add(currentGeohashPivot);
+            }
+            // Get all neighbors between North and South
+            for (int neighborIndex = 0; neighborIndex <= step; neighborIndex++)
+            {
+                currentGeohashPivot = LocationManager.Encoder.GetNeighbor(currentGeohashPivot, Geohash.Direction.South);
+                retVal.Add(currentGeohashPivot);
+            }
+            for (int neighborIndex = 0; neighborIndex <= step; neighborIndex++)
+            {
+                currentGeohashPivot = LocationManager.Encoder.GetNeighbor(currentGeohashPivot, Geohash.Direction.East);
+                retVal.Add(currentGeohashPivot);
+            }
+            // Get all neighbors between South and East
+            for (int neighborIndex = 0; neighborIndex <= step; neighborIndex++)
+            {
+                currentGeohashPivot = LocationManager.Encoder.GetNeighbor(currentGeohashPivot, Geohash.Direction.East);
+                retVal.Add(currentGeohashPivot);
+            }
+            for (int neighborIndex = 0; neighborIndex <= step; neighborIndex++)
+            {
+                currentGeohashPivot = LocationManager.Encoder.GetNeighbor(currentGeohashPivot, Geohash.Direction.North);
+                retVal.Add(currentGeohashPivot);
+            }
+            // Get all neighbors between East and North
+            for (int neighborIndex = 0; neighborIndex <= step; neighborIndex++)
+            {
+                currentGeohashPivot = LocationManager.Encoder.GetNeighbor(currentGeohashPivot, Geohash.Direction.North);
+                retVal.Add(currentGeohashPivot);
+            }
+            for (int neighborIndex = 0; neighborIndex < step; neighborIndex++) // Here we use '<' isntead of '<=' to prevent adding North neighbor again
+            {
+                currentGeohashPivot = LocationManager.Encoder.GetNeighbor(currentGeohashPivot, Geohash.Direction.West);
+                retVal.Add(currentGeohashPivot);
+            }
+        }
+
+        return retVal;
+    }
     #endregion
 }

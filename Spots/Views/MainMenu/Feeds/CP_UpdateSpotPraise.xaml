@@ -54,6 +54,10 @@
                     <Image x:Name="_imgAttachmentImage" Aspect="AspectFill" Margin="10, 10"/>
                 </StackLayout>
             </ScrollView>
+            <StackLayout Orientation="Horizontal" HorizontalOptions="Center">
+                <Button x:Name="_btnSave" CornerRadius="20" BackgroundColor="{DynamicResource Tertiary}" TextColor="{DynamicResource PrimaryAccent}" FontSize="Medium"
+                        Text="{DynamicResource lbl_Save}" Margin="20,20,20,20" />
+            </StackLayout>
         </StackLayout>
     </Border>
 

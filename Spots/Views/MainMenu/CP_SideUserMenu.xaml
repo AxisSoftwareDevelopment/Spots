@@ -7,10 +7,10 @@
     
     <StackLayout x:Name="_LayoutView">
         <Border x:Name="_FrameProfilePicture" Padding="0" Margin="15,15,15,0" StrokeShape="RoundRectangle 500">
-            <ImageButton x:Name="_ProfileImage" Aspect="AspectFill" Clicked="ProfilePictureOrMyProfileOnClicked"/>
+            <ImageButton x:Name="_ProfileImage" Aspect="AspectFill" Source="{Binding ProfilePictureSource}" Clicked="ProfilePictureOrMyProfileOnClicked"/>
         </Border>
-        
-        <Label x:Name="_lblUserName" Grid.Row="1" HorizontalOptions="FillAndExpand" TextColor="{DynamicResource PrimaryAccent}"
+
+        <Label x:Name="_lblUserName" Grid.Row="1" HorizontalOptions="FillAndExpand" TextColor="{DynamicResource PrimaryAccent}" Text="{Binding FullName}"
             FontAttributes="Bold" FontSize="25" VerticalOptions="Start" HorizontalTextAlignment="Center"/>
 
         <Frame Grid.Row="1" VerticalOptions="FillAndExpand" Margin="10,15" HasShadow="True" CornerRadius="25" BackgroundColor="{DynamicResource Secondary}">

@@ -89,7 +89,7 @@ public partial class CP_Login : ContentPage
         {
             if (Application.Current != null)
             {
-                User user = await DatabaseManager.LogInUserAsync(email, password);
+                Client user = await DatabaseManager.LogInUserAsync(email, password);
 
                 if (user.UserDataRetrieved)
                 {

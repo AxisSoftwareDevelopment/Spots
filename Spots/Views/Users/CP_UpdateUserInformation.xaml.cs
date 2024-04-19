@@ -4,13 +4,13 @@ namespace Spots;
 
 public partial class CP_UpdateUserInformation : ContentPage
 {
-	private User _user;
+	private Client _user;
 	private bool _userIsEmpty;
     private string _password, _email;
     private bool _birhtdateSelected, _profilePictureChanged = false;
     private ImageFile? _profilePictureFile = null;
 
-    public CP_UpdateUserInformation(User user, string email = "", string password = "")
+    public CP_UpdateUserInformation(Client user, string email = "", string password = "")
 	{
         _user = user;
         _userIsEmpty = !password.Equals("") && !email.Equals("") && !user.UserDataRetrieved;
@@ -51,7 +51,7 @@ public partial class CP_UpdateUserInformation : ContentPage
             return;
         }
 
-        User newData = new()
+        Client newData = new()
         {
             FirstName = ToTitleCase(_entryFirstName.Text.Trim()),
             LastName = ToTitleCase(_entryLastName.Text.Trim()),
@@ -98,7 +98,7 @@ public partial class CP_UpdateUserInformation : ContentPage
                     else
                     {
                         // If the business was just updating information, then we just pop the page from navigation
-                        CurrentSession.currentUser.UpdateUserData(_user);
+                        SessionManager.CurrentSession?.UpdateUserData(_user);
 
                         await Navigation.PopAsync();
                     }
@@ -154,7 +154,7 @@ public partial class CP_UpdateUserInformation : ContentPage
         }
     }
 
-    private bool ValidateFields(User newData)
+    private bool ValidateFields(Client newData)
     {
         bool thereAreEmptyFields = newData.FirstName.Length == 0 ||
                             newData.LastName.Length == 0 ||
@@ -193,7 +193,7 @@ public partial class CP_UpdateUserInformation : ContentPage
 
         return true;
     }
-    private bool DataChanged(User newData)
+    private bool DataChanged(Client newData)
     {
         if(_profilePictureChanged)
             return true;
