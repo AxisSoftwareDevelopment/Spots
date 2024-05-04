@@ -10,7 +10,7 @@
         </StackLayout>
         <RefreshView x:Name="_refreshView">
             <CollectionView x:Name="_colFeed" HorizontalOptions="FillAndExpand" HorizontalScrollBarVisibility="Never" VerticalScrollBarVisibility="Never" BackgroundColor="{DynamicResource Tertiary}"
-                                ItemsSource="{Binding ItemSource}">
+                                ItemsSource="{Binding ItemSource}" SelectionMode="Single">
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
                         <ContentView>

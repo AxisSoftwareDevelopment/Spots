@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Spots.CP_SpotPraise"
+             Title="CP_SpotPraise"
+             BackgroundColor="{DynamicResource Primary}">
+
+    <NavigationPage.TitleView>
+        <Label Text="{DynamicResource lbl_SpotReview}" TextColor="{DynamicResource PrimaryAccent}" FontSize="24" FontAttributes="Bold" HorizontalOptions="Start" VerticalOptions="Center"></Label>
+    </NavigationPage.TitleView>
+
+    <Border Margin="20, 0, 20, 20" StrokeShape="RoundRectangle 50,50,50,50" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="{DynamicResource Secondary}">
+        <StackLayout Margin="10, 10" VerticalOptions="FillAndExpand">
+            <ScrollView x:Name="_scrollviewMain" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" HorizontalScrollBarVisibility="Never" VerticalScrollBarVisibility="Never">
+                <StackLayout>
+                    <!-- Author -->
+                    <StackLayout Orientation="Horizontal" HorizontalOptions="End">
+                        <Label x:Name="_lblAuthorName" Text="Author" TextColor="{DynamicResource Tertiary}" VerticalOptions="Center"/>
+                        <Border x:Name="_FrameAuthorPicture" Padding="0" StrokeShape="RoundRectangle 500" BackgroundColor="{DynamicResource Tertiary}" Margin="5">
+                            <ImageButton x:Name="_imgAuthorPicture" Aspect="AspectFill"/>
+                        </Border>
+                    </StackLayout>
+                    <!-- Spot -->
+                    <StackLayout Orientation="Horizontal">
+                        <Border x:Name="_FrameSpotPicture" Padding="0" Margin="15,15,15,0" StrokeShape="RoundRectangle 500" BackgroundColor="{DynamicResource Tertiary}">
+                            <ImageButton x:Name="_imgSpotImage" Aspect="AspectFill"/>
+                        </Border>
+                        <Label x:Name="_lblBrand" TextColor="{DynamicResource SecondaryAccent}" FontAttributes="Bold" Margin="0,20,0,0" VerticalOptions="Center"/>
+                    </StackLayout>
+                    <!-- Review Comment -->
+                    <Label Text="{DynamicResource lbl_Comment}" TextColor="{DynamicResource Tertiary}" HorizontalOptions="FillAndExpand" HorizontalTextAlignment="Start" Margin="15, 15, 0, 0"/>
+                    <Label x:Name="_lblComment" TextColor="{DynamicResource SecondaryAccent}" HorizontalOptions="Center" HorizontalTextAlignment="Start" Margin="15, 0, 15, 0"/>
+                    <!-- Attachment Picture -->
+                    <Image x:Name="_imgAttachmentImage" Aspect="AspectFit" VerticalOptions="StartAndExpand"  HorizontalOptions="CenterAndExpand" Margin="10, 10"/>
+                </StackLayout>
+            </ScrollView>
+            <StackLayout Orientation="Horizontal" HorizontalOptions="Center">
+                <Button x:Name="_btnEdit" CornerRadius="20" BackgroundColor="{DynamicResource Tertiary}" TextColor="{DynamicResource PrimaryAccent}" FontSize="Medium"
+                    Text="{DynamicResource lbl_Edit}" Margin="20,20,20,20" />
+            </StackLayout>
+        </StackLayout>
+    </Border>
+    
+</ContentPage>

@@ -156,7 +156,7 @@ public class Client : INotifyPropertyChanged, IUser
         FollowedClients = followedClients ?? [];
     }
 
-    public Client(User_Firebase firebaseData, ImageSource profilePictureSrc)
+    public Client(Client_Firebase firebaseData, ImageSource profilePictureSrc)
     {
         UserID = firebaseData.UserID;
         FirstName = firebaseData.FirstName;
@@ -200,7 +200,7 @@ public class Client : INotifyPropertyChanged, IUser
     }
 }
 
-public class User_Firebase
+public class Client_Firebase
 {
     [FirestoreDocumentId]
     public string UserID { get; set; }
@@ -236,7 +236,7 @@ public class User_Firebase
     public IList<string> FollowedClients { get; set; }
 
 
-    public User_Firebase()
+    public Client_Firebase()
     {
         UserID = "";
         FirstName = "";
@@ -251,7 +251,7 @@ public class User_Firebase
         FollowedClients = [];
     }
 
-    public User_Firebase(string userID,
+    public Client_Firebase(string userID,
         string firstName,
         string lastName,
         DateTimeOffset birthDate,
@@ -276,7 +276,7 @@ public class User_Firebase
         FollowedClients = followedClients;
     }
 
-    public User_Firebase(Client userData, string profilePictureAddress)
+    public Client_Firebase(Client userData, string profilePictureAddress)
     {
         UserID = userData.UserID;
         FirstName = userData.FirstName;

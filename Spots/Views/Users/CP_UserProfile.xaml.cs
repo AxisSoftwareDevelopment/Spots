@@ -15,10 +15,41 @@ public partial class CP_UserProfile : ContentPage
 
 		_FrameProfilePicture.HeightRequest = profilePictureDimensions;
 		_FrameProfilePicture.WidthRequest = profilePictureDimensions;
+
+		if (user.UserID != SessionManager.CurrentSession?.User?.UserID)
+		{
+			_btnEdit.IsVisible = false;
+			if(SessionManager.CurrentSession?.Client?.FollowedClients.Contains(user.UserID) ?? false)
+			{
+				_btnFollow.IsVisible = false;
+				_btnUnfollow.IsVisible = true;
+			}
+			else
+			{
+                _btnFollow.IsVisible = false;
+                _btnUnfollow.IsVisible = true;
+            }
+		}
+		else
+		{
+            _btnEdit.IsVisible = true;
+            _btnFollow.IsVisible = false;
+			_btnUnfollow.IsVisible = false;
+		}
 	}
 
-	private void EditPersonalInformation(object sender, EventArgs e)
+	private void EditPersonalInformation_OnClicked(object sender, EventArgs e)
 	{
 		Navigation.PushAsync(new CP_UpdateUserInformation(user));
 	}
+
+    private void FollowClient_OnClicked(object sender, EventArgs e)
+    {
+        
+    }
+
+    private void UnfollowClient_OnClicked(object sender, EventArgs e)
+    {
+        Navigation.PushAsync(new CP_UpdateUserInformation(user));
+    }
 }

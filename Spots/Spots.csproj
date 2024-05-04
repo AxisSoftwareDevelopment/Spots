@@ -91,6 +91,12 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <MauiXaml Update="Views\MainMenu\CP_SearchPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\MainMenu\Feeds\CP_SpotPraise.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Views\MainMenu\Feeds\CP_UpdateSpotPraise.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>

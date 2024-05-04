@@ -30,6 +30,7 @@ public partial class CV_DiscoverFeed : ContentView
         });
         _colFeed.RemainingItemsThreshold = 1;
         _colFeed.RemainingItemsThresholdReached += OnItemThresholdReached;
+        _colFeed.SelectionChanged += _colFeed_SelectionChanged;
 
         Task.Run(() =>
         {
@@ -38,6 +39,16 @@ public partial class CV_DiscoverFeed : ContentView
                 await RefreshFeed();
             });
         });
+    }
+
+    private void _colFeed_SelectionChanged(object? sender, SelectionChangedEventArgs e)
+    {
+        if(e.CurrentSelection.Count > 0)
+        {
+            Spot spot = (Spot)e.CurrentSelection[0];
+            Navigation.PushAsync(new CP_BusinessProfile(spot));
+            _colFeed.SelectedItem = null;
+        }
     }
 
     private async Task RefreshFeed()

@@ -6,7 +6,7 @@
 
     <RefreshView x:Name="_refreshView" Margin="0,5,0,0">
         <CollectionView x:Name="_colFeed" HorizontalOptions="FillAndExpand" HorizontalScrollBarVisibility="Never" VerticalScrollBarVisibility="Never"
-                        ItemsSource="{Binding ItemSource}">
+                        ItemsSource="{Binding ItemSource}" SelectionMode="Single">
             <CollectionView.ItemTemplate>
                 <DataTemplate>
                     <ContentView>

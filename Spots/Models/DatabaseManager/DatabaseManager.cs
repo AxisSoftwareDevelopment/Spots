@@ -36,7 +36,7 @@ public static class DatabaseManager
         Client user = new() { UserID = iFUser.Uid };
         if (getUser)
         {
-            user = await GetUserDataAsync(iFUser.Uid);
+            user = await GetClientDataAsync(iFUser.Uid);
             if (!user.UserDataRetrieved)
                 await LogOutAsync();
         }
@@ -110,14 +110,15 @@ public static class DatabaseManager
                 }
                 else
                 {
-                    Client user = await GetUserDataAsync(CrossFirebaseAuth.Current.CurrentUser.Uid);
+                    Client user = await GetClientDataAsync(CrossFirebaseAuth.Current.CurrentUser.Uid);
                     SessionManager.StartSession(user);
                 }
                 return true;
             }
         }
-        catch (Exception e) 
+        catch (Exception ex) 
         {
+            await UserInterface.DisplayPopUp_Regular("Unhandled Database Exception", ex.Message, "Ok");
             SessionManager.CloseSession();
         }
         return false;
@@ -133,11 +134,11 @@ public static class DatabaseManager
         try
         {
             IDocumentReference documentReference = CrossFirebaseFirestore.Current.GetCollection("UserData").GetDocument(user.UserID);
-            await documentReference.SetDataAsync(new User_Firebase(user, profilePictureAddress));
+            await documentReference.SetDataAsync(new Client_Firebase(user, profilePictureAddress));
         }
-        catch (Exception e)
+        catch (Exception ex)
         {
-            Console.WriteLine(e.Message);
+            await UserInterface.DisplayPopUp_Regular("Unhandled Database Exception", ex.Message, "Ok");
             return false;
         }
 
@@ -151,12 +152,45 @@ public static class DatabaseManager
             IDocumentReference documentReference = CrossFirebaseFirestore.Current.GetCollection("BusinessData").GetDocument(user.UserID);
             await documentReference.SetDataAsync(new Spot_Firebase(user, profilePictureAddress));
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            await UserInterface.DisplayPopUp_Regular("Unhandled Database Exception", ex.Message, "Ok");
             return false;
         }
 
         return true;
+    }
+
+    public async static Task<Client> GetClientDataAsync(string userID)
+    {
+        IDocumentSnapshot<Client_Firebase> documentSnapshot = await CrossFirebaseFirestore.Current
+            .GetCollection("UserData")
+            .GetDocument(userID)
+            .GetDocumentSnapshotAsync<Client_Firebase>();
+
+        // Even if documentSnapshot.Data doesnt support nullable returns, it is still possible to hold a null value.
+        Client user = documentSnapshot.Data != null ? new(documentSnapshot.Data, await documentSnapshot.Data.GetImageSource()) : new() { UserID = userID };
+
+        return user;
+    }
+
+    public async static Task<Spot> GetSpotDataAsync(string bussinessID)
+    {
+        IDocumentSnapshot<Spot_Firebase> documentSnapshot = await CrossFirebaseFirestore.Current
+            .GetCollection("BusinessData")
+            .GetDocument(bussinessID)
+            .GetDocumentSnapshotAsync<Spot_Firebase>();
+
+        // Even if documentSnapshot.Data doesnt support nullable returns, it is still possible to hold a null value.
+        Spot user = new() { UserID = bussinessID };
+        if (documentSnapshot.Data != null)
+        {
+            Spot_Firebase spot_Firebase = documentSnapshot.Data;
+            ImageSource profilePictureImageSource = await spot_Firebase.GetImageSource();
+            user = new(spot_Firebase, profilePictureImageSource);
+        }
+
+        return user;
     }
 
     public static async Task<bool> SaveSpotPraiseData(SpotPraise praise, bool addToSpotList, ImageFile? imageFile = null)
@@ -211,8 +245,9 @@ public static class DatabaseManager
 
             return true;
         }
-        catch(Exception)
+        catch(Exception ex)
         {
+            await UserInterface.DisplayPopUp_Regular("Unhandled Database Exception", ex.Message, "Ok");
             return false;
         }
     }
@@ -276,7 +311,7 @@ public static class DatabaseManager
 
         foreach(var document in documentReference.Documents)
         {
-            Client author = await GetUserDataAsync(document.Data.AuthorID[0]);
+            Client author = await GetClientDataAsync(document.Data.AuthorID[0]);
             Spot spot = await GetSpotDataAsync(document.Data.SpotID[0]);
             ImageSource? attachment = null;
 
@@ -356,39 +391,51 @@ public static class DatabaseManager
 
         return retVal;
     }
+
+    public static async Task<bool> UpdateClientFollowedList(string followerID, string followedID, bool follow)
+    {
+        bool retVal = false;
+
+        try
+        {
+            IDocumentReference documentReference = CrossFirebaseFirestore.Current
+            .GetCollection("UserData")
+            .GetDocument(followerID);
+            IDocumentSnapshot<Client_Firebase> documentSnapshot = await documentReference.GetDocumentSnapshotAsync<Client_Firebase>();
+
+            if (documentSnapshot != null && documentSnapshot.Data != null)
+            {
+                Client_Firebase follower_firebase = documentSnapshot.Data;
+                if(follow)
+                {
+                    if (!follower_firebase.FollowedClients.Contains(followedID))
+                    {
+                        follower_firebase.FollowedClients.Add(followedID);
+                    }
+                }
+                else
+                {
+                    while (follower_firebase.FollowedClients.Contains(followedID))
+                    {
+                        follower_firebase.FollowedClients.Remove(followedID);
+                    }
+                }
+
+                await documentReference.SetDataAsync(follower_firebase);
+                retVal = true;
+            }
+        }
+        catch (Exception ex)
+        {
+            await UserInterface.DisplayPopUp_Regular("Unhandled Database Exception", ex.Message, "Ok");
+        }
+
+        return retVal;
+    }
     #endregion
 
     #region Private Methods
-    private async static Task<Client> GetUserDataAsync(string userID)
-    {
-        IDocumentSnapshot<User_Firebase> documentSnapshot = await CrossFirebaseFirestore.Current
-            .GetCollection("UserData")
-            .GetDocument(userID)
-            .GetDocumentSnapshotAsync<User_Firebase>();
-
-        // Even if documentSnapshot.Data doesnt support nullable returns, it is still possible to hold a null value.
-        Client user = documentSnapshot.Data != null ? new(documentSnapshot.Data, await documentSnapshot.Data.GetImageSource()) : new() { UserID = userID };
-
-        return user;
-    }
-    private async static Task<Spot> GetSpotDataAsync(string bussinessID)
-    {
-        IDocumentSnapshot<Spot_Firebase> documentSnapshot = await CrossFirebaseFirestore.Current
-            .GetCollection("BusinessData")
-            .GetDocument(bussinessID)
-            .GetDocumentSnapshotAsync<Spot_Firebase>();
-
-        // Even if documentSnapshot.Data doesnt support nullable returns, it is still possible to hold a null value.
-        Spot user = new() { UserID = bussinessID };
-        if (documentSnapshot.Data != null)
-        {
-            Spot_Firebase spot_Firebase = documentSnapshot.Data;
-            ImageSource profilePictureImageSource = await spot_Firebase.GetImageSource();
-            user = new(spot_Firebase, profilePictureImageSource);
-        }
-
-        return user;
-    }
+    
     #endregion
 
     #region Utilities

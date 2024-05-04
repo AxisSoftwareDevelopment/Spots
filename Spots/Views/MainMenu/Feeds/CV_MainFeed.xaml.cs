@@ -19,8 +19,18 @@ public partial class CV_MainFeed : ContentView
 		});
 		_colFeed.RemainingItemsThreshold = 1;
 		_colFeed.RemainingItemsThresholdReached += OnItemThresholdReached;
+        _colFeed.SelectionChanged += _colFeed_SelectionChanged;
         MainThread.BeginInvokeOnMainThread(async () => await RefreshFeed());
 	}
+
+    private void _colFeed_SelectionChanged(object? sender, SelectionChangedEventArgs e)
+    {
+		if(e.CurrentSelection.Count > 0)
+		{
+            Navigation.PushAsync(new CP_SpotPraise((SpotPraise)e.CurrentSelection[0]));
+			_colFeed.SelectedItem = null;
+        }
+    }
 
     private void _btnWritePraise_Clicked(object? sender, EventArgs e)
     {

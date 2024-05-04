@@ -67,6 +67,9 @@
     <x:String x:Key="lbl_SpotName">Spot Name</x:String> <!-- Label that indicates business Brand Name -->
     <x:String x:Key="lbl_AddReviewComment">Add a comment:</x:String> <!-- Label that indicates the profile picture field -->
     <x:String x:Key="lbl_YourComment">Your Comment</x:String> <!-- Label that indicates Description section -->
+    <x:String x:Key="lbl_Edit">Edit</x:String> <!-- Label that indicates Description section -->
+    <x:String x:Key="lbl_Comment">Comment:</x:String> <!-- Label that indicates Description section -->
+    <x:String x:Key="lbl_SpotReview">Spot Review</x:String> <!-- Label that indicates Description section -->
 
     <x:String x:Key="txt_ConfirmLogOut">Are you sure you want to want to log out?</x:String> <!-- Text that questions the user if is sure of logout action -->
     <x:String x:Key="txt_LogIn">Log in to your account</x:String> <!-- Log in text -->
