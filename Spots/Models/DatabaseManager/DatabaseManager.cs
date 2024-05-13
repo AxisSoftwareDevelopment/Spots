@@ -2,9 +2,6 @@
 using Plugin.Firebase.Firestore;
 using Plugin.Firebase.Core.Exceptions;
 using Plugin.Firebase.Storage;
-using Firebase.Abt;
-using Android.Hardware.Camera2;
-using Firebase.Firestore;
 
 namespace Spots;
 public static class DatabaseManager

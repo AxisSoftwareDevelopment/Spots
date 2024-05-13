@@ -1,7 +1,3 @@
-using Android.Hardware.Display;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-
 namespace Spots;
 
 public partial class CV_DiscoverFeed : ContentView

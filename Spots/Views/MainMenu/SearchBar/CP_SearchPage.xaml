@@ -12,7 +12,7 @@
 
     <ContentPage.Content>
         <StackLayout Orientation="Vertical">
-            <Frame x:Name="_frameSearchBar" Margin="20,0" HasShadow="True" CornerRadius="50" BackgroundColor="{DynamicResource Secondary}" VerticalOptions="Start">
+            <Frame x:Name="_frameSearchBar" Margin="20,10,20,0" HasShadow="True" CornerRadius="20" BackgroundColor="{DynamicResource Secondary}" VerticalOptions="Start">
                 <Entry x:Name="_entrySearchTerms" Margin="-5,-20"/>
             </Frame>
 
@@ -23,7 +23,7 @@
                 <RadioButton x:Name="_rbtnSpotFilet" Content="{DynamicResource lbl_SpotFilter}" GroupName="SearchFilterGroup" Background="{DynamicResource Primary}" TextColor="{DynamicResource PrimaryAccent}"/>
             </StackLayout>
 
-            <Frame x:Name="_frameSearchResults" Margin="20,0,20,10" HasShadow="True" CornerRadius="25" BackgroundColor="{DynamicResource Secondary}" VerticalOptions="Start" IsVisible="False">
+            <Frame x:Name="_frameSearchResults" Margin="20,0,20,10" HasShadow="True" CornerRadius="20" BackgroundColor="{DynamicResource Secondary}" VerticalOptions="Start" IsVisible="False">
                 <StackLayout Orientation="Vertical">
                     <!-- Users Search Results -->
                     <CollectionView x:Name="_colSearchBarCollectionView" HorizontalOptions="FillAndExpand" ItemsSource="{Binding ItemSource}" SelectionMode="Single">

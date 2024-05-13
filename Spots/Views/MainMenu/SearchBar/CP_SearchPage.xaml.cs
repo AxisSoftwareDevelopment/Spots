@@ -38,7 +38,7 @@ public partial class CP_SearchPage : ContentPage
     {
         await RefreshSearchResults(e.NewTextValue);
 
-        if(e.NewTextValue.Length > 0 && SearchResultsListContext.ItemSource.Count > 0)
+        if(e.NewTextValue != null && e.NewTextValue.Length > 0 && SearchResultsListContext.ItemSource.Count > 0)
         {
             _frameSearchResults.IsVisible = true;
         }
