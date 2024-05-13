@@ -369,7 +369,45 @@ public static class DatabaseManager
         return spots;
     }
 
-    public static async Task<List<Spot>> FetchSpots_ByNameAsync(string filterParams)
+    public static async Task<List<Client>> FetchClients_ByNameAsync(string filterParams, Client? lastClient = null)
+    {
+        List<Client> retVal = [];
+        string[] searchTerms = [filterParams.ToUpper().Trim()];
+
+        if (searchTerms[0].Length > 0)
+        {
+            IQuerySnapshot<Client_Firebase> documentReference;
+            if (lastClient != null)
+            {
+                IDocumentSnapshot<Client_Firebase> documentSnapshot = await CrossFirebaseFirestore.Current.GetCollection("UserData")
+                .GetDocument(lastClient.UserID)
+                .GetDocumentSnapshotAsync<Client_Firebase>();
+
+                documentReference = await CrossFirebaseFirestore.Current.GetCollection("UserData")
+                    .StartingAfter(documentSnapshot)
+                    .LimitedTo(25)
+                    .WhereArrayContainsAny("SearchTerms", searchTerms)
+                    .GetDocumentsAsync<Client_Firebase>();
+            }
+            else
+            {
+                documentReference = await CrossFirebaseFirestore.Current.GetCollection("UserData")
+                    .LimitedTo(25)
+                    .WhereArrayContainsAny("SearchTerms", searchTerms)
+                    .GetDocumentsAsync<Client_Firebase>();
+            }
+            
+            foreach (var document in documentReference.Documents)
+            {
+                ImageSource profilePictureImageSource = await document.Data.GetImageSource();
+                retVal.Add(new(document.Data, profilePictureImageSource));
+            }
+        }
+
+        return retVal;
+    }
+
+    public static async Task<List<Spot>> FetchSpots_ByNameAsync(string filterParams, Spot? lastSpot = null)
     {
         List<Spot> retVal = [];
         string[] searchTerms = [filterParams.ToUpper().Trim()];
@@ -377,10 +415,25 @@ public static class DatabaseManager
         if (searchTerms[0].Length > 0)
         {
             IQuerySnapshot<Spot_Firebase> documentReference;
-            documentReference = await CrossFirebaseFirestore.Current.GetCollection("BusinessData")
+            if(lastSpot != null)
+            {
+                IDocumentSnapshot<Spot_Firebase> documentSnapshot = await CrossFirebaseFirestore.Current.GetCollection("BusinessData")
+                .GetDocument(lastSpot.UserID)
+                .GetDocumentSnapshotAsync<Spot_Firebase>();
+
+                documentReference = await CrossFirebaseFirestore.Current.GetCollection("BusinessData")
+                .StartingAfter(documentSnapshot)
                 .LimitedTo(25)
                 .WhereArrayContainsAny("SearchTerms", searchTerms)
                 .GetDocumentsAsync<Spot_Firebase>();
+            }
+            else
+            {
+                documentReference = await CrossFirebaseFirestore.Current.GetCollection("BusinessData")
+                .LimitedTo(25)
+                .WhereArrayContainsAny("SearchTerms", searchTerms)
+                .GetDocumentsAsync<Spot_Firebase>();
+            }
 
             foreach (var document in documentReference.Documents)
             {

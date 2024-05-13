@@ -24,6 +24,10 @@ public class Client : INotifyPropertyChanged, IUser
     {
         get => FirstName.Length > 0;
     }
+    public EUserType UserType
+    {
+        get => EUserType.CLIENT;
+    }
     public ImageSource ProfilePictureSource
     {
         get => _ProfilePictureSource ?? ImageSource.FromFile("placeholder_logo.jpg");

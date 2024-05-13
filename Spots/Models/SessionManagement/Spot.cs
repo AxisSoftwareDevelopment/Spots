@@ -26,6 +26,10 @@ public class Spot : INotifyPropertyChanged, IUser
     {
         get => SpotName.Length > 0;
     }
+    public EUserType UserType
+    {
+        get => EUserType.SPOT;
+    }
     public ImageSource ProfilePictureSource
     {
         get => _profilePictureSource ?? ImageSource.FromFile("placeholder_logo.jpg");

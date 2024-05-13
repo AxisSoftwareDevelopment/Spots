@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:searchBar="clr-namespace:Spots.SearchBar"
+             x:Class="Spots.CP_SearchPage"
+             Title="CP_SearchPage"
+             BackgroundColor="{DynamicResource Primary}">
+
+    <NavigationPage.TitleView>
+        <Label Text="{DynamicResource lbl_Search}" TextColor="{DynamicResource PrimaryAccent}" FontSize="24" FontAttributes="Bold" HorizontalOptions="Start" VerticalOptions="Center"/>
+    </NavigationPage.TitleView>
+
+    <ContentPage.Content>
+        <StackLayout Orientation="Vertical">
+            <Frame x:Name="_frameSearchBar" Margin="20,0" HasShadow="True" CornerRadius="50" BackgroundColor="{DynamicResource Secondary}" VerticalOptions="Start">
+                <Entry x:Name="_entrySearchTerms" Margin="-5,-20"/>
+            </Frame>
+
+            <!-- Search Objective Selector -->
+            <StackLayout Orientation="Horizontal" HorizontalOptions="Center" Margin="20,10">
+                <Label Text="{DynamicResource lbl_Filters}" TextColor="{DynamicResource PrimaryAccent}" VerticalOptions="Center"/>
+                <RadioButton x:Name="_rbtnClientFilter" Content="{DynamicResource lbl_ClientFilter}" GroupName="SearchFilterGroup" Background="{DynamicResource Primary}" TextColor="{DynamicResource PrimaryAccent}" IsChecked="True"/>
+                <RadioButton x:Name="_rbtnSpotFilet" Content="{DynamicResource lbl_SpotFilter}" GroupName="SearchFilterGroup" Background="{DynamicResource Primary}" TextColor="{DynamicResource PrimaryAccent}"/>
+            </StackLayout>
+
+            <Frame x:Name="_frameSearchResults" Margin="20,0,20,10" HasShadow="True" CornerRadius="25" BackgroundColor="{DynamicResource Secondary}" VerticalOptions="Start" IsVisible="False">
+                <StackLayout Orientation="Vertical">
+                    <!-- Users Search Results -->
+                    <CollectionView x:Name="_colSearchBarCollectionView" HorizontalOptions="FillAndExpand" ItemsSource="{Binding ItemSource}" SelectionMode="Single">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <searchBar:CV_SearchBarDataTemplate/>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </StackLayout>
+            </Frame>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

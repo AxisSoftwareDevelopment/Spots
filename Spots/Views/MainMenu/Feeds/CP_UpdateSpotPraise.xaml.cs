@@ -39,6 +39,14 @@ public partial class CP_UpdateSpotPraise : ContentPage
     private async void _entrySpotSearchBar_TextChanged(object? sender, TextChangedEventArgs e)
     {
         await RefreshSearchResults(_entrySpotSearchBar.Text);
+        if(_entrySpotSearchBar.Text.Length > 0 && SearchBoxContext.ItemSource.Count > 0)
+        {
+            _colSearchBarCollectionView.IsVisible = true;
+        }
+        else
+        {
+            _colSearchBarCollectionView.IsVisible = false;
+        }
     }
 
     private async Task RefreshSearchResults(string searchInput)

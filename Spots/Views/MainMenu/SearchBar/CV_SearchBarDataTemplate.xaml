@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Spots.SearchBar.CV_SearchBarDataTemplate">
+
+    <StackLayout Orientation="Horizontal" BackgroundColor="{DynamicResource Secondary}" HorizontalOptions="FillAndExpand" Margin="5,5">
+        <Image Source="{Binding ProfilePictureSource}" HeightRequest="50" WidthRequest="50" BackgroundColor="{DynamicResource Primary}"/>
+        <StackLayout Orientation="Vertical" HorizontalOptions="FillAndExpand" Margin="5,5">
+            <Label x:Name="lblMainName" Text="{Binding FullName}" FontSize="Medium" FontAttributes="Bold" TextColor="{DynamicResource SecondaryAccent}" MaxLines="2"/>
+            <Label x:Name="lblSecondaryName" Text="{Binding Email}" FontSize="Small" FontAttributes="Italic" HorizontalTextAlignment="End" TextColor="{DynamicResource Tertiary}" MaxLines="1"/>
+            <Label x:Name="lblDetail" FontSize="Micro" LineBreakMode="WordWrap" TextColor="{DynamicResource SecondaryAccent}" MaxLines="2"/>
+        </StackLayout>
+    </StackLayout>
+
+</ContentView>

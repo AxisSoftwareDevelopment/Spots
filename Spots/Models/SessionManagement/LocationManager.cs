@@ -37,7 +37,7 @@ public static class LocationManager
             }
             location = await GetLocation();
         }
-        catch
+        catch (Exception ex)
         {
             location = null;
             if(Application.Current != null)

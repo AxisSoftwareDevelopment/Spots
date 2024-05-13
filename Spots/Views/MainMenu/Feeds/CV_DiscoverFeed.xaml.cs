@@ -68,7 +68,7 @@ public partial class CV_DiscoverFeed : ContentView
             else
             {
                 // TODO: Create strings
-                await UserInterface.DisplayPopUp_Regular("Error", "Couldnt calculate your location", "ok");
+                await UserInterface.DisplayPopUp_Regular("Error", "Couldn't calculate your location", "ok");
             }
         }
     }
