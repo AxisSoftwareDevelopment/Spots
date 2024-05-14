@@ -42,7 +42,7 @@ public static class LocationManager
             location = null;
             if(Application.Current != null)
             {
-                string[] stringResources = ResourceManagement.GetStringResources(Application.Current.Resources, new string[] { "lbl_Error", "lbl_GeolocationError", "lbl_Ok" });
+                string[] stringResources = ResourceManagement.GetStringResources(Application.Current.Resources, ["lbl_Error", "lbl_GeolocationError", "lbl_Ok"]);
                 await UserInterface.DisplayPopUp_Regular(stringResources[0], stringResources[1], stringResources[2]);
             }
         }

@@ -25,7 +25,17 @@ public partial class CP_SpotPraise : ContentPage
         _imgSpotImage.Clicked += _imgSpotImage_Clicked;
 
         LoadSpotPraiseInformation();
-	}
+
+        if (praise.AuthorID == SessionManager.CurrentSession?.User?.UserID)
+        {
+            _btnEdit.IsVisible = true;
+        }
+        else
+        {
+            _btnEdit.IsVisible = false;
+        }
+
+    }
 
     private async void _imgSpotImage_Clicked(object? sender, EventArgs e)
     {

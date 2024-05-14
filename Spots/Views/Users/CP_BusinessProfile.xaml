@@ -38,7 +38,8 @@
                 </StackLayout>
             </StackLayout>
 
-            <Button Text="{DynamicResource lbl_EditPersonalInfo}" Margin="35, 10, 35, 10" BackgroundColor="{DynamicResource Tertiary}" TextColor="{DynamicResource PrimaryAccent}" Clicked="EditPersonalInformation"/>
+            <Button x:Name="_btnEdit" Text="{DynamicResource lbl_EditPersonalInfo}" Margin="35, 10, 35, 10" BackgroundColor="{DynamicResource Primary}" TextColor="{DynamicResource PrimaryAccent}" Clicked="EditPersonalInformation"/>
+            <Button x:Name="_btnWriteReview" Text="{DynamicResource lbl_WriteSpotReview}" Margin="35, 10, 35, 10" BackgroundColor="{DynamicResource Primary}" TextColor="{DynamicResource PrimaryAccent}" Clicked="WriteSpotReview"/>
 
             <ListView x:Name="_ListPraises" VerticalOptions="FillAndExpand" BackgroundColor="{DynamicResource Tertiary}"/>
         </StackLayout>
