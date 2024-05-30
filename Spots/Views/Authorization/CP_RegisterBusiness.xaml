@@ -39,7 +39,7 @@
                         <Entry x:Name="_entryPhoneNumber" Placeholder="000 000 0000" HorizontalOptions="FillAndExpand"  MaxLength="10" Keyboard="Telephone" ReturnType="Done"/>
                     </StackLayout>
                     
-                    <Button x:Name="_btnRegister" Text="{DynamicResource lbl_Register}" CornerRadius="20" BackgroundColor="{DynamicResource Tertiary}" TextColor="{DynamicResource PrimaryAccent}"
+                    <Button x:Name="_btnRegister" Text="{DynamicResource lbl_Register}" CornerRadius="15" BackgroundColor="{DynamicResource Tertiary}" TextColor="{DynamicResource PrimaryAccent}"
                             Margin="0,50,0,20" VerticalOptions="End" Clicked="BtnRegisterOnClick"></Button>
                 </StackLayout>
             </ScrollView>

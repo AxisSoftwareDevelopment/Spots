@@ -17,12 +17,12 @@
             <StackLayout x:Name="_ButtonStack" >
                 <StackLayout VerticalOptions="FillAndExpand">
                     <Button HorizontalOptions="FillAndExpand" Text="{DynamicResource lbl_MyProfile}" BackgroundColor="{DynamicResource Tertiary}"
-                            Clicked="ProfilePictureOrMyProfileOnClicked" TextColor="{DynamicResource PrimaryAccent}" CornerRadius="20" Margin="0,0,0,15"/>
+                            Clicked="ProfilePictureOrMyProfileOnClicked" TextColor="{DynamicResource PrimaryAccent}" CornerRadius="15" Margin="0,0,0,15"/>
                     <Button HorizontalOptions="FillAndExpand" Text="{DynamicResource lbl_Preferences}" BackgroundColor="{DynamicResource Tertiary}"
-                            Clicked="PreferencesOnClicked" TextColor="{DynamicResource PrimaryAccent}" CornerRadius="20" Margin="0,0,0,15"/>
+                            Clicked="PreferencesOnClicked" TextColor="{DynamicResource PrimaryAccent}" CornerRadius="15" Margin="0,0,0,15"/>
                 </StackLayout>
                 <Button x:Name="_ButtonLogOut" HorizontalOptions="FillAndExpand" Text="{DynamicResource lbl_LogOut}" BackgroundColor="{DynamicResource Tertiary}"
-                        Clicked="LogOutOnClickedAsync" TextColor="{DynamicResource PrimaryAccent}" CornerRadius="20" />
+                        Clicked="LogOutOnClickedAsync" TextColor="{DynamicResource PrimaryAccent}" CornerRadius="15" />
             </StackLayout>
         </Frame>
     </StackLayout>

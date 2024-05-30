@@ -65,7 +65,7 @@
                 </ScrollView>
 
                 <StackLayout Orientation="Horizontal" HorizontalOptions="Center">
-                    <Button x:Name="_btnSave" CornerRadius="20" BackgroundColor="{DynamicResource Tertiary}" TextColor="{DynamicResource PrimaryAccent}" FontSize="Medium"
+                    <Button x:Name="_btnSave" CornerRadius="15" BackgroundColor="{DynamicResource Tertiary}" TextColor="{DynamicResource PrimaryAccent}" FontSize="Medium"
                            Text="{DynamicResource lbl_Save}" Margin="20,20,20,20" Clicked="SaveOnCLickAsync"/>
                 </StackLayout>
             </StackLayout>

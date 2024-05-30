@@ -16,9 +16,9 @@
             <Label Text="{DynamicResource lbl_Theme}" TextColor="{DynamicResource SecondaryAccent}" HorizontalOptions="FillAndExpand" HorizontalTextAlignment="Center"/>
             <Picker x:Name="_PickerTheme" TextColor="{DynamicResource SecondaryAccent}"/>
             <StackLayout Orientation="Horizontal" HorizontalOptions="Center">
-                <Button x:Name="_btnApply" Text="{DynamicResource lbl_Apply}" CornerRadius="20" BackgroundColor="{DynamicResource Tertiary}" TextColor="{DynamicResource PrimaryAccent}"
+                <Button x:Name="_btnApply" Text="{DynamicResource lbl_Apply}" CornerRadius="15" BackgroundColor="{DynamicResource Tertiary}" TextColor="{DynamicResource PrimaryAccent}"
                             Margin="0,50,15,20" VerticalOptions="End"  Clicked="ApplyOnClick"/>
-                <Button x:Name="_btnCancel" Text="{DynamicResource lbl_Cancel}" CornerRadius="20" BackgroundColor="{DynamicResource Tertiary}" TextColor="{DynamicResource PrimaryAccent}"
+                <Button x:Name="_btnCancel" Text="{DynamicResource lbl_Cancel}" CornerRadius="15" BackgroundColor="{DynamicResource Tertiary}" TextColor="{DynamicResource PrimaryAccent}"
                             Margin="15,50,0,20" VerticalOptions="End"  Clicked="CancelOnClick"/>
             </StackLayout>
         </StackLayout>

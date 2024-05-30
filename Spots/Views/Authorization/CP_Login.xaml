@@ -35,11 +35,11 @@
                            Keyboard="Email" ReturnType="Next"/>
                     <Entry Grid.Row="4" x:Name="_entryPassword" Text="" Placeholder="{DynamicResource lbl_PwdPlaceHolder}" HorizontalOptions="FillAndExpand" 
                            Keyboard="Text" IsPassword="True" ReturnType="Done"/>
-                    <Button Grid.Row="5" x:Name="_btnLogIn" Text="{DynamicResource lbl_LogIn}" CornerRadius="20" BackgroundColor="{DynamicResource Primary}" TextColor="{DynamicResource PrimaryAccent}" 
+                    <Button Grid.Row="5" x:Name="_btnLogIn" Text="{DynamicResource lbl_LogIn}" CornerRadius="15" BackgroundColor="{DynamicResource Primary}" TextColor="{DynamicResource PrimaryAccent}" 
                             Clicked="BtnLogInOnClickAsync" IsEnabled="True"/>
-                    <Button Grid.Row="6" x:Name="_btnRegister" Text="{DynamicResource lbl_Register}" Scale="0.85" CornerRadius="20" BackgroundColor="{DynamicResource Tertiary}" TextColor="{DynamicResource PrimaryAccent}"
+                    <Button Grid.Row="6" x:Name="_btnRegister" Text="{DynamicResource lbl_Register}" Scale="0.85" CornerRadius="15" BackgroundColor="{DynamicResource Tertiary}" TextColor="{DynamicResource PrimaryAccent}"
                             Clicked="BtnRegisterOnClick" IsEnabled="True"/>
-                    <Button Grid.Row="7" x:Name="_btnChangeMode" Text="{DynamicResource lbl_BusinessMode}" Scale="0.85" CornerRadius="20" BackgroundColor="{DynamicResource Secondary}" TextColor="{DynamicResource HyperLink}"
+                    <Button Grid.Row="7" x:Name="_btnChangeMode" Text="{DynamicResource lbl_BusinessMode}" Scale="0.85" CornerRadius="15" BackgroundColor="{DynamicResource Secondary}" TextColor="{DynamicResource HyperLink}"
                             Clicked="BtnBusinessModeOnClick" IsEnabled="True"/>
                 </Grid>
             </Frame>

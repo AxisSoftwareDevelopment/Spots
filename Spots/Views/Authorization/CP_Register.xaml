@@ -26,7 +26,7 @@
                     <Label Text="{DynamicResource lbl_RegisterConfirmPasswordField}" TextColor="{DynamicResource SecondaryAccent}" HorizontalOptions="FillAndExpand" HorizontalTextAlignment="Center"/>
                     <Entry x:Name="_entryConfirmPassword" Placeholder="{DynamicResource lbl_PwdPlaceHolder}" HorizontalOptions="FillAndExpand" ReturnType="Done" 
                            IsPassword="True"/>
-                    <Button x:Name="_btnRegister" Text="{DynamicResource lbl_Register}" CornerRadius="20" BackgroundColor="{DynamicResource Tertiary}" TextColor="{DynamicResource PrimaryAccent}"
+                    <Button x:Name="_btnRegister" Text="{DynamicResource lbl_Register}" CornerRadius="15" BackgroundColor="{DynamicResource Tertiary}" TextColor="{DynamicResource PrimaryAccent}"
                             Margin="0,50,0,20" VerticalOptions="End" Clicked="BtnRegisterOnClick"/>
                 </StackLayout>
             </ScrollView>
