@@ -2,8 +2,6 @@
 using Plugin.Firebase.Firestore;
 using Plugin.Firebase.Core.Exceptions;
 using Plugin.Firebase.Storage;
-using Firebase.Firestore;
-using System.Collections.Generic;
 
 namespace Spots;
 public static class DatabaseManager
