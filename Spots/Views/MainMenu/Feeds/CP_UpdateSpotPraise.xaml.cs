@@ -90,7 +90,8 @@ public partial class CP_UpdateSpotPraise : ContentPage
         {
             if (searchInput.Length > 0)
             {
-                SearchBoxContext.RefreshFeed(await DatabaseManager.FetchSpots_ByNameAsync(searchInput));
+                List<Spot> spotList = await DatabaseManager.FetchSpots_ByNameAsync(searchInput, SessionManager.CurrentSession?.User?.UserID ?? "");
+                SearchBoxContext.RefreshFeed(spotList);
             }
             else
             {
@@ -119,6 +120,7 @@ public partial class CP_UpdateSpotPraise : ContentPage
         _lblBrand.Text = spotSelected.FullName;
         _SpotImage.Source = spotSelected.ProfilePictureSource;
         MainSpotPraise = new("", SessionManager.CurrentSession?.User?.UserID ?? "", SessionManager.CurrentSession?.User?.FullName ?? "", spotSelected.UserID, spotSelected.SpotName, DateTimeOffset.Now);
+        _SpotPraisers = spotSelected.Praisers;
     }
 
     private async void _btnSave_Clicked(object? sender, EventArgs e)
@@ -127,7 +129,7 @@ public partial class CP_UpdateSpotPraise : ContentPage
         {
             MainSpotPraise.Comment = _editorDescription.Text.Trim();
 
-            bool addToSpotPraises = _SpotPraisers != null && _SpotPraisers.Contains(MainSpotPraise.AuthorID);
+            bool addToSpotPraises = !_SpotPraisers?.Contains(MainSpotPraise.AuthorID) ?? true;
 
             if(await DatabaseManager.SaveSpotPraiseData(MainSpotPraise, addToSpotPraises, _AttachmentFile))
             {

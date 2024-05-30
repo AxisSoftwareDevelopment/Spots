@@ -5,7 +5,6 @@ namespace Spots;
 public partial class CV_MainFeed : ContentView
 {
 	private readonly FeedContext<SpotPraise> CurrentFeedContext = new();
-	private uint count = 0;
 
 	public CV_MainFeed()
 	{
@@ -20,8 +19,14 @@ public partial class CV_MainFeed : ContentView
 		_colFeed.RemainingItemsThreshold = 1;
 		_colFeed.RemainingItemsThresholdReached += OnItemThresholdReached;
         _colFeed.SelectionChanged += _colFeed_SelectionChanged;
-        MainThread.BeginInvokeOnMainThread(async () => await RefreshFeed());
-	}
+        Task.Run(() =>
+        {
+            MainThread.BeginInvokeOnMainThread(async () =>
+            {
+                await RefreshFeed();
+            });
+        });
+    }
 
     private void _colFeed_SelectionChanged(object? sender, SelectionChangedEventArgs e)
     {
@@ -39,7 +44,6 @@ public partial class CV_MainFeed : ContentView
 
     private async Task RefreshFeed()
 	{
-		count = 0;
 		CurrentFeedContext.RefreshFeed(await FetchPraises());
     }
 
@@ -53,12 +57,13 @@ public partial class CV_MainFeed : ContentView
 
 	private async Task<List<SpotPraise>> FetchPraises(SpotPraise? lastItemFetched = null)
 	{
-		return [new SpotPraise("Test", "Gaston TV", "Gaston TV", "MC Donalds", count++.ToString() + "MC Donalds", new DateTimeOffset(), comment: "Very Good Burgers!"),
-			new SpotPraise("Test", "Gaston TV", "Gaston TV", "MC Donalds", count++.ToString() + "MC Donalds", new DateTimeOffset(), comment: "Very Good Burgers! Here is a picture:", attachedPicture: ImageSource.FromFile("placeholder_logo.jpg")),
-            new SpotPraise("Test", "Gaston TV", "Gaston TV", "MC Donalds", count++.ToString() + "MC Donalds", new DateTimeOffset(), comment: "Very Good Burgers!"),
-            new SpotPraise("Test", "Gaston TV", "Gaston TV", "MC Donalds", count++.ToString() + "MC Donalds", new DateTimeOffset(), comment: "Very Good Burgers!"),
-            new SpotPraise("Test", "Gaston TV", "Gaston TV", "MC Donalds", count++.ToString() + "MC Donalds", new DateTimeOffset(), comment: "Very Good Burgers!")];
-
-		//return await DatabaseManager.FetchSpotPraises(lastItemFetched);
+		if(SessionManager.CurrentSession?.Client != null)
+		{
+            return await DatabaseManager.FetchSpotPraises_FromFollowedClients(SessionManager.CurrentSession.Client, lastItemFetched);
+        }
+		else
+		{
+			return [];
+		}
 	}
 }

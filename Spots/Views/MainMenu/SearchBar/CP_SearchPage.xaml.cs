@@ -74,12 +74,12 @@ public partial class CP_SearchPage : ContentPage
                 List<object> list = [];
                 if(CurrentFilterApplyed == EUserType.CLIENT)
                 {
-                    List<Client> spots = await DatabaseManager.FetchClients_ByNameAsync(searchInput);
+                    List<Client> spots = await DatabaseManager.FetchClients_ByNameAsync(searchInput, SessionManager.CurrentSession?.User?.UserID ?? "");
                     spots.ForEach(list.Add);
                 }
                 else
                 {
-                    List<Spot> spots = await DatabaseManager.FetchSpots_ByNameAsync(searchInput);
+                    List<Spot> spots = await DatabaseManager.FetchSpots_ByNameAsync(searchInput, SessionManager.CurrentSession?.User?.UserID ?? "");
                     spots.ForEach(list.Add);
                 }
                 

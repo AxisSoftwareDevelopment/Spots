@@ -239,6 +239,9 @@ public class Client_Firebase
     [FirestoreProperty(nameof(FollowedClients))]
     public IList<string> FollowedClients { get; set; }
 
+    [FirestoreProperty(nameof(ClientID_ForSearch))]
+    public IList<string> ClientID_ForSearch { get; set; }
+
 
     public Client_Firebase()
     {
@@ -253,6 +256,7 @@ public class Client_Firebase
         ProfilePictureAddress = "";
         SearchTerms = [];
         FollowedClients = [];
+        ClientID_ForSearch = [];
     }
 
     public Client_Firebase(string userID,
@@ -278,6 +282,7 @@ public class Client_Firebase
         ProfilePictureAddress = profilePictureAddress;
         SearchTerms = searchTerms;
         FollowedClients = followedClients;
+        ClientID_ForSearch = [userID];
     }
 
     public Client_Firebase(Client userData, string profilePictureAddress)
@@ -293,6 +298,7 @@ public class Client_Firebase
         ProfilePictureAddress = profilePictureAddress;
         SearchTerms = GenerateSearchTerms(FirstName, LastName);
         FollowedClients = userData.FollowedClients;
+        ClientID_ForSearch = [userData.UserID];
     }
 
     private List<string> GenerateSearchTerms(string firstName, string lastName)

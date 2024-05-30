@@ -2,6 +2,8 @@
 using Plugin.Firebase.Firestore;
 using Plugin.Firebase.Core.Exceptions;
 using Plugin.Firebase.Storage;
+using Firebase.Firestore;
+using System.Collections.Generic;
 
 namespace Spots;
 public static class DatabaseManager
@@ -199,12 +201,12 @@ public static class DatabaseManager
             IDocumentReference praiseDocumentReference;
             if (praise_Firebase.PraiseID.Length > 0)
             {
-                praiseDocumentReference = await CrossFirebaseFirestore.Current.GetCollection("Praises").AddDocumentAsync(praise_Firebase);
-                bAlreadySaved = true;
+                praiseDocumentReference = CrossFirebaseFirestore.Current.GetCollection("Praises").GetDocument(praise_Firebase.PraiseID);
             }
             else
             {
-                praiseDocumentReference = CrossFirebaseFirestore.Current.GetCollection("Praises").GetDocument(praise_Firebase.PraiseID);
+                praiseDocumentReference = await CrossFirebaseFirestore.Current.GetCollection("Praises").AddDocumentAsync(praise_Firebase);
+                bAlreadySaved = true;
             }
 
             if (praiseDocumentReference.Id.Length > 0 && imageFile != null)
@@ -217,10 +219,6 @@ public static class DatabaseManager
             {
                 await praiseDocumentReference.SetDataAsync(praise_Firebase);
             }
-            else
-            {
-                return false;
-            }
 
             if(addToSpotList)
             {
@@ -228,10 +226,10 @@ public static class DatabaseManager
                     .GetCollection("BusinessData")
                     .GetDocument(praise.SpotID)
                     .GetDocumentSnapshotAsync<Spot_Firebase>();
-                if(spotSnapshot.Data != null && !spotSnapshot.Data.Praises.Contains(praise.AuthorID))
+                if(spotSnapshot.Data != null && !spotSnapshot.Data.Praisers.Contains(praise.AuthorID))
                 {
                     Spot_Firebase spot = spotSnapshot.Data;
-                    spot.Praises.Add(praise.AuthorID);
+                    spot.Praisers.Add(praise.AuthorID);
 
                     await CrossFirebaseFirestore.Current
                     .GetCollection("BusinessData")
@@ -279,48 +277,178 @@ public static class DatabaseManager
         return imageStream;
     }
 
+    public static async Task<List<Client>> FetchClientsByID(List<string>clientIDs)
+    {
+        List<Client> clients = [];
+
+        if(clientIDs.Count > 0)
+        {
+            IQuerySnapshot<Client_Firebase> documentReference = await CrossFirebaseFirestore.Current.GetCollection("UserData")
+                    .WhereArrayContainsAny("ClientID_ForSearch", clientIDs.ToArray())
+                    .GetDocumentsAsync<Client_Firebase>();
+
+            List<IDocumentSnapshot<Client_Firebase>> documents = documentReference.Documents.ToList();
+            foreach (var document in documents)
+            {
+                ImageSource profilePictureImageSource = await document.Data.GetImageSource();
+                clients.Add(new(document.Data, profilePictureImageSource));
+            }
+        }
+        
+        return clients;
+    }
+
     public static async Task<List<SpotPraise>> FetchSpotPraises_FromFollowedClients(Client client, SpotPraise? lastPraise = null)
     {
         List<SpotPraise> spotPraises = [];
         IQuerySnapshot<SpotPraise_Firebase> documentReference;
+        List<string> clientIDs = new(client.FollowedClients) { client.UserID };
 
         if (lastPraise != null)
         {
-            IDocumentSnapshot<SpotPraise_Firebase> documentSnapshot = await CrossFirebaseFirestore.Current.GetCollection("SpotPraises")
-                .GetDocument(lastPraise.SpotID)
+            
+            IDocumentSnapshot<SpotPraise_Firebase> documentSnapshot = await CrossFirebaseFirestore.Current.GetCollection("Praises")
+                .GetDocument(lastPraise.PraiseID)
                 .GetDocumentSnapshotAsync<SpotPraise_Firebase>();
 
-            documentReference = await CrossFirebaseFirestore.Current.GetCollection("SpotPraises")
+            documentReference = await CrossFirebaseFirestore.Current.GetCollection("Praises")
                 .OrderBy("CreationDate")
                 .StartingAfter(documentSnapshot)
-                .WhereArrayContainsAny("AuthorID", client.FollowedClients.ToArray())
+                .WhereArrayContainsAny("AuthorID", clientIDs.ToArray())
                 .LimitedTo(5)
                 .GetDocumentsAsync<SpotPraise_Firebase>();
         }
         else
         {
-            documentReference = await CrossFirebaseFirestore.Current.GetCollection("SpotPraises")
+            documentReference = await CrossFirebaseFirestore.Current.GetCollection("Praises")
                 .OrderBy("CreationDate")
-                .WhereArrayContainsAny("AuthorID", client.FollowedClients.ToArray())
+                .WhereArrayContainsAny("AuthorID", clientIDs.ToArray())
                 .LimitedTo(5)
                 .GetDocumentsAsync<SpotPraise_Firebase>();
         }
 
-        foreach(var document in documentReference.Documents)
+        List<IDocumentSnapshot<SpotPraise_Firebase>> documents = documentReference.Documents.ToList();
+        foreach (var document in documents)
         {
-            Client author = await GetClientDataAsync(document.Data.AuthorID[0]);
-            Spot spot = await GetSpotDataAsync(document.Data.SpotID[0]);
-            ImageSource? attachment = null;
-
-            if (document.Data.AttachedPictureAddress.Length > 0)
+            if (document.Data != null)
             {
-                string downloadAddress = await GetImageDownloadLink(document.Data.AttachedPictureAddress);
-                Uri imageUri = new(downloadAddress);
+                SpotPraise_Firebase praise = document.Data;
+                Client author = await GetClientDataAsync(praise.AuthorID[0]);
+                Spot spot = await GetSpotDataAsync(praise.SpotID[0]);
+                ImageSource? attachment = null;
 
-                attachment = ImageSource.FromUri(imageUri);
+                if (praise.AttachedPictureAddress.Length > 0)
+                {
+                    string downloadAddress = await GetImageDownloadLink(praise.AttachedPictureAddress);
+                    Uri imageUri = new(downloadAddress);
+
+                    attachment = ImageSource.FromUri(imageUri);
+                }
+
+                spotPraises.Add(new(praise, author, spot, attachment));
             }
+        }
 
-            spotPraises.Add(new(document.Data, author, spot, attachment));
+        return spotPraises;
+    }
+
+    public static async Task<List<SpotPraise>> FetchSpotPraises_FromClient(Client client, SpotPraise? lastPraise = null)
+    {
+        List<SpotPraise> spotPraises = [];
+        IQuerySnapshot<SpotPraise_Firebase> documentReference;
+        string[] id = [client.UserID];
+
+        if (lastPraise != null)
+        {
+            IDocumentSnapshot<SpotPraise_Firebase> documentSnapshot = await CrossFirebaseFirestore.Current.GetCollection("Praises")
+                .GetDocument(lastPraise.PraiseID)
+                .GetDocumentSnapshotAsync<SpotPraise_Firebase>();
+
+            documentReference = await CrossFirebaseFirestore.Current.GetCollection("Praises")
+                .OrderBy("CreationDate")
+                .StartingAfter(documentSnapshot)
+                .WhereArrayContainsAny("AuthorID", id)
+                .LimitedTo(5)
+                .GetDocumentsAsync<SpotPraise_Firebase>();
+        }
+        else
+        {
+            documentReference = await CrossFirebaseFirestore.Current.GetCollection("Praises")
+                .OrderBy("CreationDate")
+                .WhereArrayContainsAny("AuthorID", id)
+                .LimitedTo(5)
+                .GetDocumentsAsync<SpotPraise_Firebase>();
+        }
+
+        foreach (var document in documentReference.Documents)
+        {
+            if(document.Data != null)
+            {
+                SpotPraise_Firebase praise = document.Data;
+                Spot spot = await GetSpotDataAsync(praise.SpotID[0]);
+                ImageSource? attachment = null;
+
+                if (praise.AttachedPictureAddress.Length > 0)
+                {
+                    string downloadAddress = await GetImageDownloadLink(praise.AttachedPictureAddress);
+                    Uri imageUri = new(downloadAddress);
+
+                    attachment = ImageSource.FromUri(imageUri);
+                }
+
+                spotPraises.Add(new(praise, client, spot, attachment));
+            }
+        }
+
+        return spotPraises;
+    }
+
+    public static async Task<List<SpotPraise>> FetchSpotPraises_FromSpot(Spot spot, SpotPraise? lastPraise = null)
+    {
+        List<SpotPraise> spotPraises = [];
+        IQuerySnapshot<SpotPraise_Firebase> documentReference;
+        string[] id = [spot.UserID];
+
+        if (lastPraise != null)
+        {
+            IDocumentSnapshot<SpotPraise_Firebase> documentSnapshot = await CrossFirebaseFirestore.Current.GetCollection("Praises")
+                .GetDocument(lastPraise.PraiseID)
+                .GetDocumentSnapshotAsync<SpotPraise_Firebase>();
+
+            documentReference = await CrossFirebaseFirestore.Current.GetCollection("Praises")
+                .OrderBy("CreationDate")
+                .StartingAfter(documentSnapshot)
+                .WhereArrayContainsAny("SpotID", id)
+                .LimitedTo(5)
+                .GetDocumentsAsync<SpotPraise_Firebase>();
+        }
+        else
+        {
+            documentReference = await CrossFirebaseFirestore.Current.GetCollection("Praises")
+                .OrderBy("CreationDate")
+                .WhereArrayContainsAny("SpotID", id)
+                .LimitedTo(5)
+                .GetDocumentsAsync<SpotPraise_Firebase>();
+        }
+
+        foreach (var document in documentReference.Documents)
+        {
+            if (document.Data != null)
+            {
+                SpotPraise_Firebase praise = document.Data;
+                Client author = await GetClientDataAsync(praise.AuthorID[0]);
+                ImageSource? attachment = null;
+
+                if (praise.AttachedPictureAddress.Length > 0)
+                {
+                    string downloadAddress = await GetImageDownloadLink(praise.AttachedPictureAddress);
+                    Uri imageUri = new(downloadAddress);
+
+                    attachment = ImageSource.FromUri(imageUri);
+                }
+
+                spotPraises.Add(new(praise, author, spot, attachment));
+            }
         }
 
         return spotPraises;
@@ -366,7 +494,7 @@ public static class DatabaseManager
         return spots;
     }
 
-    public static async Task<List<Client>> FetchClients_ByNameAsync(string filterParams, Client? lastClient = null)
+    public static async Task<List<Client>> FetchClients_ByNameAsync(string filterParams, string currentUserID, Client? lastClient = null)
     {
         List<Client> retVal = [];
         string[] searchTerms = [filterParams.ToUpper().Trim()];
@@ -382,15 +510,15 @@ public static class DatabaseManager
 
                 documentReference = await CrossFirebaseFirestore.Current.GetCollection("UserData")
                     .StartingAfter(documentSnapshot)
-                    .LimitedTo(25)
                     .WhereArrayContainsAny("SearchTerms", searchTerms)
+                    .LimitedTo(25)
                     .GetDocumentsAsync<Client_Firebase>();
             }
             else
             {
                 documentReference = await CrossFirebaseFirestore.Current.GetCollection("UserData")
-                    .LimitedTo(25)
                     .WhereArrayContainsAny("SearchTerms", searchTerms)
+                    .LimitedTo(25)
                     .GetDocumentsAsync<Client_Firebase>();
             }
             
@@ -404,7 +532,7 @@ public static class DatabaseManager
         return retVal;
     }
 
-    public static async Task<List<Spot>> FetchSpots_ByNameAsync(string filterParams, Spot? lastSpot = null)
+    public static async Task<List<Spot>> FetchSpots_ByNameAsync(string filterParams, string currentUserID, Spot? lastSpot = null)
     {
         List<Spot> retVal = [];
         string[] searchTerms = [filterParams.ToUpper().Trim()];
@@ -461,6 +589,7 @@ public static class DatabaseManager
                     if (!follower_firebase.FollowedClients.Contains(followedID))
                     {
                         follower_firebase.FollowedClients.Add(followedID);
+                        await documentReference.SetDataAsync(follower_firebase);
                     }
                 }
                 else
@@ -468,10 +597,9 @@ public static class DatabaseManager
                     while (follower_firebase.FollowedClients.Contains(followedID))
                     {
                         follower_firebase.FollowedClients.Remove(followedID);
+                        await documentReference.SetDataAsync(follower_firebase);
                     }
-                }
-
-                await documentReference.SetDataAsync(follower_firebase);
+                }                
                 retVal = true;
             }
         }

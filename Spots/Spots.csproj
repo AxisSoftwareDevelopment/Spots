@@ -68,6 +68,10 @@
 		<BundleResource Include="GoogleService-Info.plist" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <None Remove="Resources\Images\iconSearch.png" />
+	</ItemGroup>
+
 	<!-- NuGets -->
 	<ItemGroup>
 		<PackageReference Include="geohash-dotnet" Version="2.1.0" />
@@ -87,10 +91,15 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="Resources/Images/" />
+	  <Compile Update="Views\Users\FollowedClients\CV_FollowedClientDataTemplate.xaml.cs">
+	    <DependentUpon>CV_FollowedClientDataTemplate.xaml</DependentUpon>
+	  </Compile>
 	</ItemGroup>
 
 	<ItemGroup>
+	  <MauiXaml Update="Views\MainMenu\Feeds\CV_SpotPraisesFeed.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Views\MainMenu\SearchBar\CP_SearchPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
@@ -101,6 +110,12 @@
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\MainMenu\SearchBar\CV_SearchBarDataTemplate.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\Users\FollowedClients\CP_FollowedClientsView.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\Users\FollowedClients\CV_FollowedClientDataTemplate.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	</ItemGroup>

@@ -3,7 +3,8 @@ namespace Spots;
 public partial class CP_UserProfile : ContentPage
 {
 	private Client user;
-	public CP_UserProfile(Client _user)
+    private readonly FeedContext<SpotPraise> ClientPraisesContext = new();
+    public CP_UserProfile(Client _user)
 	{
 		user = _user;
 
@@ -12,22 +13,37 @@ public partial class CP_UserProfile : ContentPage
 
         InitializeComponent();
 		BindingContext = user;
+        _colClientPraises.BindingContext = ClientPraisesContext;
 
-		_FrameProfilePicture.HeightRequest = profilePictureDimensions;
+        _colClientPraises.RemainingItemsThreshold = 1;
+        _colClientPraises.RemainingItemsThresholdReached += OnItemThresholdReached;
+        _colClientPraises.SelectionChanged += _colClientPraises_SelectionChanged;
+        MainThread.BeginInvokeOnMainThread(async () => await RefreshFeed());
+
+        _FrameProfilePicture.HeightRequest = profilePictureDimensions;
 		_FrameProfilePicture.WidthRequest = profilePictureDimensions;
 
 		if (user.UserID != SessionManager.CurrentSession?.User?.UserID)
 		{
 			_btnEdit.IsVisible = false;
-			if(SessionManager.CurrentSession?.Client?.FollowedClients.Contains(user.UserID) ?? false)
-			{
-				_btnFollow.IsVisible = false;
-				_btnUnfollow.IsVisible = true;
-			}
-			else
-			{
+            _stackFollowingZone.IsVisible = false;
+            if (SessionManager.CurrentSession?.User?.UserType != EUserType.SPOT)
+            {
+                if (SessionManager.CurrentSession?.Client?.FollowedClients.Contains(user.UserID) ?? false)
+                {
+                    _btnFollow.IsVisible = false;
+                    _btnUnfollow.IsVisible = true;
+                }
+                else
+                {
+                    _btnFollow.IsVisible = true;
+                    _btnUnfollow.IsVisible = false;
+                }
+            }
+            else
+            {
                 _btnFollow.IsVisible = false;
-                _btnUnfollow.IsVisible = true;
+                _btnUnfollow.IsVisible = false;
             }
 		}
 		else
@@ -38,18 +54,63 @@ public partial class CP_UserProfile : ContentPage
 		}
 	}
 
-	private void EditPersonalInformation_OnClicked(object sender, EventArgs e)
+    private async Task RefreshFeed()
+    {
+        ClientPraisesContext.RefreshFeed(await DatabaseManager.FetchSpotPraises_FromClient(user));
+    }
+
+    private async void OnItemThresholdReached(object? sender, EventArgs e)
+    {
+        ClientPraisesContext.AddElements(await DatabaseManager.FetchSpotPraises_FromClient(user, ClientPraisesContext.LastItemFetched));
+    }
+
+    private void _colClientPraises_SelectionChanged(object? sender, SelectionChangedEventArgs e)
+    {
+        if (e.CurrentSelection.Count > 0)
+        {
+            Navigation.PushAsync(new CP_SpotPraise((SpotPraise)e.CurrentSelection[0]));
+            _colClientPraises.SelectedItem = null;
+        }
+    }
+
+    private void EditPersonalInformation_OnClicked(object sender, EventArgs e)
 	{
 		Navigation.PushAsync(new CP_UpdateUserInformation(user));
 	}
 
-    private void FollowClient_OnClicked(object sender, EventArgs e)
+    private async void FollowedClientsView(object? sender, EventArgs e)
     {
-        
+        List<Client> followedClients = await DatabaseManager.FetchClientsByID(user.FollowedClients);
+        Navigation.PushAsync(new CP_FollowedClientsView(followedClients));
     }
 
-    private void UnfollowClient_OnClicked(object sender, EventArgs e)
+    private async void FollowClient_OnClicked(object sender, EventArgs e)
     {
-        Navigation.PushAsync(new CP_UpdateUserInformation(user));
+        string followerID = SessionManager.CurrentSession?.Client?.UserID ?? "";
+        string followedID = user.UserID;
+        if (followerID.Length > 0)
+        {
+            if (await DatabaseManager.UpdateClientFollowedList(followerID, followedID, true))
+            {
+                _btnFollow.IsVisible = false;
+                _btnUnfollow.IsVisible = true;
+                SessionManager.CurrentSession?.Client?.FollowedClients.Add(followedID);
+            }
+        }
+    }
+
+    private async void UnfollowClient_OnClicked(object sender, EventArgs e)
+    {
+        string followerID = SessionManager.CurrentSession?.Client?.UserID ?? "";
+        string followedID = user.UserID;
+        if (followerID.Length > 0)
+        {
+            if (await DatabaseManager.UpdateClientFollowedList(followerID, followedID, false))
+            {
+                _btnFollow.IsVisible = true;
+                _btnUnfollow.IsVisible = false;
+                SessionManager.CurrentSession?.Client?.FollowedClients.Remove(followedID);
+            }
+        }
     }
 }

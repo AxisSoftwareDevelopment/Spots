@@ -101,6 +101,17 @@ public class SpotPraise_Firebase
     [FirestoreProperty(nameof(AttachedPictureAddress))]
     public string AttachedPictureAddress { get; set; }
 
+    public SpotPraise_Firebase()
+    {
+        PraiseID = "";
+        SearchCriteria_ID = [];
+        AuthorID = [];
+        SpotID = [];
+        CreationDate = DateTimeOffset.Now;
+        Comment = "";
+        AttachedPictureAddress = "";
+    }
+
     public SpotPraise_Firebase(SpotPraise spotPraise, string attachmentAddress = "")
     {
         PraiseID = spotPraise.PraiseID;

@@ -11,8 +11,7 @@
 
         <Label Text="----- Spots -----" VerticalOptions="Center" HorizontalOptions="FillAndExpand" HorizontalTextAlignment="Center"/>
 
-        <ImageButton x:Name="_btnOpenSearch" Margin="30,0,10,0" HeightRequest="35" WidthRequest="35"
-                   Source="{Binding ProfilePictureSource}" BackgroundColor="Red" />
+        <ImageButton x:Name="_btnOpenSearch" Margin="30,0,10,0" HeightRequest="25" WidthRequest="25" Source="iconsearch.png"/>
     </StackLayout>
 
 </ContentView>

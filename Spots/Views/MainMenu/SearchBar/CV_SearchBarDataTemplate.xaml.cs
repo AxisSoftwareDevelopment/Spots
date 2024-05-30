@@ -30,7 +30,6 @@ public partial class CV_SearchBarDataTemplate : ContentView
                 }
             case EUserType.CLIENT:
                 {
-                    Client? client = User as Client;
                     lblMainName.SetBinding(Label.TextProperty, "FullName");
                     lblSecondaryName.SetBinding(Label.TextProperty, "Email");
                     lblDetail.SetBinding(Label.TextProperty, "Description");

@@ -18,7 +18,7 @@ public class Spot : INotifyPropertyChanged, IUser
     private string? _phoneCountryCode;
     private string? _description;
     private FirebaseLocation? _location;
-    private List<string>? _praises;
+    private List<string>? _praisers;
     #endregion
 
     #region Public Parameters
@@ -132,13 +132,13 @@ public class Spot : INotifyPropertyChanged, IUser
                 value.Longitude);
         }
     }
-    public List<string> Praises
+    public List<string> Praisers
     {
-        get => _praises ?? [];
+        get => _praisers ?? [];
         set
         {
-            _praises = value ?? [];
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Praises)));
+            _praisers = value ?? [];
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Praisers)));
         }
     }
     #endregion
@@ -153,11 +153,11 @@ public class Spot : INotifyPropertyChanged, IUser
         PhoneNumber = "";
         Description = "";
         Location = new FirebaseLocation();
-        Praises = [];
+        Praisers = [];
     }
 
     public Spot(string userID, string brandName, string businessName, string email, string profilePictureAddress = "", ImageSource? profilePictureSource = null,
-        string phoneNumber = "", string phoneCountryCode = "", string description = "", FirebaseLocation? location = null, List<string>? praises = null)
+        string phoneNumber = "", string phoneCountryCode = "", string description = "", FirebaseLocation? location = null, List<string>? praisers = null)
     {
         UserID = userID;
         BrandName = brandName;
@@ -168,7 +168,7 @@ public class Spot : INotifyPropertyChanged, IUser
         PhoneCountryCode = phoneCountryCode;
         Description = description;
         Location = location ?? new FirebaseLocation();
-        Praises = praises ?? [];
+        Praisers = praisers ?? [];
     }
 
     public Spot(Spot_Firebase spotData, ImageSource profilePictureSource)
@@ -182,7 +182,7 @@ public class Spot : INotifyPropertyChanged, IUser
         PhoneCountryCode = spotData.PhoneCountryCode;
         Description = spotData.Description;
         Location = spotData.Location;
-        Praises = spotData.Praises.ToList();
+        Praisers = spotData.Praisers.ToList();
     }
 
     public void UpdateUserData(Spot userData)
@@ -196,7 +196,7 @@ public class Spot : INotifyPropertyChanged, IUser
         PhoneCountryCode = userData.PhoneCountryCode;
         Description = userData.Description;
         Location = userData.Location;
-        Praises = userData.Praises;
+        Praisers = userData.Praisers;
     }
 
     public async Task UpdateProfilePicture(string firebaseAddress)
@@ -235,8 +235,8 @@ public class Spot_Firebase
     public FirebaseLocation Location { get; set; }
     [FirestoreProperty(nameof(ProfilePictureAddress))]
     public string ProfilePictureAddress { get; set; }
-    [FirestoreProperty(nameof(Praises))]
-    public IList<string> Praises { get; set; }
+    [FirestoreProperty(nameof(Praisers))]
+    public IList<string> Praisers { get; set; }
     [FirestoreProperty(nameof(SearchTerms))]
     public IList<string> SearchTerms { get; set; }
 
@@ -261,7 +261,7 @@ public class Spot_Firebase
         Description = description;
         Location = location;
         ProfilePictureAddress = profilePictureAddress;
-        Praises = praises;
+        Praisers = praises;
         SearchTerms = searchTerms;
     }
 
@@ -276,7 +276,7 @@ public class Spot_Firebase
         Description = "";
         Location = new();
         ProfilePictureAddress = "";
-        Praises = [];
+        Praisers = [];
         SearchTerms = [];
     }
 
@@ -291,7 +291,7 @@ public class Spot_Firebase
         Description = spotData.Description;
         Location = spotData.Location;
         ProfilePictureAddress = profilePictureAddress;
-        Praises = spotData.Praises;
+        Praisers = spotData.Praisers;
         SearchTerms = GenerateSearchTerms(BrandName, SpotName);
     }
 

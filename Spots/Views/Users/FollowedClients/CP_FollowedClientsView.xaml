@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:followedClients="clr-namespace:Spots.FollowedClients"
+             x:Class="Spots.CP_FollowedClientsView"
+             Title="CP_FollowedClientsView"
+             BackgroundColor="{DynamicResource Primary}">
+
+    <NavigationPage.TitleView>
+        <Label Text="{DynamicResource lbl_FollowingView}" TextColor="{DynamicResource PrimaryAccent}" FontSize="24" FontAttributes="Bold" HorizontalOptions="Start" VerticalOptions="Center"/>
+    </NavigationPage.TitleView>
+
+    <ContentPage.Content>
+        <Frame x:Name="_frameFollowedClientsResults" Margin="20,0,20,10" HasShadow="True" CornerRadius="20" BackgroundColor="{DynamicResource Secondary}" VerticalOptions="FillAndExpand">
+            <StackLayout Orientation="Vertical" Margin="-10">
+                <CollectionView x:Name="_colFollowedClientsCollectionView" HorizontalOptions="FillAndExpand" ItemsSource="{Binding ItemSource}" SelectionMode="Single">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <followedClients:CV_FollowedClientDataTemplate/>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </StackLayout>
+        </Frame>
+    </ContentPage.Content>
+</ContentPage>

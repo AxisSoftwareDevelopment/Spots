@@ -24,7 +24,7 @@
             </StackLayout>
 
             <Frame x:Name="_frameSearchResults" Margin="20,0,20,10" HasShadow="True" CornerRadius="20" BackgroundColor="{DynamicResource Secondary}" VerticalOptions="Start" IsVisible="False">
-                <StackLayout Orientation="Vertical">
+                <StackLayout Orientation="Vertical" Margin="-15">
                     <!-- Users Search Results -->
                     <CollectionView x:Name="_colSearchBarCollectionView" HorizontalOptions="FillAndExpand" ItemsSource="{Binding ItemSource}" SelectionMode="Single">
                         <CollectionView.ItemTemplate>

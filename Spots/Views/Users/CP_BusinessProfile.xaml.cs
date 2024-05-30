@@ -1,3 +1,6 @@
+using Microsoft.Maui.Controls.Maps;
+using Microsoft.Maui.Maps;
+
 namespace Spots;
 
 public partial class CP_BusinessProfile : ContentPage
@@ -16,13 +19,25 @@ public partial class CP_BusinessProfile : ContentPage
         _FrameProfilePicture.HeightRequest = profilePictureDimensions;
         _FrameProfilePicture.WidthRequest = profilePictureDimensions;
 
+        Location spotLocation = new(_user.Location.Latitude, _user.Location.Longitude);
+        _cvMiniMap.Pins.Clear();
+        _cvMiniMap.MoveToRegion(new MapSpan(spotLocation, 0.01, 0.01));
+        _cvMiniMap.Pins.Add(new Pin() { Label = _user.Location.Address, Location = spotLocation });
+        _cvMiniMap.HeightRequest = profilePictureDimensions;
+
         if (_user.UserID == SessionManager.CurrentSession?.User?.UserID)
         {
             _btnEdit.IsVisible = true;
+            _btnWriteReview.IsVisible = false;
         }
         else
         {
+            _entryAddress.IsVisible = false;
             _btnEdit.IsVisible = false;
+            if (SessionManager.CurrentSession?.User?.UserType != EUserType.SPOT)
+            {
+                _btnWriteReview.IsVisible = true;
+            }
         }
     }
 

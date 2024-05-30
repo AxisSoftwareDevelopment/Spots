@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:maps="clr-namespace:Microsoft.Maui.Controls.Maps;assembly=Microsoft.Maui.Controls.Maps"
              x:Class="Spots.CP_BusinessProfile"
              Title="CP_BusinessProfile"
              BackgroundColor="{DynamicResource Secondary}">
@@ -38,10 +39,14 @@
                 </StackLayout>
             </StackLayout>
 
+            <StackLayout Orientation="Horizontal" Margin="25,0,25,5">
+                <Label Text="{DynamicResource lbl_Location}" TextColor="{DynamicResource Tertiary}" FontSize="18" FontAttributes="Bold" HorizontalOptions="Center" HorizontalTextAlignment="Center"/>
+            </StackLayout>
+            <maps:Map x:Name="_cvMiniMap" VerticalOptions="Start" HorizontalOptions="FillAndExpand" Margin="15,0,15,15" IsZoomEnabled="False" IsScrollEnabled ="False"/>
+            <Entry x:Name="_entryAddress" Placeholder="{DynamicResource lbl_AddressPlaceholder}" TextColor="{DynamicResource SecondaryAccent}" Margin="15,0"/>
+
             <Button x:Name="_btnEdit" Text="{DynamicResource lbl_EditPersonalInfo}" Margin="35, 10, 35, 10" BackgroundColor="{DynamicResource Primary}" TextColor="{DynamicResource PrimaryAccent}" Clicked="EditPersonalInformation"/>
             <Button x:Name="_btnWriteReview" Text="{DynamicResource lbl_WriteSpotReview}" Margin="35, 10, 35, 10" BackgroundColor="{DynamicResource Primary}" TextColor="{DynamicResource PrimaryAccent}" Clicked="WriteSpotReview"/>
-
-            <ListView x:Name="_ListPraises" VerticalOptions="FillAndExpand" BackgroundColor="{DynamicResource Tertiary}"/>
         </StackLayout>
     </ScrollView>
 

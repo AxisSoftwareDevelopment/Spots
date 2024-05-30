@@ -64,7 +64,7 @@
 
                 <StackLayout Orientation="Horizontal" HorizontalOptions="Center">
                     <Button x:Name="_btnSave" CornerRadius="20" BackgroundColor="{DynamicResource Tertiary}" TextColor="{DynamicResource PrimaryAccent}" FontSize="Medium"
-                   Text="{DynamicResource lbl_Save}" Margin="20,20,20,20" Clicked="SaveOnCLickAsync"/>
+                        Text="{DynamicResource lbl_Save}" Margin="20,20,20,20" Clicked="SaveOnCLickAsync"/>
                 </StackLayout>
             </StackLayout>
         </Border>
