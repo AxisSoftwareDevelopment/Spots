@@ -12,7 +12,10 @@ public static class UserInterface
     {
         if (Application.Current != null && Application.Current.MainPage != null)
         {
-            await Application.Current.MainPage.DisplayAlert(title, message, button);
+            MainThread.BeginInvokeOnMainThread(async () =>
+            {
+                await Application.Current.MainPage.DisplayAlert(title, message, button);
+            });
         }
     }
 

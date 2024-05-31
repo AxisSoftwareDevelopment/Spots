@@ -9,8 +9,8 @@
         <Label Text="{DynamicResource lbl_Profile}" TextColor="{DynamicResource PrimaryAccent}" FontSize="24" FontAttributes="Bold" HorizontalOptions="Start" VerticalOptions="Center"></Label>
     </NavigationPage.TitleView>
 
-    <ScrollView >
-        <StackLayout>
+    <StackLayout>
+        <ScrollView VerticalOptions="FillAndExpand">
             <StackLayout VerticalOptions="FillAndExpand">
                 <StackLayout x:Name="_ProfileCard">
                     <Border x:Name="_FrameProfilePicture" Padding="0" Margin="15,15,15,0" StrokeShape="RoundRectangle 500" BackgroundColor="Red">
@@ -43,7 +43,7 @@
                     <Button x:Name="_btnFollowingView" Text="{DynamicResource lbl_FollowingView}" Margin="5, 10, 35, 10" BackgroundColor="{DynamicResource Tertiary}" TextColor="{DynamicResource PrimaryAccent}"
                             HorizontalOptions="FillAndExpand" Clicked="FollowedClientsView"/>
                 </StackLayout>
-                
+
                 <!-- Praises -->
                 <CollectionView x:Name="_colClientPraises" VerticalOptions="FillAndExpand" HorizontalScrollBarVisibility="Never" VerticalScrollBarVisibility="Never" BackgroundColor="{DynamicResource Tertiary}"
                     ItemsSource="{Binding ItemSource}" SelectionMode="Single">
@@ -73,11 +73,10 @@
                     </CollectionView.ItemTemplate>
                 </CollectionView>
             </StackLayout>
-
-            <Button x:Name="_btnEdit" Text="{DynamicResource lbl_EditPersonalInfo}" Margin="35, 10, 35, 10" BackgroundColor="{DynamicResource Primary}" TextColor="{DynamicResource PrimaryAccent}" Clicked="EditPersonalInformation_OnClicked"/>
-            <Button x:Name="_btnFollow" Text="{DynamicResource lbl_Follow}" Margin="35, 10, 35, 10" BackgroundColor="{DynamicResource Primary}" TextColor="{DynamicResource PrimaryAccent}" Clicked="FollowClient_OnClicked"/>
-            <Button x:Name="_btnUnfollow" Text="{DynamicResource lbl_Unfollow}" Margin="35, 10, 35, 10" BackgroundColor="{DynamicResource Tertiary}" TextColor="{DynamicResource PrimaryAccent}" Clicked="UnfollowClient_OnClicked"/>
-        </StackLayout>    
-    </ScrollView>
+        </ScrollView>
+        <Button x:Name="_btnEdit" Text="{DynamicResource lbl_EditPersonalInfo}" Margin="35, 10, 35, 10" BackgroundColor="{DynamicResource Primary}" TextColor="{DynamicResource PrimaryAccent}" Clicked="EditPersonalInformation_OnClicked"/>
+        <Button x:Name="_btnFollow" Text="{DynamicResource lbl_Follow}" Margin="35, 10, 35, 10" BackgroundColor="{DynamicResource Primary}" TextColor="{DynamicResource PrimaryAccent}" Clicked="FollowClient_OnClicked"/>
+        <Button x:Name="_btnUnfollow" Text="{DynamicResource lbl_Unfollow}" Margin="35, 10, 35, 10" BackgroundColor="{DynamicResource Tertiary}" TextColor="{DynamicResource PrimaryAccent}" Clicked="UnfollowClient_OnClicked"/>
+    </StackLayout>
 
 </ContentPage>

@@ -25,6 +25,10 @@ public static class LocationManager
         try
         {
             location = await Geolocation.Default.GetLastKnownLocationAsync();
+            if (location == null)
+            {
+                location = await Geolocation.Default.GetLocationAsync();
+            }
         }
         catch (PermissionException)
         {
@@ -36,6 +40,15 @@ public static class LocationManager
                 permissionGranted = locationWhenInUse == PermissionStatus.Granted;
             }
             location = await GetLocation();
+        }
+        catch (FeatureNotEnabledException ex)
+        {
+            location = null;
+            if (Application.Current != null)
+            {
+                string[] stringResources = ResourceManagement.GetStringResources(Application.Current.Resources, ["lbl_Error", "lbl_GeolocationDisabledError", "lbl_Ok"]);
+                await UserInterface.DisplayPopUp_Regular(stringResources[0], ex.Message + "\n" + stringResources[1], stringResources[2]);
+            }
         }
         catch (Exception ex)
         {
