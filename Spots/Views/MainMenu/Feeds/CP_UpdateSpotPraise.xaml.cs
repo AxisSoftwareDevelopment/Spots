@@ -125,6 +125,7 @@ public partial class CP_UpdateSpotPraise : ContentPage
 
     private async void _btnSave_Clicked(object? sender, EventArgs e)
     {
+        LockInputs();
         if(MainSpotPraise != null)
         {
             MainSpotPraise.Comment = _editorDescription.Text.Trim();
@@ -136,5 +137,22 @@ public partial class CP_UpdateSpotPraise : ContentPage
                 await Navigation.PopAsync();
             }
         }
+        UnlockInputs();
+    }
+
+    private void LockInputs()
+    {
+        _btnLoadImage.IsEnabled = false;
+        _btnSave.IsEnabled = false;
+        _editorDescription.IsEnabled = false;
+        _entrySpotSearchBar.IsEnabled = false;
+    }
+
+    private void UnlockInputs()
+    {
+        _btnLoadImage.IsEnabled = true;
+        _btnSave.IsEnabled = true;
+        _editorDescription.IsEnabled = true;
+        _entrySpotSearchBar.IsEnabled = true;
     }
 }

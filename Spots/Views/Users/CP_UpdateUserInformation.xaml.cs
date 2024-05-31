@@ -46,6 +46,7 @@ public partial class CP_UpdateUserInformation : ContentPage
 
     private async void SaveOnCLickAsync(object sender, EventArgs e)
     {
+        LockInputs();
         if (Application.Current == null)
         {
             return;
@@ -111,6 +112,7 @@ public partial class CP_UpdateUserInformation : ContentPage
                 await Navigation.PopAsync();
             }
         }
+        UnlockInputs();
     }
 
     public async void LoadImageOnClickAsync(object sender, EventArgs e)
@@ -227,6 +229,28 @@ public partial class CP_UpdateUserInformation : ContentPage
     private string ToTitleCase(string inputText)
     {
         return CultureInfo.CurrentCulture.TextInfo.ToTitleCase(inputText.ToLower());
+    }
+
+    private void LockInputs()
+    {
+        _btnLoadImage.IsEnabled = false;
+        _btnSave.IsEnabled = false;
+        _editorDescription.IsEnabled = false;
+        _entryFirstName.IsEnabled = false;
+        _entryLastName.IsEnabled = false;
+        _entryPhoneCountryCode.IsEnabled = false;
+        _entryPhoneNumber.IsEnabled = false;
+    }
+
+    private void UnlockInputs()
+    {
+        _btnLoadImage.IsEnabled = true;
+        _btnSave.IsEnabled = true;
+        _editorDescription.IsEnabled = true;
+        _entryFirstName.IsEnabled = true;
+        _entryLastName.IsEnabled = true;
+        _entryPhoneCountryCode.IsEnabled = true;
+        _entryPhoneNumber.IsEnabled = true;
     }
     #endregion
 }

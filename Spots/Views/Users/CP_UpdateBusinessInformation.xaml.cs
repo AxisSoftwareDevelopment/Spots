@@ -7,7 +7,7 @@ namespace Spots;
 public partial class CP_UpdateBusinessInformation : ContentPage
 {
 	private Spot _user;
-    private bool _userIsEmpty;
+    private bool _userIsEmpty, _inputsAreLocked;
     private string _password, _email, _phoneNumber, _phoneCountryCode;
     private bool _profilePictureChanged = false;
     private bool _locationChanged = false;
@@ -15,6 +15,7 @@ public partial class CP_UpdateBusinessInformation : ContentPage
 
     public CP_UpdateBusinessInformation(Spot user, string email = "", string password = "", string phoneNumber = "", string phoneCountryCode = "")
     {
+        _inputsAreLocked = false;
         _user = user;
         _userIsEmpty = !password.Equals("") && !email.Equals("") && !user.UserDataRetrieved;
         _password = password;
@@ -49,7 +50,10 @@ public partial class CP_UpdateBusinessInformation : ContentPage
 
     private void _cvMiniMap_MapClicked(object? sender, MapClickedEventArgs e)
     {
-        Navigation.PushAsync(new CP_MapLocationSelector(()=>_cvMiniMap.VisibleRegion, SetMiniMapVisibleArea, _entryAddress.Text ?? ""));
+        if(!_inputsAreLocked)
+        {
+            Navigation.PushAsync(new CP_MapLocationSelector(()=>_cvMiniMap.VisibleRegion, SetMiniMapVisibleArea, _entryAddress.Text ?? ""));
+        }
     }
 
     private void SetMiniMapVisibleArea(MapSpan mapSpan, string address)
@@ -76,6 +80,7 @@ public partial class CP_UpdateBusinessInformation : ContentPage
 
     private async void SaveOnCLickAsync(object sender, EventArgs e)
     {
+        LockInputs();
         if (Application.Current == null)
         {
             return;
@@ -142,7 +147,7 @@ public partial class CP_UpdateBusinessInformation : ContentPage
             }
 
         }
-        
+        UnlockInputs();
     }
 
     public async void LoadImageOnClickAsync(object sender, EventArgs e)
@@ -206,7 +211,7 @@ public partial class CP_UpdateBusinessInformation : ContentPage
         if (_userIsEmpty)
             validPhoneNumber = true;
         else
-            validPhoneNumber = (business.PhoneNumber.Length == 8 && business.PhoneCountryCode.Length == 2) 
+            validPhoneNumber = (business.PhoneNumber.Length == 10 && business.PhoneCountryCode.Length == 2) 
                 || (business.PhoneNumber.Length == 0 && business.PhoneCountryCode.Length == 0);
 
         if(thereAreEmptyFields || !descriptionUnder150Chars || !validPhoneNumber || !validLocationSelected)
@@ -276,6 +281,32 @@ public partial class CP_UpdateBusinessInformation : ContentPage
     private static string ToTitleCase(string inputText)
     {
         return CultureInfo.CurrentCulture.TextInfo.ToTitleCase(inputText.ToLower());
+    }
+
+    private void LockInputs()
+    {
+        _btnLoadImage.IsEnabled = false;
+        _btnSave.IsEnabled = false;
+        _editorDescription.IsEnabled = false;
+        _entryAddress.IsEnabled = false;
+        _entryBrandName.IsEnabled = false;
+        _entryBusinessName.IsEnabled = false;
+        _entryPhoneCountryCode.IsEnabled = false;
+        _entryPhoneNumber.IsEnabled = false;
+        _inputsAreLocked = true;
+    }
+
+    private void UnlockInputs()
+    {
+        _btnLoadImage.IsEnabled = true;
+        _btnSave.IsEnabled = true;
+        _editorDescription.IsEnabled = true;
+        _entryAddress.IsEnabled = true;
+        _entryBrandName.IsEnabled = true;
+        _entryBusinessName.IsEnabled = true;
+        _entryPhoneCountryCode.IsEnabled = true;
+        _entryPhoneNumber.IsEnabled = true;
+        _inputsAreLocked = false;
     }
     #endregion
 }
