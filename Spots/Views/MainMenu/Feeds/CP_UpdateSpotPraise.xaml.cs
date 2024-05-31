@@ -10,12 +10,12 @@ public partial class CP_UpdateSpotPraise : ContentPage
     private List<string>? _SpotPraisers = null;
     public CP_UpdateSpotPraise(SpotPraise? spotPraise = null)
 	{
-        LoadSpotPraise(spotPraise);
-
         DisplayInfo displayInfo = DeviceDisplay.MainDisplayInfo;
         double profilePictureDimensions = displayInfo.Height * 0.065;
 
         InitializeComponent();
+
+        LoadSpotPraise(spotPraise);
 
         _colSearchBarCollectionView.BindingContext = SearchBoxContext;
         _colSearchBarCollectionView.MaximumHeightRequest = profilePictureDimensions * 2;

@@ -247,7 +247,8 @@ public static class DatabaseManager
 
     public static async Task<string> SavePraiseAttachment(string praiseID, string userID, ImageFile imageFile)
     {
-        string filePath = $"Users/{userID}/PraieAttachments/{praiseID}.{imageFile.ContentType?.Split('/')[1] ?? ""}";
+        string[] imageContentTypeArgs = imageFile.ContentType?.Split('/') ?? [];
+        string filePath = $"Users/{userID}/PraieAttachments/{praiseID}.{imageContentTypeArgs[imageContentTypeArgs.Count() - 1] ?? ""}";
 
         IStorageReference storageRef = CrossFirebaseStorage.Current.GetReferenceFromPath(filePath);
 

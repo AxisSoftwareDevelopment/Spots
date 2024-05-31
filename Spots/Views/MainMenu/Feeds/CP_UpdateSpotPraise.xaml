@@ -51,7 +51,7 @@
                     <!-- Attachment Picture -->
                     <Button x:Name="_btnLoadImage" Text="{DynamicResource lbl_LoadImage}" BackgroundColor="{DynamicResource Tertiary}" TextColor="{DynamicResource PrimaryAccent}" VerticalOptions="Center"
                             Clicked="LoadImageOnClickAsync"/>
-                    <Image x:Name="_imgAttachmentImage" Aspect="AspectFill" Margin="10, 10"/>
+                    <Image x:Name="_imgAttachmentImage" Aspect="AspectFit" Margin="10, 10"/>
                 </StackLayout>
             </ScrollView>
             <StackLayout Orientation="Horizontal" HorizontalOptions="Center">

@@ -56,7 +56,6 @@ public partial class CP_SpotPraise : ContentPage
     private void _btnEdit_Clicked(object? sender, EventArgs e)
     {
         Navigation.PushAsync(new CP_UpdateSpotPraise(_SpotPraise));
-        Navigation.PopAsync();
     }
 
     private void LoadSpotPraiseInformation()
