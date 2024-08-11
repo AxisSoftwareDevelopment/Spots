@@ -4,7 +4,6 @@ namespace Spots;
 
 public partial class CP_Login : ContentPage
 {
-	private bool _BusinessMode = false;
 	public CP_Login()
 	{
         InitializeComponent();
@@ -22,10 +21,7 @@ public partial class CP_Login : ContentPage
         {
             HideErrorSection();
 
-            if (_BusinessMode)
-                await LookForBusinessDataInDBAsync(email, password);
-            else
-                await LookForUserDataInDBAsync(email, password);
+            await LookForUserDataInDBAsync(email, password);
         }
         else
         {
@@ -33,54 +29,6 @@ public partial class CP_Login : ContentPage
         }
 
         SwitchLockViewState();
-    }
-
-    private async Task LookForBusinessDataInDBAsync(string email, string password)
-    {
-        
-        try
-        {
-            if (Application.Current != null)
-            {
-                Spot business = await DatabaseManager.LogInSpotAsync(email, password);
-
-                if (business.UserDataRetrieved)
-                {
-                    // Check if the _user has updated its basic information yet
-                    string[] stringResources = ResourceManagement.GetStringResources(Application.Current.Resources, ["lbl_Welcome", "lbl_WelcomeToSpots", "lbl_Ok"]);
-                    await UserInterface.DisplayPopUp_Regular(stringResources[0], stringResources[1], stringResources[2]);
-
-                    Application.Current.MainPage = new FP_MainShell(business);
-                }
-                else
-                {
-                    // Setup User Data
-                    string[] strings = ResourceManagement.GetStringResources(Resources, ["lbl_FirstTime", "txt_FirstTime", "lbl_Ok"]);
-                    await UserInterface.DisplayPopUp_Regular(strings[0], strings[1], strings[2]);
-                    await Navigation.PushAsync(new CP_UpdateBusinessInformation(business, email, password, business.PhoneNumber, business.PhoneCountryCode));
-                }
-            }
-        }
-        catch (FirebaseAuthException ex)
-        {
-            #region Error Message Calculation
-            string errorID = ex.Reason switch
-            {
-                FIRAuthError.InvalidEmail => "txt_LogInError_WrongCredentials_Business",
-                FIRAuthError.WrongPassword => "txt_LogInError_WrongCredentials_Business",
-                FIRAuthError.InvalidCredential => "txt_LogInError_InvalidCredential",
-                FIRAuthError.UserNotFound => "txt_LogInError_WrongCredentials_Business",
-                FIRAuthError.EmailAlreadyInUse => ex.Message.Split("->")[0].Trim(),
-                _ => "txt_LogInError_Undefined",
-            };
-            #endregion
-
-            DisplayErrorSection(errorID);
-        }
-        catch (Exception ex)
-        {
-            await UserInterface.DisplayPopUp_Regular("Unhandled Error", ex.Message, "OK");
-        }
     }
 
     private async Task LookForUserDataInDBAsync(string email, string password)
@@ -131,38 +79,13 @@ public partial class CP_Login : ContentPage
 
     public void BtnRegisterOnClick(object sender, EventArgs e)
 	{
-        if(_BusinessMode)
-            Navigation.PushAsync(new CP_RegisterBusiness());
-        else
-            Navigation.PushAsync(new CP_Register());
-    }
-
-    public void BtnBusinessModeOnClick(object sender, EventArgs e)
-    {
-        _BusinessMode = !_BusinessMode;
-        HideErrorSection();
-        LoadModeSpecifics();
-    }
-
-    private void LoadModeSpecifics()
-    {
-        if(_BusinessMode)
-        {
-            _btnChangeMode.SetDynamicResource(Button.TextProperty, "lbl_UserMode");
-            _lblTitleLogIn.SetDynamicResource(Label.TextProperty, "lbl_BusinessLogIn");
-        }
-        else
-        {
-            _btnChangeMode.SetDynamicResource(Button.TextProperty, "lbl_BusinessMode");
-            _lblTitleLogIn.SetDynamicResource(Label.TextProperty, "lbl_LogIn");
-        }
+        Navigation.PushAsync(new CP_Register());
     }
 
     private void SwitchLockViewState()
     {
         _btnLogIn.IsEnabled = !_btnLogIn.IsEnabled;
         _btnRegister.IsEnabled = !_btnRegister.IsEnabled;
-        _btnChangeMode.IsEnabled = !_btnChangeMode.IsEnabled;
     }
 
     private void DisplayErrorSection(string errorID)

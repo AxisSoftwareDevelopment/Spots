@@ -74,9 +74,9 @@
                 </CollectionView>
             </StackLayout>
         </ScrollView>
-        <Button x:Name="_btnEdit" Text="{DynamicResource lbl_EditPersonalInfo}" Margin="35, 10, 35, 10" BackgroundColor="{DynamicResource Primary}" TextColor="{DynamicResource PrimaryAccent}" Clicked="EditPersonalInformation_OnClicked"/>
-        <Button x:Name="_btnFollow" Text="{DynamicResource lbl_Follow}" Margin="35, 10, 35, 10" BackgroundColor="{DynamicResource Primary}" TextColor="{DynamicResource PrimaryAccent}" Clicked="FollowClient_OnClicked"/>
-        <Button x:Name="_btnUnfollow" Text="{DynamicResource lbl_Unfollow}" Margin="35, 10, 35, 10" BackgroundColor="{DynamicResource Tertiary}" TextColor="{DynamicResource PrimaryAccent}" Clicked="UnfollowClient_OnClicked"/>
+        <Button x:Name="_btnEdit" Text="{DynamicResource lbl_EditPersonalInfo}" CornerRadius="15" Margin="35, 10, 35, 10" BackgroundColor="{DynamicResource Primary}" TextColor="{DynamicResource PrimaryAccent}" Clicked="EditPersonalInformation_OnClicked"/>
+        <Button x:Name="_btnFollow" Text="{DynamicResource lbl_Follow}" CornerRadius="15" Margin="35, 10, 35, 10" BackgroundColor="{DynamicResource Primary}" TextColor="{DynamicResource PrimaryAccent}" Clicked="FollowClient_OnClicked"/>
+        <Button x:Name="_btnUnfollow" Text="{DynamicResource lbl_Unfollow}" CornerRadius="15" Margin="35, 10, 35, 10" BackgroundColor="{DynamicResource Tertiary}" TextColor="{DynamicResource PrimaryAccent}" Clicked="UnfollowClient_OnClicked"/>
     </StackLayout>
 
 </ContentPage>

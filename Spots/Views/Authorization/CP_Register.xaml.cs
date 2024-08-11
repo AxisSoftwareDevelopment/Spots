@@ -32,7 +32,7 @@ public partial class CP_Register : ContentPage
 
             try
             {
-                if (await DatabaseManager.CreateUserAsync(email, password, isBusinessUser: false))
+                if (await DatabaseManager.CreateUserAsync(email, password))
                 {
                     await UserInterface.DisplayPopUp_Regular("Success", "User created successfully.", "OK");
                     await Navigation.PopToRootAsync();

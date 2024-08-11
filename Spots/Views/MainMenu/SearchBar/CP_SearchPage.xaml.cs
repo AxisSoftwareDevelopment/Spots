@@ -2,7 +2,12 @@ namespace Spots;
 
 public partial class CP_SearchPage : ContentPage
 {
-    private EUserType CurrentFilterApplyed = EUserType.CLIENT;
+    private enum ESearchFocus
+    {
+        CLIENT,
+        SPOT
+    };
+    private ESearchFocus CurrentFilterApplyed = ESearchFocus.CLIENT;
 	private FeedContext<object> SearchResultsListContext = new();
 	public CP_SearchPage()
 	{
@@ -20,7 +25,7 @@ public partial class CP_SearchPage : ContentPage
     {
         if (e.Value)
         {
-            CurrentFilterApplyed = EUserType.CLIENT;
+            CurrentFilterApplyed = ESearchFocus.CLIENT;
             _entrySearchTerms_TextChanged(null, new TextChangedEventArgs("", _entrySearchTerms.Text));
         }
     }
@@ -29,7 +34,7 @@ public partial class CP_SearchPage : ContentPage
     {
         if(e.Value)
         {
-            CurrentFilterApplyed = EUserType.SPOT;
+            CurrentFilterApplyed = ESearchFocus.SPOT;
             _entrySearchTerms_TextChanged(null, new TextChangedEventArgs("", _entrySearchTerms.Text));
         }
     }
@@ -52,14 +57,13 @@ public partial class CP_SearchPage : ContentPage
     {
         if(e.CurrentSelection.Count > 0)
         {
-            IUser? user = e.CurrentSelection[0] as IUser;
-            if (user?.UserType == EUserType.CLIENT)
+            if (CurrentFilterApplyed == ESearchFocus.CLIENT)
             {
                 Navigation.PushAsync(new CP_UserProfile((Client)e.CurrentSelection[0]));
             }
             else
             {
-                Navigation.PushAsync(new CP_BusinessProfile((Spot)e.CurrentSelection[0]));
+                Navigation.PushAsync(new CP_SpotView((Spot)e.CurrentSelection[0]));
             }
             _colSearchBarCollectionView.SelectedItem = null;
         }
@@ -72,14 +76,14 @@ public partial class CP_SearchPage : ContentPage
             if (searchInput?.Length > 0)
             {
                 List<object> list = [];
-                if(CurrentFilterApplyed == EUserType.CLIENT)
+                if(CurrentFilterApplyed == ESearchFocus.CLIENT)
                 {
-                    List<Client> spots = await DatabaseManager.FetchClients_ByNameAsync(searchInput, SessionManager.CurrentSession?.User?.UserID ?? "");
+                    List<Client> spots = await DatabaseManager.FetchClients_ByNameAsync(searchInput, SessionManager.CurrentSession?.Client?.UserID ?? "");
                     spots.ForEach(list.Add);
                 }
                 else
                 {
-                    List<Spot> spots = await DatabaseManager.FetchSpots_ByNameAsync(searchInput, SessionManager.CurrentSession?.User?.UserID ?? "");
+                    List<Spot> spots = await DatabaseManager.FetchSpots_ByNameAsync(searchInput, "");
                     spots.ForEach(list.Add);
                 }
                 

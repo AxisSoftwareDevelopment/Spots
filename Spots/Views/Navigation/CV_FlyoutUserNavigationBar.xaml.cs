@@ -11,7 +11,7 @@ public partial class CV_FlyoutUserNavigationBar : ContentView
         double profilePictureDimensions = displayInfo.Height * 0.015;
 
         InitializeComponent();
-        BindingContext = SessionManager.CurrentSession?.User;
+        BindingContext = SessionManager.CurrentSession?.Client;
 
         _FrameProfilePicture.HeightRequest = profilePictureDimensions;
         _FrameProfilePicture.WidthRequest = profilePictureDimensions;

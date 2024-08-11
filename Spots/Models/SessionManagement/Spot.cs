@@ -1,17 +1,15 @@
-﻿using Microsoft.Maui.Controls.Compatibility;
-using Microsoft.Maui.Platform;
-using Plugin.Firebase.Firestore;
+﻿using Plugin.Firebase.Firestore;
 using System.ComponentModel;
 
 namespace Spots;
-public class Spot : INotifyPropertyChanged, IUser
+public class Spot : INotifyPropertyChanged
 {
     public event PropertyChangedEventHandler? PropertyChanged;
 
     #region Private Parameters
+    private string? _SpotID;
     private string? _brandName;
     private string? _businessName;
-    private string? _userID;
     private string? _email;
     private ImageSource? _profilePictureSource;
     private string? _phoneNumber;
@@ -22,13 +20,14 @@ public class Spot : INotifyPropertyChanged, IUser
     #endregion
 
     #region Public Parameters
-    public bool UserDataRetrieved
+    public string SpotID
     {
-        get => SpotName.Length > 0;
-    }
-    public EUserType UserType
-    {
-        get => EUserType.SPOT;
+        get => _SpotID ?? "";
+        set
+        {
+            _SpotID = value ?? "";
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SpotID)));
+        }
     }
     public ImageSource ProfilePictureSource
     {
@@ -42,15 +41,6 @@ public class Spot : INotifyPropertyChanged, IUser
     public string FullPhoneNumber
     {
         get => (PhoneNumber?.Length < 10 || PhoneCountryCode.Length < 2) ? "+ -- --- --- ----" : $"+({_phoneCountryCode}) {PhoneNumber?[..3]} {PhoneNumber?.Substring(3, 3)} {PhoneNumber?.Substring(6, 4)}";
-    }
-    public string UserID
-    {
-        get => _userID ?? "";
-        set
-        {
-            _userID = value.Equals("") ? null : value;
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(UserID)));
-        }
     }
     public string FullName
     {
@@ -145,7 +135,6 @@ public class Spot : INotifyPropertyChanged, IUser
 
     public Spot()
     {
-        UserID = "";
         BrandName = "";
         SpotName = "";
         Email = "";
@@ -159,7 +148,6 @@ public class Spot : INotifyPropertyChanged, IUser
     public Spot(string userID, string brandName, string businessName, string email, string profilePictureAddress = "", ImageSource? profilePictureSource = null,
         string phoneNumber = "", string phoneCountryCode = "", string description = "", FirebaseLocation? location = null, List<string>? praisers = null)
     {
-        UserID = userID;
         BrandName = brandName;
         SpotName = businessName;
         Email = email;
@@ -173,7 +161,6 @@ public class Spot : INotifyPropertyChanged, IUser
 
     public Spot(Spot_Firebase spotData, ImageSource profilePictureSource)
     {
-        UserID = spotData.UserID;
         BrandName = spotData.BrandName;
         SpotName = spotData.SpotName;
         Email = spotData.Email;
@@ -187,7 +174,6 @@ public class Spot : INotifyPropertyChanged, IUser
 
     public void UpdateUserData(Spot userData)
     {
-        UserID = userData.UserID;
         BrandName = userData.BrandName;
         SpotName = userData.SpotName;
         Email = userData.Email;
@@ -218,7 +204,7 @@ public class Spot : INotifyPropertyChanged, IUser
 public class Spot_Firebase
 {
     [FirestoreDocumentId]
-    public string UserID { get; set; }
+    public string SpotID { get; set; }
     [FirestoreProperty(nameof(BrandName))]
     public string BrandName { get; set; }
     [FirestoreProperty(nameof(SpotName))]
@@ -240,7 +226,7 @@ public class Spot_Firebase
     [FirestoreProperty(nameof(SearchTerms))]
     public IList<string> SearchTerms { get; set; }
 
-    public Spot_Firebase(string userID,
+    public Spot_Firebase(string spotID,
         string brandName,
         string businessName,
         string email,
@@ -252,7 +238,7 @@ public class Spot_Firebase
         List<string> praises,
         List<string> searchTerms)
     {
-        UserID = userID;
+        SpotID = spotID;
         BrandName = brandName;
         SpotName = businessName;
         Email = email;
@@ -267,7 +253,7 @@ public class Spot_Firebase
 
     public Spot_Firebase()
     {
-        UserID = "";
+        SpotID = "";
         BrandName = "";
         SpotName = "";
         Email = "";
@@ -282,7 +268,7 @@ public class Spot_Firebase
 
     public Spot_Firebase(Spot spotData, string profilePictureAddress)
     {
-        UserID = spotData.UserID;
+        SpotID = spotData.SpotID;
         BrandName = spotData.BrandName;
         SpotName = spotData.SpotName;
         Email = spotData.Email;
@@ -332,71 +318,5 @@ public class Spot_Firebase
         {
             return ImageSource.FromFile("placeholder_logo.jpg");
         }
-    }
-}
-
-public class FirebaseLocation : IFirestoreObject
-{
-    private double _Latitude = 0;
-    private double _Longitude = 0;
-    
-    [FirestoreProperty(nameof(Address))]
-    public string Address { get; set; }
-
-    [FirestoreProperty(nameof(Latitude))]
-    public double Latitude
-    {
-        get
-        {
-            return _Latitude;
-        }
-
-        set
-        {
-            _Latitude = value;
-            Geohash = [LocationManager.Encoder.Encode(_Latitude, _Longitude)];
-        }
-    }
-
-    [FirestoreProperty(nameof(Longitude))]
-    public double Longitude
-    {
-        get
-        {
-            return _Longitude;
-        }
-
-        set
-        {
-            _Longitude = value;
-            Geohash = [LocationManager.Encoder.Encode(_Latitude, _Longitude)];
-        }
-    }
-
-    [FirestoreProperty(nameof(Geohash))]
-    public List<string> Geohash { get; private set; }
-
-    public FirebaseLocation()
-    {
-        Geohash = [""];
-        Address = "";
-        Latitude = 0;
-        Longitude = 0;
-    }
-
-    public FirebaseLocation(string addr, double lat, double lng)
-    {
-        Geohash = [""];
-        Address = addr;
-        Latitude = lat;
-        Longitude = lng;
-    }
-
-    public FirebaseLocation(Location location)
-    {
-        Geohash = [""];
-        Address = "";
-        Latitude = location.Latitude;
-        Longitude = location.Longitude;
     }
 }

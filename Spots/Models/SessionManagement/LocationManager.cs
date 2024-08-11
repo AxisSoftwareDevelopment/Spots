@@ -1,5 +1,5 @@
 ﻿using Geohash;
-using System.Reflection.Metadata;
+using Plugin.Firebase.Firestore;
 
 namespace Spots;
 
@@ -62,3 +62,70 @@ public static class LocationManager
         return location;
     }
 }
+
+public class FirebaseLocation : IFirestoreObject
+{
+    private double _Latitude = 0;
+    private double _Longitude = 0;
+
+    [FirestoreProperty(nameof(Address))]
+    public string Address { get; set; }
+
+    [FirestoreProperty(nameof(Latitude))]
+    public double Latitude
+    {
+        get
+        {
+            return _Latitude;
+        }
+
+        set
+        {
+            _Latitude = value;
+            Geohash = [LocationManager.Encoder.Encode(_Latitude, _Longitude)];
+        }
+    }
+
+    [FirestoreProperty(nameof(Longitude))]
+    public double Longitude
+    {
+        get
+        {
+            return _Longitude;
+        }
+
+        set
+        {
+            _Longitude = value;
+            Geohash = [LocationManager.Encoder.Encode(_Latitude, _Longitude)];
+        }
+    }
+
+    [FirestoreProperty(nameof(Geohash))]
+    public List<string> Geohash { get; private set; }
+
+    public FirebaseLocation()
+    {
+        Geohash = [""];
+        Address = "";
+        Latitude = 0;
+        Longitude = 0;
+    }
+
+    public FirebaseLocation(string addr, double lat, double lng)
+    {
+        Geohash = [""];
+        Address = addr;
+        Latitude = lat;
+        Longitude = lng;
+    }
+
+    public FirebaseLocation(Location location)
+    {
+        Geohash = [""];
+        Address = "";
+        Latitude = location.Latitude;
+        Longitude = location.Longitude;
+    }
+}
+

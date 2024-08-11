@@ -2,7 +2,7 @@
 using System.ComponentModel;
 
 namespace Spots;
-public class Client : INotifyPropertyChanged, IUser
+public class Client : INotifyPropertyChanged
 {
     public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -23,10 +23,6 @@ public class Client : INotifyPropertyChanged, IUser
     public bool UserDataRetrieved
     {
         get => FirstName.Length > 0;
-    }
-    public EUserType UserType
-    {
-        get => EUserType.CLIENT;
     }
     public ImageSource ProfilePictureSource
     {

@@ -42,7 +42,7 @@ public partial class CV_DiscoverFeed : ContentView
         if(e.CurrentSelection.Count > 0)
         {
             Spot spot = (Spot)e.CurrentSelection[0];
-            Navigation.PushAsync(new CP_BusinessProfile(spot));
+            Navigation.PushAsync(new CP_SpotView(spot));
             _colFeed.SelectedItem = null;
         }
     }

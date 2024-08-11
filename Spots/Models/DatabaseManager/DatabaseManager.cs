@@ -6,9 +6,7 @@ using Plugin.Firebase.Storage;
 namespace Spots;
 public static class DatabaseManager
 {
-    const long MAX_IMAGE_STREAM_SIZE = 1 * 1024 * 1024;
-
-    private static readonly IFirebaseAuth firebaseAuth = CrossFirebaseAuth.Current;
+    const long MAX_IMAGE_STREAM_DIMENSION = 1024;
 
     #region Public Methods
     public static async Task<Client> LogInUserAsync(string email, string password, bool getUser = true)
@@ -16,16 +14,9 @@ public static class DatabaseManager
         string[] userSignInMethods = await CrossFirebaseAuth.Current.FetchSignInMethodsAsync(email);
 
         if(userSignInMethods.Length == 0 || !userSignInMethods.Contains("password"))
-            throw new FirebaseAuthException(FIRAuthError.InvalidEmail, "Custom Exception -> There was no email and password login method, or none at all.");
+            throw new FirebaseAuthException(FIRAuthError.InvalidEmail, "Custom Exception -> There was no 'email and password' login method, or none at all.");
 
         IFirebaseUser iFUser = await CrossFirebaseAuth.Current.SignInWithEmailAndPasswordAsync(email, password, false);
-
-        bool isBusinessUser = iFUser.DisplayName != null && iFUser.DisplayName.Equals("Business");
-        if (isBusinessUser)
-        {
-            await LogOutAsync();
-            throw new FirebaseAuthException(FIRAuthError.EmailAlreadyInUse, "txt_LogInError_WrongCredentials_User -> There is alredy a business business with this email.");
-        }
 
         //if(!firebaseUser.IsEmailVerified)
         //    throw new FirebaseAuthException(FIRAuthError.UserDisabled, "Custon Exception -> Email not verified.");
@@ -40,51 +31,10 @@ public static class DatabaseManager
         return user;
     }
 
-    public static async Task<Spot> LogInSpotAsync(string email, string password, bool getUser = true)
-    {
-        string[] userSignInMethods = await CrossFirebaseAuth.Current.FetchSignInMethodsAsync(email);
-
-        if (userSignInMethods.Length == 0 || !userSignInMethods.Contains("password"))
-            throw new FirebaseAuthException(FIRAuthError.InvalidEmail, "Custom Exception -> There was no email and password login method, or none at all.");
-
-        IFirebaseUser iFUser = await CrossFirebaseAuth.Current.SignInWithEmailAndPasswordAsync(email, password, false);
-
-        bool isBusinessUser = iFUser.DisplayName != null && iFUser.DisplayName.Equals("Business");
-        if (!isBusinessUser)
-        {
-            await LogOutAsync();
-            throw new FirebaseAuthException(FIRAuthError.EmailAlreadyInUse, "txt_LogInError_WrongCredentials_Business -> There is alredy a regular business with this email.");
-        }
-
-        //if(!firebaseUser.IsEmailVerified)
-        //    throw new FirebaseAuthException(FIRAuthError.UserDisabled, "Custon Exception -> Email not verified.");
-
-        Spot user;
-        if (getUser)
-        {
-            user = await GetSpotDataAsync(iFUser.Uid);
-            if (!user.UserDataRetrieved)
-                await LogOutAsync();
-        }
-        else
-        {
-            user = new();
-        }
-        return user;
-    }
-
-    public static async Task<bool> CreateUserAsync(string email, string password, bool isBusinessUser, string phoneNunber = "", string phoneCountryCode = "")
+    public static async Task<bool> CreateUserAsync(string email, string password, string phoneNunber = "", string phoneCountryCode = "")
     {
         await CrossFirebaseAuth.Current.CreateUserAsync(email, password);
-        await CrossFirebaseAuth.Current.CurrentUser.UpdateProfileAsync(displayName: isBusinessUser ? "Business" : "User");
-        if (isBusinessUser)
-        {
-            await SaveBusinessDataAsync(new Spot() { UserID = CrossFirebaseAuth.Current.CurrentUser.Uid, Email = email, PhoneNumber = phoneNunber, PhoneCountryCode = phoneCountryCode });
-        }
-        else
-        {
-            await SaveUserDataAsync(new Client() { UserID = CrossFirebaseAuth.Current.CurrentUser.Uid, Email = email });
-        }
+        await SaveUserDataAsync(new Client() { UserID = CrossFirebaseAuth.Current.CurrentUser.Uid, Email = email });
 
         string? id = CrossFirebaseAuth.Current.CurrentUser?.Uid;
         if (id == null || id.Length == 0 )
@@ -100,16 +50,8 @@ public static class DatabaseManager
         {
             if (CrossFirebaseAuth.Current.CurrentUser != null)
             {
-                if (CrossFirebaseAuth.Current.CurrentUser.DisplayName.Equals("Business"))
-                {
-                    Spot user = await GetSpotDataAsync(CrossFirebaseAuth.Current.CurrentUser.Uid);
-                    SessionManager.StartSession(user);
-                }
-                else
-                {
-                    Client user = await GetClientDataAsync(CrossFirebaseAuth.Current.CurrentUser.Uid);
-                    SessionManager.StartSession(user);
-                }
+                Client user = await GetClientDataAsync(CrossFirebaseAuth.Current.CurrentUser.Uid);
+                SessionManager.StartSession(user);
                 return true;
             }
         }
@@ -142,12 +84,19 @@ public static class DatabaseManager
         return true;
     }
 
-    public static async Task<bool> SaveBusinessDataAsync(Spot user, string profilePictureAddress = "")
+    public static async Task<bool> SaveSpotDataAsync(Spot spot, string profilePictureAddress = "")
     {
         try
         {
-            IDocumentReference documentReference = CrossFirebaseFirestore.Current.GetCollection("BusinessData").GetDocument(user.UserID);
-            await documentReference.SetDataAsync(new Spot_Firebase(user, profilePictureAddress));
+            if (spot.SpotID.Length > 0)
+            {
+                IDocumentReference documentReference = CrossFirebaseFirestore.Current.GetCollection("Spots").GetDocument(spot.SpotID);
+                await documentReference.SetDataAsync(new Spot_Firebase(spot, profilePictureAddress));
+            }
+            else
+            {
+                IDocumentReference documentReference = await CrossFirebaseFirestore.Current.GetCollection("Spots").AddDocumentAsync(spot);
+            }
         }
         catch (Exception ex)
         {
@@ -171,15 +120,15 @@ public static class DatabaseManager
         return user;
     }
 
-    public async static Task<Spot> GetSpotDataAsync(string bussinessID)
+    public async static Task<Spot> GetSpotDataAsync(string spotID)
     {
         IDocumentSnapshot<Spot_Firebase> documentSnapshot = await CrossFirebaseFirestore.Current
-            .GetCollection("BusinessData")
-            .GetDocument(bussinessID)
+            .GetCollection("Spots")
+            .GetDocument(spotID)
             .GetDocumentSnapshotAsync<Spot_Firebase>();
 
         // Even if documentSnapshot.Data doesnt support nullable returns, it is still possible to hold a null value.
-        Spot user = new() { UserID = bussinessID };
+        Spot user = new() { SpotID = spotID };
         if (documentSnapshot.Data != null)
         {
             Spot_Firebase spot_Firebase = documentSnapshot.Data;
@@ -221,7 +170,7 @@ public static class DatabaseManager
             if(addToSpotList)
             {
                 IDocumentSnapshot<Spot_Firebase> spotSnapshot = await CrossFirebaseFirestore.Current
-                    .GetCollection("BusinessData")
+                    .GetCollection("Spots")
                     .GetDocument(praise.SpotID)
                     .GetDocumentSnapshotAsync<Spot_Firebase>();
                 if(spotSnapshot.Data != null && !spotSnapshot.Data.Praisers.Contains(praise.AuthorID))
@@ -230,7 +179,7 @@ public static class DatabaseManager
                     spot.Praisers.Add(praise.AuthorID);
 
                     await CrossFirebaseFirestore.Current
-                    .GetCollection("BusinessData")
+                    .GetCollection("Spots")
                     .GetDocument(praise.SpotID)
                     .SetDataAsync(spot);
                 }
@@ -257,9 +206,9 @@ public static class DatabaseManager
         return filePath;
     }
 
-    public static async Task<string> SaveProfilePicture(bool isBusiness, string userID, ImageFile imageFile)
+    public static async Task<string> SaveProfilePicture(bool isBusiness, string ID, ImageFile imageFile)
     {
-        string filePath = $"{(isBusiness ? "Businesses" : "Users")}/{userID}/profilePicture.{imageFile.ContentType?.Replace("image/", "") ?? ""}";
+        string filePath = $"{(isBusiness ? "Businesses" : "Users")}/{ID}/profilePicture.{imageFile.ContentType?.Replace("image/", "") ?? ""}";
 
         IStorageReference storageRef = CrossFirebaseStorage.Current.GetReferenceFromPath(filePath);
 
@@ -406,7 +355,7 @@ public static class DatabaseManager
     {
         List<SpotPraise> spotPraises = [];
         IQuerySnapshot<SpotPraise_Firebase> documentReference;
-        string[] id = [spot.UserID];
+        string[] id = [spot.SpotID];
 
         if (lastPraise != null)
         {
@@ -464,7 +413,7 @@ public static class DatabaseManager
         if (lastSpot != null)
         {
             IDocumentSnapshot<SpotPraise_Firebase> documentSnapshot = await CrossFirebaseFirestore.Current.GetCollection("BusinessData")
-                .GetDocument(lastSpot.UserID)
+                .GetDocument(lastSpot.SpotID)
                 .GetDocumentSnapshotAsync<SpotPraise_Firebase>();
 
             documentReference = await CrossFirebaseFirestore.Current.GetCollection("BusinessData")
@@ -523,8 +472,11 @@ public static class DatabaseManager
             
             foreach (var document in documentReference.Documents)
             {
-                ImageSource profilePictureImageSource = await document.Data.GetImageSource();
-                retVal.Add(new(document.Data, profilePictureImageSource));
+                if(document.Data.UserID !=  currentUserID)
+                {
+                    ImageSource profilePictureImageSource = await document.Data.GetImageSource();
+                    retVal.Add(new(document.Data, profilePictureImageSource));
+                }
             }
         }
 
@@ -542,7 +494,7 @@ public static class DatabaseManager
             if(lastSpot != null)
             {
                 IDocumentSnapshot<Spot_Firebase> documentSnapshot = await CrossFirebaseFirestore.Current.GetCollection("BusinessData")
-                .GetDocument(lastSpot.UserID)
+                .GetDocument(lastSpot.SpotID)
                 .GetDocumentSnapshotAsync<Spot_Firebase>();
 
                 documentReference = await CrossFirebaseFirestore.Current.GetCollection("BusinessData")

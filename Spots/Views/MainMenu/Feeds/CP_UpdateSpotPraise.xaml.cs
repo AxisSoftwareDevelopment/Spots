@@ -90,7 +90,7 @@ public partial class CP_UpdateSpotPraise : ContentPage
         {
             if (searchInput.Length > 0)
             {
-                List<Spot> spotList = await DatabaseManager.FetchSpots_ByNameAsync(searchInput, SessionManager.CurrentSession?.User?.UserID ?? "");
+                List<Spot> spotList = await DatabaseManager.FetchSpots_ByNameAsync(searchInput, SessionManager.CurrentSession?.Client?.UserID ?? "");
                 SearchBoxContext.RefreshFeed(spotList);
             }
             else
@@ -119,7 +119,7 @@ public partial class CP_UpdateSpotPraise : ContentPage
     {
         _lblBrand.Text = spotSelected.FullName;
         _SpotImage.Source = spotSelected.ProfilePictureSource;
-        MainSpotPraise = new("", SessionManager.CurrentSession?.User?.UserID ?? "", SessionManager.CurrentSession?.User?.FullName ?? "", spotSelected.UserID, spotSelected.SpotName, DateTimeOffset.Now);
+        MainSpotPraise = new("", SessionManager.CurrentSession?.Client?.UserID ?? "", SessionManager.CurrentSession?.Client?.FullName ?? "", spotSelected.SpotID, spotSelected.SpotName, DateTimeOffset.Now);
         _SpotPraisers = spotSelected.Praisers;
     }
 

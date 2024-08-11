@@ -14,7 +14,7 @@ public partial class CP_SideUserMenu : ContentPage
         layoutTapRecognizer.Tapped += (s, e) => {};
 
         InitializeComponent();
-        BindingContext = SessionManager.CurrentSession?.User;
+        BindingContext = SessionManager.CurrentSession?.Client;
         // We add a gesture recognizer to avoid clickthrough behaviour.
         // this might be fixed in the future and no longer necessary.
         _LayoutView.GestureRecognizers.Add( layoutTapRecognizer );
@@ -30,13 +30,9 @@ public partial class CP_SideUserMenu : ContentPage
 
         if (SessionManager.CurrentSession != null)
         {
-            if (SessionManager.SessionMode == SessionModes.UserSession && SessionManager.CurrentSession.Client != null)
+            if (SessionManager.CurrentSession.Client != null)
             {
                 _Navigation.PushAsync(new CP_UserProfile(SessionManager.CurrentSession.Client));
-            }
-            else if(SessionManager.CurrentSession.Spot != null)
-            {
-                _Navigation.PushAsync(new CP_BusinessProfile(SessionManager.CurrentSession.Spot));
             }
         }
     }

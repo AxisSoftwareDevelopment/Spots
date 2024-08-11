@@ -26,7 +26,7 @@ public partial class CP_SpotPraise : ContentPage
 
         LoadSpotPraiseInformation();
 
-        if (praise.AuthorID == SessionManager.CurrentSession?.User?.UserID)
+        if (praise.AuthorID == SessionManager.CurrentSession?.Client?.UserID)
         {
             _btnEdit.IsVisible = true;
         }
@@ -41,7 +41,7 @@ public partial class CP_SpotPraise : ContentPage
     {
         LockView();
         Spot spot = await DatabaseManager.GetSpotDataAsync(_SpotPraise.SpotID);
-        await Navigation.PushAsync(new CP_BusinessProfile(spot));
+        await Navigation.PushAsync(new CP_SpotView(spot));
         UnlockView();
     }
 
@@ -68,7 +68,7 @@ public partial class CP_SpotPraise : ContentPage
         _imgSpotImage.Source = _SpotPraise.SpotProfilePicture;
         _imgAttachmentImage.Source = _SpotPraise.AttachedPicture;
 
-		_btnEdit.IsVisible = _SpotPraise.AuthorID.Equals(SessionManager.CurrentSession?.User?.UserID);
+		_btnEdit.IsVisible = _SpotPraise.AuthorID.Equals(SessionManager.CurrentSession?.Client?.UserID);
 	}
 
     private void LockView()

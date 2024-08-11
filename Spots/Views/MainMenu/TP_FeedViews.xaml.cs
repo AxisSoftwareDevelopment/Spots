@@ -18,7 +18,7 @@ public partial class TP_FeedViews : Microsoft.Maui.Controls.TabbedPage
 
         //while(SessionManager.CurrentSession == null || SessionManager.CurrentSession.Spot == null) { }
 
-        _Tab1.Content = SessionManager.CurrentSession?.Spot != null ? new CV_SpotPraisesFeed() : new CV_MainFeed();
+        _Tab1.Content = new CV_MainFeed();
         _Tab2.Content = new CV_DiscoverFeed();
         IconImageSource = "placeholder_logo.jpg";
     }

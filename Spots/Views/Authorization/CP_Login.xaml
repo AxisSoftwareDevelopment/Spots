@@ -39,8 +39,8 @@
                             Clicked="BtnLogInOnClickAsync" IsEnabled="True"/>
                     <Button Grid.Row="6" x:Name="_btnRegister" Text="{DynamicResource lbl_Register}" Scale="0.85" CornerRadius="15" BackgroundColor="{DynamicResource Tertiary}" TextColor="{DynamicResource PrimaryAccent}"
                             Clicked="BtnRegisterOnClick" IsEnabled="True"/>
-                    <Button Grid.Row="7" x:Name="_btnChangeMode" Text="{DynamicResource lbl_BusinessMode}" Scale="0.85" CornerRadius="15" BackgroundColor="{DynamicResource Secondary}" TextColor="{DynamicResource HyperLink}"
-                            Clicked="BtnBusinessModeOnClick" IsEnabled="True"/>
+                    <!--<Button Grid.Row="7" x:Name="_btnChangeMode" Text="{DynamicResource lbl_BusinessMode}" Scale="0.85" CornerRadius="15" BackgroundColor="{DynamicResource Secondary}" TextColor="{DynamicResource HyperLink}"
+                            Clicked="BtnBusinessModeOnClick" IsEnabled="True"/>-->
                 </Grid>
             </Frame>
         </Grid>

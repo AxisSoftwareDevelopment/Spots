@@ -23,26 +23,18 @@ public partial class CP_UserProfile : ContentPage
         _FrameProfilePicture.HeightRequest = profilePictureDimensions;
 		_FrameProfilePicture.WidthRequest = profilePictureDimensions;
 
-		if (user.UserID != SessionManager.CurrentSession?.User?.UserID)
+		if (user.UserID != SessionManager.CurrentSession?.Client?.UserID)
 		{
 			_btnEdit.IsVisible = false;
             _stackFollowingZone.IsVisible = false;
-            if (SessionManager.CurrentSession?.User?.UserType != EUserType.SPOT)
+            if (SessionManager.CurrentSession?.Client?.FollowedClients.Contains(user.UserID) ?? false)
             {
-                if (SessionManager.CurrentSession?.Client?.FollowedClients.Contains(user.UserID) ?? false)
-                {
-                    _btnFollow.IsVisible = false;
-                    _btnUnfollow.IsVisible = true;
-                }
-                else
-                {
-                    _btnFollow.IsVisible = true;
-                    _btnUnfollow.IsVisible = false;
-                }
+                _btnFollow.IsVisible = false;
+                _btnUnfollow.IsVisible = true;
             }
             else
             {
-                _btnFollow.IsVisible = false;
+                _btnFollow.IsVisible = true;
                 _btnUnfollow.IsVisible = false;
             }
 		}
@@ -81,7 +73,7 @@ public partial class CP_UserProfile : ContentPage
     private async void FollowedClientsView(object? sender, EventArgs e)
     {
         List<Client> followedClients = await DatabaseManager.FetchClientsByID(user.FollowedClients);
-        Navigation.PushAsync(new CP_FollowedClientsView(followedClients));
+        await Navigation.PushAsync(new CP_FollowedClientsView(followedClients));
     }
 
     private async void FollowClient_OnClicked(object sender, EventArgs e)

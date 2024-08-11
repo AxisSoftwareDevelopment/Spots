@@ -16,25 +16,20 @@ public partial class CV_SearchBarDataTemplate : ContentView
         SetBinginds(BindingContext);
     }
 
-    private void SetBinginds(object? User)
+    private void SetBinginds(object? Item)
     {
-        IUser? user = User as IUser;
-        switch (user?.UserType)
+
+        if(Item?.GetType() == typeof(Client))
         {
-            case EUserType.SPOT:
-                {
-                    lblMainName.SetBinding(Label.TextProperty, "SpotName");
-                    lblSecondaryName.SetBinding(Label.TextProperty, "BrandName");
-                    lblDetail.SetBinding(Label.TextProperty, "Location.Address");
-                    break;
-                }
-            case EUserType.CLIENT:
-                {
-                    lblMainName.SetBinding(Label.TextProperty, "FullName");
-                    lblSecondaryName.SetBinding(Label.TextProperty, "Email");
-                    lblDetail.SetBinding(Label.TextProperty, "Description");
-                    break;
-                }
+            lblMainName.SetBinding(Label.TextProperty, "FullName");
+            lblSecondaryName.SetBinding(Label.TextProperty, "Email");
+            lblDetail.SetBinding(Label.TextProperty, "Description");
+        }
+        else if(Item?.GetType() == typeof(Spot))
+        {
+            lblMainName.SetBinding(Label.TextProperty, "SpotName");
+            lblSecondaryName.SetBinding(Label.TextProperty, "BrandName");
+            lblDetail.SetBinding(Label.TextProperty, "Location.Address");
         }
     }
 }
