@@ -82,7 +82,7 @@ public partial class CP_UpdateUserInformation : ContentPage
                 _user.Description = newData.Description;
                 if (_profilePictureChanged && _profilePictureFile != null)
                 {
-                    profilePictureAddress = await DatabaseManager.SaveProfilePicture(isBusiness: false, _user.UserID, _profilePictureFile);
+                    profilePictureAddress = await DatabaseManager.SaveFile($"Users/{_user.UserID}", "ProfilePicture", _profilePictureFile);
                     _user.ProfilePictureSource = ImageSource.FromStream(() => ImageManagement.ByteArrayToStream(_profilePictureFile.Bytes?? []));
                 }
 

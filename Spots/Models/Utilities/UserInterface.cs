@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace Spots;
 
@@ -12,10 +8,10 @@ public static class UserInterface
     {
         if (Application.Current != null && Application.Current.MainPage != null)
         {
-            MainThread.BeginInvokeOnMainThread(async () =>
-            {
+            //MainThread.BeginInvokeOnMainThread(async () =>
+            //{
                 await Application.Current.MainPage.DisplayAlert(title, message, button);
-            });
+            //});
         }
     }
 

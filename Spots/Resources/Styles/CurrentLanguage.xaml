@@ -70,14 +70,37 @@
     <x:String x:Key="lbl_Edit">Edit</x:String> <!-- Label that indicates Edition -->
     <x:String x:Key="lbl_Comment">Comment:</x:String> <!-- Label that indicates Comment section -->
     <x:String x:Key="lbl_SpotReview">Spot Review</x:String> <!-- Label that indicates Spot Review -->
+    <x:String x:Key="lbl_SpotReviews">Spot Reviews</x:String> <!-- Label that indicates Spot Review -->
     <x:String x:Key="lbl_Search">Search</x:String> <!-- Label that indicates Search section -->
     <x:String x:Key="lbl_Filters">Filters:</x:String> <!-- Label that indicates Filter section -->
+    <x:String x:Key="lbl_FiltersHeader">Filters</x:String> <!-- Label that indicates Filter section -->
     <x:String x:Key="lbl_ClientFilter">Clients</x:String> <!-- Label that indicates a Client -->
     <x:String x:Key="lbl_SpotFilter">Spots</x:String> <!-- Label that indicates a Spot -->
     <x:String x:Key="lbl_Follow">Follow</x:String> <!-- Label that indicates to Follow a Client -->
     <x:String x:Key="lbl_Unfollow">Unfollow</x:String> <!-- Label that indicates to Follow a Client -->
     <x:String x:Key="lbl_FollowingView">Following</x:String> <!-- Label that indicates the following view -->
     <x:String x:Key="lbl_Location">Location</x:String> <!-- Label that indicates the Location field -->
+    <x:String x:Key="lbl_NewSpot">Add New Spot</x:String> <!-- Label that indicates the Location field -->
+    <x:String x:Key="lbl_SpotInformation">Spot Information</x:String> <!-- Label that indicates the Location field -->
+    <x:String x:Key="lbl_1km">1 Km</x:String> <!-- Label that indicates 1km -->
+    <x:String x:Key="lbl_3km">3 Km</x:String> <!-- Label that indicates 3km -->
+    <x:String x:Key="lbl_5km">5 Km</x:String> <!-- Label that indicates 5km -->
+    <x:String x:Key="lbl_1Month">Past Month</x:String> <!-- Label that indicates Past Month duration -->
+    <x:String x:Key="lbl_6Months">Past 6 Months</x:String> <!-- Label that indicates Past 6 Months duration -->
+    <x:String x:Key="lbl_1Year">Past Year</x:String> <!-- Label that indicates Past Year duration -->
+    <x:String x:Key="lbl_AllTime">All Time</x:String> <!-- Label that indicates All time duration -->
+    <x:String x:Key="lbl_CurrentLocation">Current Location</x:String> <!-- Label that indicates Current Location -->
+    <x:String x:Key="lbl_SelectedLocation">Selected Location</x:String> <!-- Label that indicates Selected Location -->
+    <x:String x:Key="lbl_Select">Select</x:String> <!-- Label that indicates to Select -->
+    <x:String x:Key="lbl_Popularity">Popularity</x:String> <!-- Label that indicates Recent -->
+    <x:String x:Key="lbl_Recent">Recent</x:String> <!-- Label that indicates Popularity -->
+    <x:String x:Key="lbl_Time_twoDots">Time:</x:String> <!-- Label that indicates Popularity -->
+    <x:String x:Key="lbl_OrderBy_twoDots">Order by:</x:String> <!-- Label that indicates Popularity -->
+    <x:String x:Key="lbl_Location_twoDots">Location:</x:String> <!-- Label that indicates Popularity -->
+    <x:String x:Key="lbl_Subject_twoDots">Subject:</x:String> <!-- Label that indicates Popularity -->
+    <x:String x:Key="lbl_ClosestTo_twoDots">Closest to:</x:String> <!-- Label that indicates Popularity -->
+    <x:String x:Key="lbl_SearchArea_twoDots">Search area:</x:String> <!-- Label that indicates Popularity -->
+    
 
     <x:String x:Key="txt_ConfirmLogOut">Are you sure you want to want to log out?</x:String> <!-- Text that questions the user if is sure of logout action -->
     <x:String x:Key="txt_LogIn">Log in to your account</x:String> <!-- Log in text -->

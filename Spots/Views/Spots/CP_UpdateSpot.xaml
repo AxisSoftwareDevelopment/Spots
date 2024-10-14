@@ -7,7 +7,7 @@
              BackgroundColor="{DynamicResource Primary}">
 
     <NavigationPage.TitleView>
-        <Label Text="{DynamicResource lbl_PersonalInformation}" TextColor="{DynamicResource PrimaryAccent}" FontSize="24" FontAttributes="Bold" HorizontalOptions="Start" VerticalOptions="Center"></Label>
+        <Label Text="{DynamicResource lbl_SpotInformation}" TextColor="{DynamicResource PrimaryAccent}" FontSize="24" FontAttributes="Bold" HorizontalOptions="Start" VerticalOptions="Center"></Label>
     </NavigationPage.TitleView>
 
     <ContentPage.Content>

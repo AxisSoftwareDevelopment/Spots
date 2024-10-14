@@ -8,7 +8,9 @@
     
     <Color x:Key="Primary">#FFA500</Color>
     <Color x:Key="Secondary">White</Color>
-    <Color x:Key="Tertiary">#757575</Color>
+    <Color x:Key="TertiaryLighter">#757575</Color>
+    <Color x:Key="Tertiary">#6E6E6E</Color>
+    <Color x:Key="TertiaryDarker">#4A4A4A</Color>
     <Color x:Key="PrimaryAccent">White</Color>
     <Color x:Key="SecondaryAccent">Black</Color>
     <Color x:Key="ErrorAccent">Red</Color>
@@ -19,8 +21,6 @@
     <Color x:Key="Gray200">#C8C8C8</Color>
     <Color x:Key="Gray300">#ACACAC</Color>
     <Color x:Key="Gray400">#919191</Color>
-    <Color x:Key="Gray500">#6E6E6E</Color>
-    <Color x:Key="Gray600">#404040</Color>
     <Color x:Key="Gray900">#212121</Color>
     <Color x:Key="Gray950">#141414</Color>
 

@@ -140,6 +140,11 @@ public partial class CP_UpdateSpotPraise : ContentPage
         UnlockInputs();
     }
 
+    private async void _btnNewSpot_Clicked(object? sender, EventArgs e)
+    {
+        await Navigation.PushAsync(new CP_UpdateSpot());
+    }
+
     private void LockInputs()
     {
         _btnLoadImage.IsEnabled = false;

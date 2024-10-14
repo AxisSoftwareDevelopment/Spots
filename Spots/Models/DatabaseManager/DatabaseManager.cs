@@ -2,6 +2,7 @@
 using Plugin.Firebase.Firestore;
 using Plugin.Firebase.Core.Exceptions;
 using Plugin.Firebase.Storage;
+using Firebase.Firestore;
 
 namespace Spots;
 public static class DatabaseManager
@@ -31,7 +32,7 @@ public static class DatabaseManager
         return user;
     }
 
-    public static async Task<bool> CreateUserAsync(string email, string password, string phoneNunber = "", string phoneCountryCode = "")
+    public static async Task<bool> CreateUserAsync(string email, string password)
     {
         await CrossFirebaseAuth.Current.CreateUserAsync(email, password);
         await SaveUserDataAsync(new Client() { UserID = CrossFirebaseAuth.Current.CurrentUser.Uid, Email = email });
@@ -84,7 +85,7 @@ public static class DatabaseManager
         return true;
     }
 
-    public static async Task<bool> SaveSpotDataAsync(Spot spot, string profilePictureAddress = "")
+    public static async Task<bool> SaveSpotDataAsync(Spot spot, string profilePictureAddress)
     {
         try
         {
@@ -95,7 +96,43 @@ public static class DatabaseManager
             }
             else
             {
-                IDocumentReference documentReference = await CrossFirebaseFirestore.Current.GetCollection("Spots").AddDocumentAsync(spot);
+                IDocumentReference documentReference = await CrossFirebaseFirestore.Current.GetCollection("Spots").AddDocumentAsync(new Spot_Firebase(spot, profilePictureAddress));
+            }
+        }
+        catch (Exception ex)
+        {
+            await UserInterface.DisplayPopUp_Regular("Unhandled Database Exception", ex.Message, "Ok");
+            return false;
+        }
+
+        return true;
+    }
+
+    public static async Task<bool> SaveSpotDataAsync(Spot spot, ImageFile? imageFile = null)
+    {
+        try
+        {
+            ICollectionReference collectionReference = CrossFirebaseFirestore.Current.GetCollection("Spots");
+
+            if (spot.SpotID.Length > 0)
+            {
+                string profilePictureAddress = "";
+                if (imageFile != null)
+                {
+                    profilePictureAddress = await SaveFile($"Spots/{spot.SpotID}", "SpotPicture", imageFile);
+                }
+                await collectionReference.GetDocument(spot.SpotID).SetDataAsync(new Spot_Firebase(spot, profilePictureAddress));
+            }
+            else
+            {
+                Spot_Firebase spot_Firebase = new(spot, "");
+                IDocumentReference documentReference = await collectionReference.AddDocumentAsync(spot_Firebase);
+                if (imageFile != null)
+                {
+                    spot_Firebase.SpotID = documentReference.Id;
+                    spot_Firebase.ProfilePictureAddress = await SaveFile($"Spots/{spot.SpotID}", "SpotsPicture", imageFile);
+                    await documentReference.SetDataAsync(spot_Firebase);
+                }
             }
         }
         catch (Exception ex)
@@ -206,9 +243,9 @@ public static class DatabaseManager
         return filePath;
     }
 
-    public static async Task<string> SaveProfilePicture(bool isBusiness, string ID, ImageFile imageFile)
+    public static async Task<string> SaveFile(string path, string fileName, ImageFile imageFile)
     {
-        string filePath = $"{(isBusiness ? "Businesses" : "Users")}/{ID}/profilePicture.{imageFile.ContentType?.Replace("image/", "") ?? ""}";
+        string filePath = $"{path}/{fileName}.{imageFile.ContentType?.Replace("image/", "") ?? ""}";
 
         IStorageReference storageRef = CrossFirebaseStorage.Current.GetReferenceFromPath(filePath);
 
@@ -493,11 +530,11 @@ public static class DatabaseManager
             IQuerySnapshot<Spot_Firebase> documentReference;
             if(lastSpot != null)
             {
-                IDocumentSnapshot<Spot_Firebase> documentSnapshot = await CrossFirebaseFirestore.Current.GetCollection("BusinessData")
+                IDocumentSnapshot<Spot_Firebase> documentSnapshot = await CrossFirebaseFirestore.Current.GetCollection("Spots")
                 .GetDocument(lastSpot.SpotID)
                 .GetDocumentSnapshotAsync<Spot_Firebase>();
 
-                documentReference = await CrossFirebaseFirestore.Current.GetCollection("BusinessData")
+                documentReference = await CrossFirebaseFirestore.Current.GetCollection("Spots")
                 .StartingAfter(documentSnapshot)
                 .LimitedTo(25)
                 .WhereArrayContainsAny("SearchTerms", searchTerms)
@@ -505,7 +542,7 @@ public static class DatabaseManager
             }
             else
             {
-                documentReference = await CrossFirebaseFirestore.Current.GetCollection("BusinessData")
+                documentReference = await CrossFirebaseFirestore.Current.GetCollection("Spots")
                 .LimitedTo(25)
                 .WhereArrayContainsAny("SearchTerms", searchTerms)
                 .GetDocumentsAsync<Spot_Firebase>();

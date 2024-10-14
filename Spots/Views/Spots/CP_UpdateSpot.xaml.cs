@@ -91,13 +91,9 @@ public partial class CP_UpdateSpot : ContentPage
                 _spot.Description = newData.Description;
                 Location locationSelected = _cvMiniMap.Pins[0].Location;
                 _spot.Location = new FirebaseLocation(newData.Location.Address, locationSelected.Latitude, locationSelected.Longitude);
-                if (_profilePictureChanged && _profilePictureFile != null)
-                {
-                    profilePictureAddress = await DatabaseManager.SaveProfilePicture(isBusiness: true, _spot.SpotID, _profilePictureFile);
-                    _spot.ProfilePictureSource = ImageSource.FromStream(() => ImageManagement.ByteArrayToStream(_profilePictureFile.Bytes ?? []));
-                }
 
-                if (await DatabaseManager.SaveSpotDataAsync(_spot, profilePictureAddress))
+                // If profile picture was changed we pass the picture file (even if its null, to remove the picture reference) otherwise we pass null.
+                if (await DatabaseManager.SaveSpotDataAsync(_spot, _profilePictureChanged ? _profilePictureFile : null))
                 {
                     await UserInterface.DisplayPopUp_Regular("Success", "Your information has been updated. Way to go!", "OK");
                     await Navigation.PopAsync();

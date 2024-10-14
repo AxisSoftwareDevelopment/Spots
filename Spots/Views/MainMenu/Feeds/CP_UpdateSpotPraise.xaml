@@ -30,7 +30,7 @@
                                         <StackLayout Orientation="Horizontal" BackgroundColor="{DynamicResource Secondary}" HorizontalOptions="FillAndExpand" Margin="5,5">
                                             <Image Source="{Binding ProfilePictureSource}" HeightRequest="50" WidthRequest="50" BackgroundColor="{DynamicResource Primary}"/>
                                             <StackLayout Orientation="Vertical" HorizontalOptions="FillAndExpand" Margin="5,5">
-                                                <Label Text="{Binding BusinessName}" FontSize="Medium" FontAttributes="Bold" TextColor="{DynamicResource SecondaryAccent}" MaxLines="2"/>
+                                                <Label Text="{Binding SpotName}" FontSize="Medium" FontAttributes="Bold" TextColor="{DynamicResource SecondaryAccent}" MaxLines="2"/>
                                                 <Label Text="{Binding BrandName}" FontSize="Small" FontAttributes="Italic" HorizontalTextAlignment="End" TextColor="{DynamicResource Tertiary}" MaxLines="1"/>
                                                 <Label Text="{Binding Location.Address}" FontSize="Micro" LineBreakMode="WordWrap" TextColor="{DynamicResource SecondaryAccent}" MaxLines="2"/>
                                             </StackLayout>
@@ -40,6 +40,8 @@
                             </DataTemplate>
                         </CollectionView.ItemTemplate>
                     </CollectionView>
+                    <Button x:Name="_btnNewSpot" Text="{DynamicResource lbl_NewSpot}" BackgroundColor="{DynamicResource Tertiary}" TextColor="{DynamicResource PrimaryAccent}" VerticalOptions="Center"
+                        Clicked="_btnNewSpot_Clicked"/>
                     <Label x:Name="_lblBrand" Text="Brand" TextColor="{DynamicResource SecondaryAccent}" FontAttributes="Bold" HorizontalOptions="FillAndExpand" HorizontalTextAlignment="Center" Margin="0,20,0,0"/>
                     <!-- Profile Picture -->
                     <Border x:Name="_FrameSpotPicture" Padding="0" Margin="15,15,15,0" StrokeShape="RoundRectangle 500" BackgroundColor="{DynamicResource Tertiary}">

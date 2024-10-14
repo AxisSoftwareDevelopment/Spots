@@ -10,7 +10,6 @@ public class Spot : INotifyPropertyChanged
     private string? _SpotID;
     private string? _brandName;
     private string? _businessName;
-    private string? _email;
     private ImageSource? _profilePictureSource;
     private string? _phoneNumber;
     private string? _phoneCountryCode;
@@ -64,15 +63,6 @@ public class Spot : INotifyPropertyChanged
             _businessName = value.Equals("") ? null : value;
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SpotName)));
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(FullName)));
-        }
-    }
-    public string Email
-    {
-        get => _email ?? "";
-        set
-        {
-            _email = value.Equals("") ? null : value;
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Email)));
         }
     }
     public string PhoneNumber
@@ -137,7 +127,6 @@ public class Spot : INotifyPropertyChanged
     {
         BrandName = "";
         SpotName = "";
-        Email = "";
         PhoneCountryCode = "";
         PhoneNumber = "";
         Description = "";
@@ -145,12 +134,12 @@ public class Spot : INotifyPropertyChanged
         Praisers = [];
     }
 
-    public Spot(string userID, string brandName, string businessName, string email, string profilePictureAddress = "", ImageSource? profilePictureSource = null,
+    public Spot(string userID, string brandName, string businessName, ImageSource? profilePictureSource = null,
         string phoneNumber = "", string phoneCountryCode = "", string description = "", FirebaseLocation? location = null, List<string>? praisers = null)
     {
+        SpotID = userID;
         BrandName = brandName;
         SpotName = businessName;
-        Email = email;
         ProfilePictureSource = profilePictureSource ?? ImageSource.FromFile("placeholder_logo.jpg");
         PhoneNumber = phoneNumber;
         PhoneCountryCode = phoneCountryCode;
@@ -161,9 +150,9 @@ public class Spot : INotifyPropertyChanged
 
     public Spot(Spot_Firebase spotData, ImageSource profilePictureSource)
     {
+        SpotID = spotData.SpotID;
         BrandName = spotData.BrandName;
         SpotName = spotData.SpotName;
-        Email = spotData.Email;
         ProfilePictureSource = profilePictureSource;
         PhoneNumber = spotData.PhoneNumber;
         PhoneCountryCode = spotData.PhoneCountryCode;
@@ -176,7 +165,6 @@ public class Spot : INotifyPropertyChanged
     {
         BrandName = userData.BrandName;
         SpotName = userData.SpotName;
-        Email = userData.Email;
         ProfilePictureSource = userData.ProfilePictureSource;
         PhoneNumber = userData.PhoneNumber;
         PhoneCountryCode = userData.PhoneCountryCode;
@@ -209,8 +197,6 @@ public class Spot_Firebase
     public string BrandName { get; set; }
     [FirestoreProperty(nameof(SpotName))]
     public string SpotName { get; set; }
-    [FirestoreProperty(nameof(Email))]
-    public string Email { get; set; }
     [FirestoreProperty(nameof(PhoneNumber))]
     public string PhoneNumber { get; set; }
     [FirestoreProperty(nameof(PhoneCountryCode))]
@@ -229,7 +215,6 @@ public class Spot_Firebase
     public Spot_Firebase(string spotID,
         string brandName,
         string businessName,
-        string email,
         string phoneNumber,
         string phoneCountryCode,
         string description,
@@ -241,7 +226,6 @@ public class Spot_Firebase
         SpotID = spotID;
         BrandName = brandName;
         SpotName = businessName;
-        Email = email;
         PhoneNumber = phoneNumber;
         PhoneCountryCode = phoneCountryCode;
         Description = description;
@@ -256,7 +240,6 @@ public class Spot_Firebase
         SpotID = "";
         BrandName = "";
         SpotName = "";
-        Email = "";
         PhoneNumber = "";
         PhoneCountryCode = "";
         Description = "";
@@ -271,7 +254,6 @@ public class Spot_Firebase
         SpotID = spotData.SpotID;
         BrandName = spotData.BrandName;
         SpotName = spotData.SpotName;
-        Email = spotData.Email;
         PhoneNumber = spotData.PhoneNumber;
         PhoneCountryCode = spotData.PhoneCountryCode;
         Description = spotData.Description;
