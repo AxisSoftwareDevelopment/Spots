@@ -1,3 +1,5 @@
+using static Android.Gms.Common.Apis.Api;
+
 namespace Spots;
 
 public partial class CP_SearchPage : ContentPage
@@ -8,7 +10,7 @@ public partial class CP_SearchPage : ContentPage
         SPOT
     };
     private ESearchFocus CurrentFilterApplyed = ESearchFocus.CLIENT;
-	private FeedContext<object> SearchResultsListContext = new();
+	private readonly FeedContext<object> SearchResultsListContext = new();
 	public CP_SearchPage()
 	{
 		InitializeComponent();
@@ -53,17 +55,22 @@ public partial class CP_SearchPage : ContentPage
         }
     }
 
-    private void _colSearchBarCollectionView_SelectionChanged(object? sender, SelectionChangedEventArgs e)
+    private async void _colSearchBarCollectionView_SelectionChanged(object? sender, SelectionChangedEventArgs e)
     {
         if(e.CurrentSelection.Count > 0)
         {
             if (CurrentFilterApplyed == ESearchFocus.CLIENT)
             {
-                Navigation.PushAsync(new CP_UserProfile((Client)e.CurrentSelection[0]));
+                if (SessionManager.CurrentSession?.Client?.UserID != null)
+                {
+                    List<FollowRegister_Firebase> followRegisters = await DatabaseManager.FetchFollowRegisters(followerID: SessionManager.CurrentSession?.Client?.UserID,
+                        followedID: ((Client)e.CurrentSelection[0]).UserID);
+                    await Navigation.PushAsync(new CP_UserProfile((Client)e.CurrentSelection[0], followRegisters.Count > 0));
+                }
             }
             else
             {
-                Navigation.PushAsync(new CP_SpotView((Spot)e.CurrentSelection[0]));
+                await Navigation.PushAsync(new CP_SpotView((Spot)e.CurrentSelection[0]));
             }
             _colSearchBarCollectionView.SelectedItem = null;
         }
@@ -73,17 +80,18 @@ public partial class CP_SearchPage : ContentPage
     {
         try
         {
-            if (searchInput?.Length > 0)
+            string[] inputs = searchInput != null ? [searchInput.ToUpper().Trim()] : [];
+            if (inputs.Length > 0)
             {
                 List<object> list = [];
                 if(CurrentFilterApplyed == ESearchFocus.CLIENT)
                 {
-                    List<Client> spots = await DatabaseManager.FetchClients_ByNameAsync(searchInput, SessionManager.CurrentSession?.Client?.UserID ?? "");
+                    List<Client> spots = await DatabaseManager.FetchClients_Filtered(nameSearchTerms: inputs, currentUsrID_ToAvoid: SessionManager.CurrentSession?.Client?.UserID);
                     spots.ForEach(list.Add);
                 }
                 else
                 {
-                    List<Spot> spots = await DatabaseManager.FetchSpots_ByNameAsync(searchInput, "");
+                    List<Spot> spots = await DatabaseManager.FetchSpots_Filtered(filterParams: inputs);
                     spots.ForEach(list.Add);
                 }
                 

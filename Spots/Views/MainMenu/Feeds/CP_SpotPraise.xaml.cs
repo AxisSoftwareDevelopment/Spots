@@ -2,7 +2,7 @@ namespace Spots;
 
 public partial class CP_SpotPraise : ContentPage
 {
-    private SpotPraise _SpotPraise;
+    private readonly SpotPraise _SpotPraise;
 	public CP_SpotPraise(SpotPraise praise)
 	{
         _SpotPraise = praise;
@@ -49,7 +49,11 @@ public partial class CP_SpotPraise : ContentPage
     {
         LockView();
         Client client = await DatabaseManager.GetClientDataAsync(_SpotPraise.AuthorID);
-        await Navigation.PushAsync(new CP_UserProfile(client));
+        if (SessionManager.CurrentSession?.Client?.UserID != null)
+        {
+            List<FollowRegister_Firebase> followRegisters = await DatabaseManager.FetchFollowRegisters(followerID: SessionManager.CurrentSession?.Client?.UserID, followedID: client.UserID);
+            await Navigation.PushAsync(new CP_UserProfile(client, followRegisters.Count > 0));
+        }
         UnlockView();
     }
 

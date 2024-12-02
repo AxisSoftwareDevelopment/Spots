@@ -15,7 +15,7 @@ public class Spot : INotifyPropertyChanged
     private string? _phoneCountryCode;
     private string? _description;
     private FirebaseLocation? _location;
-    private List<string>? _praisers;
+    private int? _praiseCount;
     #endregion
 
     #region Public Parameters
@@ -112,13 +112,13 @@ public class Spot : INotifyPropertyChanged
                 value.Longitude);
         }
     }
-    public List<string> Praisers
+    public int PraiseCount
     {
-        get => _praisers ?? [];
+        get => _praiseCount ?? 0;
         set
         {
-            _praisers = value ?? [];
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Praisers)));
+            _praiseCount = value;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(PraiseCount)));
         }
     }
     #endregion
@@ -131,11 +131,11 @@ public class Spot : INotifyPropertyChanged
         PhoneNumber = "";
         Description = "";
         Location = new FirebaseLocation();
-        Praisers = [];
+        PraiseCount = 0;
     }
 
     public Spot(string userID, string brandName, string businessName, ImageSource? profilePictureSource = null,
-        string phoneNumber = "", string phoneCountryCode = "", string description = "", FirebaseLocation? location = null, List<string>? praisers = null)
+        string phoneNumber = "", string phoneCountryCode = "", string description = "", FirebaseLocation? location = null, int? praiseCount = null)
     {
         SpotID = userID;
         BrandName = brandName;
@@ -145,7 +145,7 @@ public class Spot : INotifyPropertyChanged
         PhoneCountryCode = phoneCountryCode;
         Description = description;
         Location = location ?? new FirebaseLocation();
-        Praisers = praisers ?? [];
+        PraiseCount = praiseCount ?? 0;
     }
 
     public Spot(Spot_Firebase spotData, ImageSource profilePictureSource)
@@ -158,7 +158,7 @@ public class Spot : INotifyPropertyChanged
         PhoneCountryCode = spotData.PhoneCountryCode;
         Description = spotData.Description;
         Location = spotData.Location;
-        Praisers = spotData.Praisers.ToList();
+        PraiseCount = spotData.PraiseCount;
     }
 
     public void UpdateUserData(Spot userData)
@@ -170,7 +170,7 @@ public class Spot : INotifyPropertyChanged
         PhoneCountryCode = userData.PhoneCountryCode;
         Description = userData.Description;
         Location = userData.Location;
-        Praisers = userData.Praisers;
+        PraiseCount = userData.PraiseCount;
     }
 
     public async Task UpdateProfilePicture(string firebaseAddress)
@@ -207,8 +207,8 @@ public class Spot_Firebase
     public FirebaseLocation Location { get; set; }
     [FirestoreProperty(nameof(ProfilePictureAddress))]
     public string ProfilePictureAddress { get; set; }
-    [FirestoreProperty(nameof(Praisers))]
-    public IList<string> Praisers { get; set; }
+    [FirestoreProperty(nameof(PraiseCount))]
+    public int PraiseCount { get; set; }
     [FirestoreProperty(nameof(SearchTerms))]
     public IList<string> SearchTerms { get; set; }
 
@@ -220,7 +220,7 @@ public class Spot_Firebase
         string description,
         FirebaseLocation location,
         string profilePictureAddress,
-        List<string> praises,
+        int praiseCount,
         List<string> searchTerms)
     {
         SpotID = spotID;
@@ -231,7 +231,7 @@ public class Spot_Firebase
         Description = description;
         Location = location;
         ProfilePictureAddress = profilePictureAddress;
-        Praisers = praises;
+        PraiseCount = praiseCount;
         SearchTerms = searchTerms;
     }
 
@@ -245,7 +245,7 @@ public class Spot_Firebase
         Description = "";
         Location = new();
         ProfilePictureAddress = "";
-        Praisers = [];
+        PraiseCount = 0;
         SearchTerms = [];
     }
 
@@ -259,7 +259,7 @@ public class Spot_Firebase
         Description = spotData.Description;
         Location = spotData.Location;
         ProfilePictureAddress = profilePictureAddress;
-        Praisers = spotData.Praisers;
+        PraiseCount = spotData.PraiseCount;
         SearchTerms = GenerateSearchTerms(BrandName, SpotName);
     }
 

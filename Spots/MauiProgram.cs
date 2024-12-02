@@ -87,6 +87,10 @@ public static class MauiProgram
                 //await ValidatePermissions(); 
                 if (userSignedIn && SessionManager.CurrentSession != null && SessionManager.CurrentSession.Client != null) 
                 {
+                    if(LocationManager.CurrentLocation != null)
+                    {
+                        await DatabaseManager.UpdateClientLocationAsync(SessionManager.CurrentSession.Client.UserID, new(LocationManager.CurrentLocation));
+                    }
                     Application.Current.MainPage = new FP_MainShell(SessionManager.CurrentSession.Client);
                 }
                 else

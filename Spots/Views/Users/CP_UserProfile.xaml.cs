@@ -2,9 +2,9 @@ namespace Spots;
 
 public partial class CP_UserProfile : ContentPage
 {
-	private Client user;
+	private readonly Client user;
     private readonly FeedContext<SpotPraise> ClientPraisesContext = new();
-    public CP_UserProfile(Client _user)
+    public CP_UserProfile(Client _user, bool following = false)
 	{
 		user = _user;
 
@@ -27,7 +27,7 @@ public partial class CP_UserProfile : ContentPage
 		{
 			_btnEdit.IsVisible = false;
             _stackFollowingZone.IsVisible = false;
-            if (SessionManager.CurrentSession?.Client?.FollowedClients.Contains(user.UserID) ?? false)
+            if (following)
             {
                 _btnFollow.IsVisible = false;
                 _btnUnfollow.IsVisible = true;
@@ -48,12 +48,12 @@ public partial class CP_UserProfile : ContentPage
 
     private async Task RefreshFeed()
     {
-        ClientPraisesContext.RefreshFeed(await DatabaseManager.FetchSpotPraises_FromClient(user));
+        ClientPraisesContext.RefreshFeed(await DatabaseManager.FetchSpotPraises_Filtered(author: user));
     }
 
     private async void OnItemThresholdReached(object? sender, EventArgs e)
     {
-        ClientPraisesContext.AddElements(await DatabaseManager.FetchSpotPraises_FromClient(user, ClientPraisesContext.LastItemFetched));
+        ClientPraisesContext.AddElements(await DatabaseManager.FetchSpotPraises_Filtered(author: user, lastPraise: ClientPraisesContext.LastItemFetched));
     }
 
     private void _colClientPraises_SelectionChanged(object? sender, SelectionChangedEventArgs e)
@@ -72,7 +72,14 @@ public partial class CP_UserProfile : ContentPage
 
     private async void FollowedClientsView(object? sender, EventArgs e)
     {
-        List<Client> followedClients = await DatabaseManager.FetchClientsByID(user.FollowedClients);
+        List<FollowRegister_Firebase> followRegisters = await DatabaseManager.FetchFollowRegisters(followerID: user.UserID);
+        List<string> folloewdIDs = [];
+        foreach (FollowRegister_Firebase register in followRegisters)
+        {
+            folloewdIDs.Add(register.FollowedID);
+        }
+
+        List<Client> followedClients = await DatabaseManager.FetchClientsByID(folloewdIDs);
         await Navigation.PushAsync(new CP_FollowedClientsView(followedClients));
     }
 
@@ -86,7 +93,6 @@ public partial class CP_UserProfile : ContentPage
             {
                 _btnFollow.IsVisible = false;
                 _btnUnfollow.IsVisible = true;
-                SessionManager.CurrentSession?.Client?.FollowedClients.Add(followedID);
             }
         }
     }
@@ -101,7 +107,6 @@ public partial class CP_UserProfile : ContentPage
             {
                 _btnFollow.IsVisible = true;
                 _btnUnfollow.IsVisible = false;
-                SessionManager.CurrentSession?.Client?.FollowedClients.Remove(followedID);
             }
         }
     }

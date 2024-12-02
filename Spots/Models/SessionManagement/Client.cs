@@ -16,7 +16,8 @@ public class Client : INotifyPropertyChanged
     private string? _PhoneCountryCode;
     private string? _Description;
     private ImageSource? _ProfilePictureSource;
-    private List<string>? _FollowedClients;
+    private FirebaseLocation? _LastLocation;
+    private int? _FollowersCount;
     #endregion
 
     #region Public Parameters
@@ -117,13 +118,25 @@ public class Client : INotifyPropertyChanged
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Description)));
         }
     }
-    public List<string> FollowedClients
+    public int FollowersCount
     {
-        get => _FollowedClients ?? [];
+        get => _FollowersCount ?? 0;
         set
         {
-            _FollowedClients = value ?? [];
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(FollowedClients)));
+            _FollowersCount = value;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(FollowersCount)));
+        }
+    }
+    public FirebaseLocation? LastLocation
+    {
+        get => _LastLocation;
+        set
+        {
+            if (value == null)
+            {
+                _LastLocation = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(LastLocation)));
+            }
         }
     }
     #endregion
@@ -137,12 +150,13 @@ public class Client : INotifyPropertyChanged
         PhoneCountryCode = "";
         PhoneNumber = "";
         Description = "";
-        FollowedClients = [];
+        FollowersCount = 0;
+        LastLocation = null;
     }
 
     public Client(string userID, string firstName, string lastName, DateTimeOffset birthDate, string mail, 
         ImageSource? profilePictureSrc = null, string phoneNumber = "", string phoneCountryCode = "", string description = "",
-        List<string>? followedClients = null)
+        int followersCount = 0, FirebaseLocation? lastLocation = null)
     {
         UserID = userID;
         FirstName = firstName;
@@ -153,7 +167,8 @@ public class Client : INotifyPropertyChanged
         PhoneNumber = phoneNumber;
         PhoneCountryCode = phoneCountryCode;
         Description = description;
-        FollowedClients = followedClients ?? [];
+        FollowersCount = followersCount;
+        LastLocation = lastLocation;
     }
 
     public Client(Client_Firebase firebaseData, ImageSource profilePictureSrc)
@@ -167,7 +182,11 @@ public class Client : INotifyPropertyChanged
         PhoneNumber = firebaseData.PhoneNumber;
         PhoneCountryCode = firebaseData.PhoneCountryCode;
         Description = firebaseData.Description;
-        FollowedClients = firebaseData.FollowedClients.ToList();
+        LastLocation = (firebaseData.LastLocation.Address.Length == 0
+            && firebaseData.LastLocation.Latitude == 0
+            && firebaseData.LastLocation.Longitude == 0)
+            ? null : firebaseData.LastLocation;
+        FollowersCount = firebaseData.FollowersCount;
     }
 
     public void UpdateUserData(Client userData)
@@ -181,7 +200,8 @@ public class Client : INotifyPropertyChanged
         PhoneNumber = userData.PhoneNumber;
         PhoneCountryCode = userData.PhoneCountryCode;
         Description = userData.Description;
-        FollowedClients = userData.FollowedClients;
+        FollowersCount = userData.FollowersCount;
+        LastLocation = userData.LastLocation;
     }
 
     public async Task UpdateProfilePicture(string address)
@@ -232,8 +252,11 @@ public class Client_Firebase
     [FirestoreProperty(nameof(SearchTerms))]
     public IList<string> SearchTerms { get; set; }
 
-    [FirestoreProperty(nameof(FollowedClients))]
-    public IList<string> FollowedClients { get; set; }
+    [FirestoreProperty(nameof(FollowersCount))]
+    public int FollowersCount { get; set; }
+
+    [FirestoreProperty(nameof(LastLocation))]
+    public FirebaseLocation LastLocation { get; set; }
 
     [FirestoreProperty(nameof(ClientID_ForSearch))]
     public IList<string> ClientID_ForSearch { get; set; }
@@ -251,8 +274,9 @@ public class Client_Firebase
         Description = "";
         ProfilePictureAddress = "";
         SearchTerms = [];
-        FollowedClients = [];
+        FollowersCount = 0;
         ClientID_ForSearch = [];
+        LastLocation = new("", 0, 0);
     }
 
     public Client_Firebase(string userID,
@@ -265,7 +289,8 @@ public class Client_Firebase
         string description,
         string profilePictureAddress,
         List<string> searchTerms,
-        List<string> followedClients)
+        FirebaseLocation lastLocation,
+        int followersCount)
     {
         UserID = userID;
         FirstName = firstName;
@@ -277,7 +302,8 @@ public class Client_Firebase
         Description = description;
         ProfilePictureAddress = profilePictureAddress;
         SearchTerms = searchTerms;
-        FollowedClients = followedClients;
+        FollowersCount = followersCount;
+        LastLocation = lastLocation;
         ClientID_ForSearch = [userID];
     }
 
@@ -293,11 +319,12 @@ public class Client_Firebase
         Description = userData.Description;
         ProfilePictureAddress = profilePictureAddress;
         SearchTerms = GenerateSearchTerms(FirstName, LastName);
-        FollowedClients = userData.FollowedClients;
+        FollowersCount = userData.FollowersCount;
+        LastLocation = userData.LastLocation ?? new("", 0, 0);
         ClientID_ForSearch = [userData.UserID];
     }
 
-    private List<string> GenerateSearchTerms(string firstName, string lastName)
+    private static List<string> GenerateSearchTerms(string firstName, string lastName)
     {
         List<string> retVal = [];
         List<string> composedTerms = [];
@@ -350,5 +377,29 @@ public class Client_Firebase
         {
             return ImageSource.FromFile("placeholder_logo.jpg");
         }
+    }
+}
+
+public class FollowRegister_Firebase
+{
+    [FirestoreDocumentId]
+    public string RegisterID { get; set; }
+    [FirestoreProperty(nameof(FollowedID))]
+    public string FollowedID { get; set; }
+    [FirestoreProperty(nameof(FollowerID))]
+    public string FollowerID { get; set; }
+
+    public FollowRegister_Firebase()
+    {
+        RegisterID = string.Empty;
+        FollowedID = string.Empty;
+        FollowerID = string.Empty;
+    }
+
+    public FollowRegister_Firebase(string folloer, string followed, string id = "")
+    {
+        RegisterID = id;
+        FollowerID = folloer;
+        FollowedID = followed;
     }
 }

@@ -26,7 +26,9 @@ public static class SessionManager
         if (Application.Current != null)
         {
             CurrentSession = null;
-            Task.Run(DatabaseManager.LogOutAsync);
+            FirebaseLocation? location = LocationManager.CurrentLocation != null ?
+                new FirebaseLocation(LocationManager.CurrentLocation) : null;
+            Task.Run(async () => { await DatabaseManager.LogOutAsync(location); });
 
             if (shouldUpdateMainPage)
             {
@@ -40,7 +42,7 @@ public class UserSession : INotifyPropertyChanged
 {
     public event PropertyChangedEventHandler? PropertyChanged;
 
-    public Client? Client {  get; private set; }
+    public Client? Client {  get; set; }
     public UserSession(Client user)
     {
         Client = user;

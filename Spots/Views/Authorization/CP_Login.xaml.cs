@@ -37,7 +37,9 @@ public partial class CP_Login : ContentPage
         {
             if (Application.Current != null)
             {
-                Client user = await DatabaseManager.LogInUserAsync(email, password);
+                FirebaseLocation? location = LocationManager.CurrentLocation != null ?
+                    new(LocationManager.CurrentLocation) : null;
+                Client user = await DatabaseManager.LogInUserAsync(email, password, lastLocation: location);
 
                 if (user.UserDataRetrieved)
                 {

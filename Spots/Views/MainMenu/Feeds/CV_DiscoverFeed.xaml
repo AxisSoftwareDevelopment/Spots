@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:discoveryPage="clr-namespace:Spots.DiscoveryPage"
              xmlns:maps="clr-namespace:Microsoft.Maui.Controls.Maps;assembly=Microsoft.Maui.Controls.Maps"
              x:Class="Spots.CV_DiscoverFeed"
              BackgroundColor="{DynamicResource Tertiary}">
@@ -17,61 +18,59 @@
                         </StackLayout>
 
                         <StackLayout x:Name="_FiltersLayout">
-                            <Label Text="{DynamicResource lbl_Subject_twoDots}" TextColor="{DynamicResource PrimaryAccent}" Margin="5" FontAttributes="Bold"/>
-                            <StackLayout Orientation="Horizontal">
-                                <RadioButton GroupName="Subject" Content="{DynamicResource lbl_SpotFilter}" FontAttributes="Italic" HorizontalOptions="FillAndExpand" BackgroundColor="{DynamicResource TertiaryDarker}" TextColor="{DynamicResource PrimaryAccent}" IsChecked="True" Margin="15, 0, 0, 0"/>
-                                <RadioButton GroupName="Subject" Content="{DynamicResource lbl_ClientFilter}" FontAttributes="Italic" HorizontalOptions="FillAndExpand" BackgroundColor="{DynamicResource TertiaryDarker}" TextColor="{DynamicResource PrimaryAccent}"/>
-                                <RadioButton GroupName="Subject" Content="{DynamicResource lbl_SpotReviews}" FontAttributes="Italic" HorizontalOptions="FillAndExpand" BackgroundColor="{DynamicResource TertiaryDarker}" TextColor="{DynamicResource PrimaryAccent}"/>
-                            </StackLayout>
-                            <Label Text="{DynamicResource lbl_Location_twoDots}" TextColor="{DynamicResource PrimaryAccent}" Margin="5" FontAttributes="Bold"/>
-                            <StackLayout Orientation="Horizontal">
-                                <Label Text="{DynamicResource lbl_ClosestTo_twoDots}" TextColor="{DynamicResource PrimaryAccent}" VerticalOptions="Center" Margin="15, 5, 15, 0"/>
-                                <RadioButton x:Name="_radioCurrentLoc" GroupName="Location" Content="{DynamicResource lbl_CurrentLocation}" FontAttributes="Italic" HorizontalOptions="FillAndExpand" BackgroundColor="{DynamicResource TertiaryDarker}" TextColor="{DynamicResource PrimaryAccent}" IsChecked="True"/>
-                                <RadioButton x:Name="_radioSelectedLoc" GroupName="Location" FontAttributes="Italic" BackgroundColor="{DynamicResource TertiaryDarker}" TextColor="{DynamicResource PrimaryAccent}"/>
-                                <StackLayout Orientation="Vertical" HorizontalOptions="FillAndExpand">
-                                    <maps:Map x:Name="_cvMiniMap" HorizontalOptions="FillAndExpand" Margin="-15, 0, 15, 0" IsZoomEnabled="False" IsScrollEnabled ="False"/>
-                                    <Button Clicked="_cvMiniMap_MapClicked" Text="{DynamicResource lbl_SelectLocation}" HorizontalOptions="FillAndExpand" Margin="-15, 0, 15, 0"/>
+                            <StackLayout x:Name="_slayoutSubjectFilters" Orientation="Vertical">
+                                <Label Text="{DynamicResource lbl_Subject_twoDots}" TextColor="{DynamicResource PrimaryAccent}" Margin="5" FontAttributes="Bold"/>
+                                <StackLayout Orientation="Horizontal">
+                                    <RadioButton x:Name="_radioSpotsFilter" GroupName="Subject" Content="{DynamicResource lbl_SpotFilter}" FontAttributes="Italic" HorizontalOptions="FillAndExpand" BackgroundColor="{DynamicResource TertiaryDarker}" TextColor="{DynamicResource PrimaryAccent}" IsChecked="True" Margin="15, 0, 0, 0"/>
+                                    <RadioButton x:Name="_radioClientsFilter" GroupName="Subject" Content="{DynamicResource lbl_ClientFilter}" FontAttributes="Italic" HorizontalOptions="FillAndExpand" BackgroundColor="{DynamicResource TertiaryDarker}" TextColor="{DynamicResource PrimaryAccent}"/>
+                                    <RadioButton x:Name="_radioSpotReviewsFilter" GroupName="Subject" Content="{DynamicResource lbl_SpotReviews}" FontAttributes="Italic" HorizontalOptions="FillAndExpand" BackgroundColor="{DynamicResource TertiaryDarker}" TextColor="{DynamicResource PrimaryAccent}"/>
                                 </StackLayout>
                             </StackLayout>
-                            <StackLayout Orientation="Horizontal" Margin="0, 0, 3, 3">
-                                <Label Text="{DynamicResource lbl_SearchArea_twoDots}" TextColor="{DynamicResource PrimaryAccent}" Margin="15, 10, 10, 0"/>
-                                <Picker x:Name="_PickerLocationOptions" Margin="5, 0, 5, 0" TextColor="{DynamicResource Primary}" Background="{DynamicResource Tertiary}"/>
+
+                            <StackLayout x:Name="_slayoutLocationFilters" Orientation="Vertical">
+                                <Label Text="{DynamicResource lbl_Location_twoDots}" TextColor="{DynamicResource PrimaryAccent}" Margin="5" FontAttributes="Bold"/>
+                                <StackLayout Orientation="Horizontal">
+                                    <Label Text="{DynamicResource lbl_ClosestTo_twoDots}" TextColor="{DynamicResource PrimaryAccent}" VerticalOptions="Center" Margin="15, 5, 15, 0"/>
+                                    <RadioButton x:Name="_radioCurrentLoc" GroupName="Location" Content="{DynamicResource lbl_CurrentLocation}" FontAttributes="Italic" HorizontalOptions="FillAndExpand" BackgroundColor="{DynamicResource TertiaryDarker}" TextColor="{DynamicResource PrimaryAccent}" IsChecked="True"/>
+                                    <RadioButton x:Name="_radioSelectedLoc" GroupName="Location" FontAttributes="Italic" BackgroundColor="{DynamicResource TertiaryDarker}" TextColor="{DynamicResource PrimaryAccent}"/>
+                                    <StackLayout Orientation="Vertical" HorizontalOptions="FillAndExpand">
+                                        <maps:Map x:Name="_cvMiniMap" HorizontalOptions="FillAndExpand" Margin="-15, 0, 15, 0" IsZoomEnabled="False" IsScrollEnabled ="False"/>
+                                        <Button Clicked="_cvMiniMap_MapClicked" Text="{DynamicResource lbl_SelectLocation}" HorizontalOptions="FillAndExpand" Margin="-15, 0, 15, 0"/>
+                                    </StackLayout>
+                                </StackLayout>
+                                <StackLayout Orientation="Horizontal" Margin="0, 0, 3, 3">
+                                    <Label Text="{DynamicResource lbl_SearchArea_twoDots}" TextColor="{DynamicResource PrimaryAccent}" Margin="15, 10, 10, 0"/>
+                                    <Picker x:Name="_PickerLocationOptions" Margin="5, 0, 5, 0" TextColor="{DynamicResource Primary}" Background="{DynamicResource Tertiary}"/>
+                                </StackLayout>
                             </StackLayout>
-                            <Label Text="{DynamicResource lbl_Time_twoDots}" TextColor="{DynamicResource PrimaryAccent}" Margin="5" FontAttributes="Bold"/>
-                            <StackLayout Orientation="Horizontal">
-                                <RadioButton GroupName="Time" Content="{DynamicResource lbl_1Month}" FontAttributes="Italic" HorizontalOptions="FillAndExpand" BackgroundColor="{DynamicResource TertiaryDarker}" TextColor="{DynamicResource PrimaryAccent}" IsChecked="True" Margin="15, 0, 0, 0"/>
-                                <RadioButton GroupName="Time" Content="{DynamicResource lbl_6Months}" FontAttributes="Italic" HorizontalOptions="FillAndExpand" BackgroundColor="{DynamicResource TertiaryDarker}" TextColor="{DynamicResource PrimaryAccent}"/>
-                                <RadioButton GroupName="Time" Content="{DynamicResource lbl_1Year}" FontAttributes="Italic" HorizontalOptions="FillAndExpand" BackgroundColor="{DynamicResource TertiaryDarker}" TextColor="{DynamicResource PrimaryAccent}"/>
-                                <RadioButton GroupName="Time" Content="{DynamicResource lbl_AllTime}" FontAttributes="Italic" HorizontalOptions="FillAndExpand" BackgroundColor="{DynamicResource TertiaryDarker}" TextColor="{DynamicResource PrimaryAccent}"/>
+
+                            <StackLayout x:Name="_slayoutTimeFilters" Orientation="Vertical">
+                                <Label Text="{DynamicResource lbl_Time_twoDots}" TextColor="{DynamicResource PrimaryAccent}" Margin="5" FontAttributes="Bold"/>
+                                <StackLayout Orientation="Horizontal">
+                                    <RadioButton x:Name="_radio1month" GroupName="Time" Content="{DynamicResource lbl_1Month}" FontAttributes="Italic" HorizontalOptions="FillAndExpand" BackgroundColor="{DynamicResource TertiaryDarker}" TextColor="{DynamicResource PrimaryAccent}" Margin="15, 0, 0, 0"/>
+                                    <RadioButton x:Name="_radio6month" GroupName="Time" Content="{DynamicResource lbl_6Months}" FontAttributes="Italic" HorizontalOptions="FillAndExpand" BackgroundColor="{DynamicResource TertiaryDarker}" TextColor="{DynamicResource PrimaryAccent}"/>
+                                    <RadioButton x:Name="_radio1year" GroupName="Time" Content="{DynamicResource lbl_1Year}" FontAttributes="Italic" HorizontalOptions="FillAndExpand" BackgroundColor="{DynamicResource TertiaryDarker}" TextColor="{DynamicResource PrimaryAccent}"/>
+                                    <RadioButton x:Name="_radioAllTime" GroupName="Time" Content="{DynamicResource lbl_AllTime}" FontAttributes="Italic" HorizontalOptions="FillAndExpand" BackgroundColor="{DynamicResource TertiaryDarker}" TextColor="{DynamicResource PrimaryAccent}" IsChecked="True"/>
+                                </StackLayout>
                             </StackLayout>
-                            <Label Text="{DynamicResource lbl_OrderBy_twoDots}" TextColor="{DynamicResource PrimaryAccent}" Margin="5" FontAttributes="Bold"/>
-                            <StackLayout Orientation="Horizontal">
-                                <RadioButton x:Name="_radioPopular" GroupName="Order" Content="{DynamicResource lbl_Popularity}" FontAttributes="Italic" HorizontalOptions="FillAndExpand" BackgroundColor="{DynamicResource TertiaryDarker}" TextColor="{DynamicResource PrimaryAccent}" IsChecked="True" Margin="15, 0, 0, 0"/>
-                                <RadioButton x:Name="_radioRecent" GroupName="Order" Content="{DynamicResource lbl_Recent}" FontAttributes="Italic" BackgroundColor="{DynamicResource TertiaryDarker}" HorizontalOptions="FillAndExpand" TextColor="{DynamicResource PrimaryAccent}"/>
+
+                            <StackLayout x:Name="_slayoutOrderFilters" Orientation="Vertical">
+                                <Label Text="{DynamicResource lbl_OrderBy_twoDots}" TextColor="{DynamicResource PrimaryAccent}" Margin="5" FontAttributes="Bold"/>
+                                <StackLayout Orientation="Horizontal">
+                                    <RadioButton x:Name="_radioPopular" GroupName="Order" Content="{DynamicResource lbl_Popularity}" FontAttributes="Italic" HorizontalOptions="FillAndExpand" BackgroundColor="{DynamicResource TertiaryDarker}" TextColor="{DynamicResource PrimaryAccent}" IsChecked="True" Margin="15, 0, 0, 0"/>
+                                    <RadioButton x:Name="_radioRecent" GroupName="Order" Content="{DynamicResource lbl_Recent}" FontAttributes="Italic" BackgroundColor="{DynamicResource TertiaryDarker}" HorizontalOptions="FillAndExpand" TextColor="{DynamicResource PrimaryAccent}"/>
+                                </StackLayout>
                             </StackLayout>
-                            <Button Text="{DynamicResource lbl_Apply}" FontAttributes="Bold" HorizontalOptions="EndAndExpand" Margin="10"/>
-                            </StackLayout>
+                            <Button Text="{DynamicResource lbl_Apply}" FontAttributes="Bold" HorizontalOptions="EndAndExpand" Margin="10" Clicked="_btnApply_Clicked"/>
+                        </StackLayout>
+                            
                     </StackLayout>
                 </Border>
             </CollectionView.Header>
-            
+
             <CollectionView.ItemTemplate>
                 <DataTemplate>
-                    <ContentView>
-                        <Border Margin="5, 0, 5, 5" StrokeShape="RoundRectangle 5,5,5,5" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="{DynamicResource Secondary}">
-                            <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" Margin="5,5">
-                                <StackLayout>
-                                    <Image Source="{Binding ProfilePictureSource}" HeightRequest="125" WidthRequest="125" BackgroundColor="{DynamicResource Primary}"/>
-                                </StackLayout>
-                                <StackLayout Orientation="Vertical" HorizontalOptions="FillAndExpand" Margin="5,5">
-                                    <Label Text="{Binding SpotName}" FontSize="Title" FontAttributes="Bold" TextColor="{DynamicResource SecondaryAccent}" MaxLines="2"/>
-                                    <Label Text="{Binding BrandName}" FontSize="Small" FontAttributes="Italic" HorizontalTextAlignment="End" TextColor="{DynamicResource Tertiary}"
-                                       MaxLines="1"/>
-                                    <Label Text="{Binding Location.Address}" FontSize="Body" LineBreakMode="WordWrap" TextColor="{DynamicResource SecondaryAccent}" MaxLines="2"/>
-                                </StackLayout>
-                            </StackLayout>
-                        </Border>
-                    </ContentView>
+                    <discoveryPage:CV_DiscoveryFeedDataTemplate/>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>

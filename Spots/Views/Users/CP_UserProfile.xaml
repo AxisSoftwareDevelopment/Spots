@@ -39,7 +39,7 @@
 
                 <!-- Following -->
                 <StackLayout x:Name="_stackFollowingZone" Orientation="Horizontal">
-                    <Button x:Name="_btnFollowingCount" Text="{Binding FollowedClients.Count}" Margin="35, 10, 5, 10" BackgroundColor="{DynamicResource Tertiary}" TextColor="{DynamicResource PrimaryAccent}" IsEnabled="False"/>
+                    <Button x:Name="_btnFollowingCount" Text="{Binding FollowersCount}" Margin="35, 10, 5, 10" BackgroundColor="{DynamicResource Tertiary}" TextColor="{DynamicResource PrimaryAccent}" IsEnabled="False"/>
                     <Button x:Name="_btnFollowingView" Text="{DynamicResource lbl_FollowingView}" Margin="5, 10, 35, 10" BackgroundColor="{DynamicResource Tertiary}" TextColor="{DynamicResource PrimaryAccent}"
                             HorizontalOptions="FillAndExpand" Clicked="FollowedClientsView"/>
                 </StackLayout>
