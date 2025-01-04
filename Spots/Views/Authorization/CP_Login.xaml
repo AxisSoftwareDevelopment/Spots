@@ -14,7 +14,7 @@
                 <RowDefinition Height="13*"/>
             </Grid.RowDefinitions>
             <Image Grid.Row="0" x:Name="_imgLogo" Margin="0,20,0,20" Source="placeholder_logo.jpg"/>
-            <Frame Grid.Row="1" x:Name="_frameEntries" Margin="20,30" HasShadow="True" CornerRadius="50" BackgroundColor="{DynamicResource Secondary}">
+            <Border Grid.Row="1" x:Name="_frameEntries" Margin="20,30" StrokeShape="RoundRectangle 50" BackgroundColor="{DynamicResource Secondary}">
                 <Grid HorizontalOptions="Fill" 
                     VerticalOptions="CenterAndExpand"
                     Margin="20,0,20,0">
@@ -42,7 +42,7 @@
                     <!--<Button Grid.Row="7" x:Name="_btnChangeMode" Text="{DynamicResource lbl_BusinessMode}" Scale="0.85" CornerRadius="15" BackgroundColor="{DynamicResource Secondary}" TextColor="{DynamicResource HyperLink}"
                             Clicked="BtnBusinessModeOnClick" IsEnabled="True"/>-->
                 </Grid>
-            </Frame>
+            </Border>
         </Grid>
 
     </ContentPage.Content>

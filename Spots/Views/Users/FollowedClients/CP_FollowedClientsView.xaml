@@ -11,7 +11,7 @@
     </NavigationPage.TitleView>
 
     <ContentPage.Content>
-        <Frame x:Name="_frameFollowedClientsResults" Margin="20,0,20,10" HasShadow="True" CornerRadius="15" BackgroundColor="{DynamicResource Secondary}" VerticalOptions="FillAndExpand">
+        <Border x:Name="_frameFollowedClientsResults" Margin="20,0,20,10" StrokeShape="RoundRectangle 25" BackgroundColor="{DynamicResource Secondary}" VerticalOptions="FillAndExpand">
             <StackLayout Orientation="Vertical" Margin="-10">
                 <CollectionView x:Name="_colFollowedClientsCollectionView" HorizontalOptions="FillAndExpand" ItemsSource="{Binding ItemSource}" SelectionMode="Single">
                     <CollectionView.ItemTemplate>
@@ -21,6 +21,6 @@
                     </CollectionView.ItemTemplate>
                 </CollectionView>
             </StackLayout>
-        </Frame>
+        </Border>
     </ContentPage.Content>
 </ContentPage>

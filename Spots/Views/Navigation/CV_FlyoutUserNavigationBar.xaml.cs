@@ -17,11 +17,6 @@ public partial class CV_FlyoutUserNavigationBar : ContentView
         _FrameProfilePicture.WidthRequest = profilePictureDimensions;
 
         _btnOpenSearch.Clicked += _btnOpenSearch_Clicked;
-
-        // This will prevent overlap between burger button (only android) and image button.
-#if ANDROID
-        _FrameProfilePicture.IsVisible = false;
-#endif
     }
 
     private void _btnOpenSearch_Clicked(object? sender, EventArgs e)

@@ -6,15 +6,15 @@
              BackgroundColor="{DynamicResource Primary}">
     
     <StackLayout x:Name="_LayoutView">
-        <Border x:Name="_FrameProfilePicture" Padding="0" Margin="15,15,15,0" StrokeShape="RoundRectangle 500">
+        <Border x:Name="_FrameProfilePicture" Padding="0" Margin="15,15,15,0" StrokeShape="RoundRectangle 500" StrokeThickness="0">
             <ImageButton x:Name="_ProfileImage" Aspect="AspectFill" Source="{Binding ProfilePictureSource}" Clicked="ProfilePictureOrMyProfileOnClicked"/>
         </Border>
 
         <Label x:Name="_lblUserName" Grid.Row="1" HorizontalOptions="FillAndExpand" TextColor="{DynamicResource PrimaryAccent}" Text="{Binding FullName}"
             FontAttributes="Bold" FontSize="25" VerticalOptions="Start" HorizontalTextAlignment="Center"/>
 
-        <Frame Grid.Row="1" VerticalOptions="FillAndExpand" Margin="10,15" HasShadow="True" CornerRadius="25" BackgroundColor="{DynamicResource Secondary}">
-            <StackLayout x:Name="_ButtonStack" >
+        <Border Grid.Row="1" VerticalOptions="FillAndExpand" Margin="10,15" StrokeShape="RoundRectangle 25" BackgroundColor="{DynamicResource Secondary}">
+            <StackLayout x:Name="_ButtonStack"  Margin="10">
                 <StackLayout VerticalOptions="FillAndExpand">
                     <Button HorizontalOptions="FillAndExpand" Text="{DynamicResource lbl_MyProfile}" BackgroundColor="{DynamicResource Tertiary}"
                             Clicked="ProfilePictureOrMyProfileOnClicked" TextColor="{DynamicResource PrimaryAccent}" CornerRadius="15" Margin="0,0,0,15"/>
@@ -24,7 +24,7 @@
                 <Button x:Name="_ButtonLogOut" HorizontalOptions="FillAndExpand" Text="{DynamicResource lbl_LogOut}" BackgroundColor="{DynamicResource Tertiary}"
                         Clicked="LogOutOnClickedAsync" TextColor="{DynamicResource PrimaryAccent}" CornerRadius="15" />
             </StackLayout>
-        </Frame>
+        </Border>
     </StackLayout>
 
 </ContentPage>

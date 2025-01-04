@@ -13,7 +13,7 @@
         <ScrollView VerticalOptions="FillAndExpand">
             <StackLayout VerticalOptions="FillAndExpand">
                 <StackLayout x:Name="_ProfileCard">
-                    <Border x:Name="_FrameProfilePicture" Padding="0" Margin="15,15,15,0" StrokeShape="RoundRectangle 500" BackgroundColor="Red">
+                    <Border x:Name="_FrameProfilePicture" Padding="0" Margin="15,15,15,0" StrokeShape="RoundRectangle 500" StrokeThickness="0">
                         <ImageButton x:Name="_ProfileImage" Aspect="AspectFill" Source="{Binding ProfilePictureSource}"/>
                     </Border>
                     <Label Grid.Row="1" Text="{Binding FullName}" HorizontalOptions="Center" TextColor="{DynamicResource SecondaryAccent}"

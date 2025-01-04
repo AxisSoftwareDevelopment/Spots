@@ -78,7 +78,7 @@
     <x:String x:Key="lbl_SpotFilter">Spots</x:String> <!-- Label that indicates a Spot -->
     <x:String x:Key="lbl_Follow">Follow</x:String> <!-- Label that indicates to Follow a Client -->
     <x:String x:Key="lbl_Unfollow">Unfollow</x:String> <!-- Label that indicates to Follow a Client -->
-    <x:String x:Key="lbl_FollowingView">Following</x:String> <!-- Label that indicates the following view -->
+    <x:String x:Key="lbl_FollowingView">Followers</x:String> <!-- Label that indicates the following view -->
     <x:String x:Key="lbl_Location">Location</x:String> <!-- Label that indicates the Location field -->
     <x:String x:Key="lbl_NewSpot">Add New Spot</x:String> <!-- Label that indicates the Location field -->
     <x:String x:Key="lbl_SpotInformation">Spot Information</x:String> <!-- Label that indicates the Location field -->

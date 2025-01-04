@@ -6,20 +6,14 @@ public static class UserInterface
 {
     public static async Task DisplayPopUp_Regular(string title, string message, string button)
     {
-        if (Application.Current != null && Application.Current.MainPage != null)
-        {
-            //MainThread.BeginInvokeOnMainThread(async () =>
-            //{
-                await Application.Current.MainPage.DisplayAlert(title, message, button);
-            //});
-        }
+        await Application.Current?.Windows[0].Page?.DisplayAlert(title, message, button);
     }
 
     public static async Task<bool> DisplayPopPup_Choice(string title, string message, string button_True, string button_False)
     {
-        if (Application.Current != null && Application.Current.MainPage != null)
+        if (Application.Current != null)
         {
-            return await Application.Current.MainPage.DisplayAlert(title, message, button_True, button_False);
+            return await Application.Current.Windows[0].Page?.DisplayAlert(title, message, button_True, button_False);
         }
 
         return false;

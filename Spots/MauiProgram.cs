@@ -72,10 +72,10 @@ public static class MauiProgram
 
     private static void RunSessionValidation()
     {
-        Task.Run( () => 
+        Task.Run(static () => 
         {
             // Load First View
-            MainThread.BeginInvokeOnMainThread( async () => 
+            MainThread.BeginInvokeOnMainThread(static async () => 
             {
                 if(Application.Current == null)
                 {
@@ -91,12 +91,12 @@ public static class MauiProgram
                     {
                         await DatabaseManager.UpdateClientLocationAsync(SessionManager.CurrentSession.Client.UserID, new(LocationManager.CurrentLocation));
                     }
-                    Application.Current.MainPage = new FP_MainShell(SessionManager.CurrentSession.Client);
+                    Application.Current.Windows[0].Page = new FP_MainShell(SessionManager.CurrentSession.Client);
                 }
                 else
                 {
                     await DatabaseManager.LogOutAsync();
-                    Application.Current.MainPage = new NavigationPage(new CP_Login());
+                    Application.Current.Windows[0].Page = new NavigationPage(new CP_Login());
                 }
             }); 
         }); 

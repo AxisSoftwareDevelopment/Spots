@@ -14,6 +14,10 @@ public partial class App : Application
 #if ANDROID
         AppCompatDelegate.DefaultNightMode = AppCompatDelegate.ModeNightNo;
 #endif
-		MainPage = new CP_WaitForValidation();
 	}
+
+    protected override Window CreateWindow(IActivationState? activationState)
+    {
+        return new Window(new CP_WaitForValidation());
+    }
 }

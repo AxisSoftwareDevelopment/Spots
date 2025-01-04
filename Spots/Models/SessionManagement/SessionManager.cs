@@ -32,7 +32,7 @@ public static class SessionManager
 
             if (shouldUpdateMainPage)
             {
-                Application.Current.MainPage = new NavigationPage(new CP_Login());
+                Application.Current.Windows[0].Page = new NavigationPage(new CP_Login());
             }
         }
     }

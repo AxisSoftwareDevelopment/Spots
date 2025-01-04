@@ -7,6 +7,10 @@ using Firebase.Firestore;
 namespace Spots;
 public static class DatabaseManager
 {
+    private const string COLLECTION_USER_DATA = "UserData";
+    private const string COLLECTION_SPOTS = "Spots";
+    private const string COLLECTION_PRAISES = "Praises";
+    private const string COLLECTION_FOLLOWS = "Follows";
     const long MAX_IMAGE_STREAM_DIMENSION = 1024;
 
     #region Public Methods
@@ -83,7 +87,7 @@ public static class DatabaseManager
     {
         try
         {
-            IDocumentReference documentReference = CrossFirebaseFirestore.Current.GetCollection("UserData").GetDocument(user.UserID);
+            IDocumentReference documentReference = CrossFirebaseFirestore.Current.GetCollection(COLLECTION_USER_DATA).GetDocument(user.UserID);
             await documentReference.SetDataAsync(new Client_Firebase(user, profilePictureAddress));
         }
         catch (Exception ex)
@@ -101,12 +105,12 @@ public static class DatabaseManager
         {
             if (spot.SpotID.Length > 0)
             {
-                IDocumentReference documentReference = CrossFirebaseFirestore.Current.GetCollection("Spots").GetDocument(spot.SpotID);
+                IDocumentReference documentReference = CrossFirebaseFirestore.Current.GetCollection(COLLECTION_SPOTS).GetDocument(spot.SpotID);
                 await documentReference.SetDataAsync(new Spot_Firebase(spot, profilePictureAddress));
             }
             else
             {
-                IDocumentReference documentReference = await CrossFirebaseFirestore.Current.GetCollection("Spots").AddDocumentAsync(new Spot_Firebase(spot, profilePictureAddress));
+                IDocumentReference documentReference = await CrossFirebaseFirestore.Current.GetCollection(COLLECTION_SPOTS).AddDocumentAsync(new Spot_Firebase(spot, profilePictureAddress));
             }
         }
         catch (Exception ex)
@@ -122,14 +126,14 @@ public static class DatabaseManager
     {
         try
         {
-            ICollectionReference collectionReference = CrossFirebaseFirestore.Current.GetCollection("Spots");
+            ICollectionReference collectionReference = CrossFirebaseFirestore.Current.GetCollection(COLLECTION_SPOTS);
 
             if (spot.SpotID.Length > 0)
             {
                 string profilePictureAddress = "";
                 if (imageFile != null)
                 {
-                    profilePictureAddress = await SaveFile($"Spots/{spot.SpotID}", "SpotPicture", imageFile);
+                    profilePictureAddress = await SaveFile($"{COLLECTION_SPOTS}/{spot.SpotID}", "SpotPicture", imageFile);
                 }
                 await collectionReference.GetDocument(spot.SpotID).SetDataAsync(new Spot_Firebase(spot, profilePictureAddress));
             }
@@ -140,7 +144,7 @@ public static class DatabaseManager
                 if (imageFile != null)
                 {
                     spot_Firebase.SpotID = documentReference.Id;
-                    spot_Firebase.ProfilePictureAddress = await SaveFile($"Spots/{spot.SpotID}", "SpotsPicture", imageFile);
+                    spot_Firebase.ProfilePictureAddress = await SaveFile($"{COLLECTION_SPOTS}/{spot.SpotID}", "SpotsPicture", imageFile);
                     await documentReference.SetDataAsync(spot_Firebase);
                 }
             }
@@ -157,7 +161,7 @@ public static class DatabaseManager
     public async static Task<Client> GetClientDataAsync(string userID)
     {
         IDocumentSnapshot<Client_Firebase> documentSnapshot = await CrossFirebaseFirestore.Current
-            .GetCollection("UserData")
+            .GetCollection(COLLECTION_USER_DATA)
             .GetDocument(userID)
             .GetDocumentSnapshotAsync<Client_Firebase>();
 
@@ -170,7 +174,7 @@ public static class DatabaseManager
     public async static Task<Spot> GetSpotDataAsync(string spotID)
     {
         IDocumentSnapshot<Spot_Firebase> documentSnapshot = await CrossFirebaseFirestore.Current
-            .GetCollection("Spots")
+            .GetCollection(COLLECTION_SPOTS)
             .GetDocument(spotID)
             .GetDocumentSnapshotAsync<Spot_Firebase>();
 
@@ -195,11 +199,11 @@ public static class DatabaseManager
             IDocumentReference praiseDocumentReference;
             if (praise_Firebase.PraiseID.Length > 0)
             {
-                praiseDocumentReference = CrossFirebaseFirestore.Current.GetCollection("Praises").GetDocument(praise_Firebase.PraiseID);
+                praiseDocumentReference = CrossFirebaseFirestore.Current.GetCollection(COLLECTION_PRAISES).GetDocument(praise_Firebase.PraiseID);
             }
             else
             {
-                praiseDocumentReference = await CrossFirebaseFirestore.Current.GetCollection("Praises").AddDocumentAsync(praise_Firebase);
+                praiseDocumentReference = await CrossFirebaseFirestore.Current.GetCollection(COLLECTION_PRAISES).AddDocumentAsync(praise_Firebase);
                 bAlreadySaved = true;
             }
 
@@ -218,7 +222,7 @@ public static class DatabaseManager
             List<SpotPraise> praises = await FetchSpotPraises_Filtered(author: new Client(praise.AuthorID, "", "", DateTime.Now, ""), spot: new Spot(praise.SpotID, "", ""));
 
             await CrossFirebaseFirestore.Current
-                .GetCollection("Spots")
+                .GetCollection(COLLECTION_SPOTS)
                 .GetDocument(praise.SpotID)
                 .UpdateDataAsync(new Dictionary<object, object> { { nameof(Spot_Firebase.PraiseCount), praises.Count} });
 
@@ -264,10 +268,15 @@ public static class DatabaseManager
 
     public async static Task UpdateClientLocationAsync(string userID, FirebaseLocation location)
     {
-        await CrossFirebaseFirestore.Current
-            .GetCollection("UserData")
+        try
+        {
+            await CrossFirebaseFirestore.Current
+            .GetCollection(COLLECTION_USER_DATA)
             .GetDocument(userID)
-            .UpdateDataAsync(new Dictionary<object, object>() { { nameof(Client_Firebase.LastLocation), location } });
+            .UpdateDataAsync((nameof(Client_Firebase.LastLocation), location))
+            .WaitAsync(TimeSpan.FromMilliseconds(150)); // I dont like this, but for some reason Firebase failed to return after updating the value succesfully.
+        }
+        catch { } // Try catch is necessary, because it throws an exception when hitting the timeout.
     }
 
     public static async Task<List<Client>> FetchClientsByID(List<string>clientIDs)
@@ -276,7 +285,7 @@ public static class DatabaseManager
 
         if(clientIDs.Count > 0)
         {
-            IQuerySnapshot<Client_Firebase> documentReference = await CrossFirebaseFirestore.Current.GetCollection("UserData")
+            IQuerySnapshot<Client_Firebase> documentReference = await CrossFirebaseFirestore.Current.GetCollection(COLLECTION_USER_DATA)
                     .WhereArrayContainsAny(nameof(Client_Firebase.ClientID_ForSearch), clientIDs.ToArray())
                     .GetDocumentsAsync<Client_Firebase>();
 
@@ -302,10 +311,10 @@ public static class DatabaseManager
         List<Client> retVal = [];
 
         
-        IQuery query = CrossFirebaseFirestore.Current.GetCollection("UserData").LimitedTo(25);
+        IQuery query = CrossFirebaseFirestore.Current.GetCollection(COLLECTION_USER_DATA).LimitedTo(25);
         if (lastClient != null)
         {
-            IDocumentSnapshot<Client_Firebase> documentSnapshot = await CrossFirebaseFirestore.Current.GetCollection("UserData")
+            IDocumentSnapshot<Client_Firebase> documentSnapshot = await CrossFirebaseFirestore.Current.GetCollection(COLLECTION_USER_DATA)
             .GetDocument(lastClient.UserID)
             .GetDocumentSnapshotAsync<Client_Firebase>();
 
@@ -355,14 +364,14 @@ public static class DatabaseManager
             }
         }
 
-        IQuery query = CrossFirebaseFirestore.Current.GetCollection("Praises")
+        IQuery query = CrossFirebaseFirestore.Current.GetCollection(COLLECTION_PRAISES)
             .LimitedTo(5)
             .OrderBy(nameof(SpotPraise_Firebase.CreationDate))
             .WhereArrayContainsAny(nameof(SpotPraise_Firebase.AuthorID), clientIDs.ToArray());
         if (lastPraise != null)
         {
             
-            IDocumentSnapshot<SpotPraise_Firebase> documentSnapshot = await CrossFirebaseFirestore.Current.GetCollection("Praises")
+            IDocumentSnapshot<SpotPraise_Firebase> documentSnapshot = await CrossFirebaseFirestore.Current.GetCollection(COLLECTION_PRAISES)
                 .GetDocument(lastPraise.PraiseID)
                 .GetDocumentSnapshotAsync<SpotPraise_Firebase>();
 
@@ -402,13 +411,13 @@ public static class DatabaseManager
     {
         List<SpotPraise> spotPraises;
         IQuerySnapshot<SpotPraise_Firebase> documentReference;
-        IQuery query = CrossFirebaseFirestore.Current.GetCollection("Praises")
+        IQuery query = CrossFirebaseFirestore.Current.GetCollection(COLLECTION_PRAISES)
                 .OrderBy(nameof(SpotPraise_Firebase.CreationDate))
                 .LimitedTo(5);
 
         if (lastPraise != null)
         {
-            IDocumentSnapshot<SpotPraise_Firebase> documentSnapshot = await CrossFirebaseFirestore.Current.GetCollection("Praises")
+            IDocumentSnapshot<SpotPraise_Firebase> documentSnapshot = await CrossFirebaseFirestore.Current.GetCollection(COLLECTION_PRAISES)
                 .GetDocument(lastPraise.PraiseID)
                 .GetDocumentSnapshotAsync<SpotPraise_Firebase>();
 
@@ -454,7 +463,7 @@ public static class DatabaseManager
         List<Spot> retVal = [];
 
         IQuerySnapshot<Spot_Firebase> documentReference;
-        IQuery query = CrossFirebaseFirestore.Current.GetCollection("Spots").LimitedTo(25);
+        IQuery query = CrossFirebaseFirestore.Current.GetCollection(COLLECTION_SPOTS).LimitedTo(25);
         if(filterParams != null)
         {
             query = query.WhereArrayContainsAny(nameof(Spot_Firebase.SearchTerms), filterParams);
@@ -468,7 +477,7 @@ public static class DatabaseManager
         }
         if (lastSpot != null)
         {
-            IDocumentSnapshot<Spot_Firebase> documentSnapshot = await CrossFirebaseFirestore.Current.GetCollection("Spots")
+            IDocumentSnapshot<Spot_Firebase> documentSnapshot = await CrossFirebaseFirestore.Current.GetCollection(COLLECTION_SPOTS)
             .GetDocument(lastSpot.SpotID)
             .GetDocumentSnapshotAsync<Spot_Firebase>();
 
@@ -486,14 +495,14 @@ public static class DatabaseManager
             retVal.Add(new(document.Data, profilePictureImageSource));
         }
 
-        return retVal;
+        return retVal ?? [];
     }
 
     public static async Task<List<FollowRegister_Firebase>> FetchFollowRegisters(string? followerID = null, string? followedID = null)
     {
         List<FollowRegister_Firebase> retVal = [];
 
-        IQuery query = CrossFirebaseFirestore.Current.GetCollection("Follows").OrderBy(nameof(FollowRegister_Firebase.FollowerID));
+        IQuery query = CrossFirebaseFirestore.Current.GetCollection(COLLECTION_FOLLOWS).OrderBy(nameof(FollowRegister_Firebase.FollowerID));
         if(followedID != null)
         {
             query.WhereEqualsTo(nameof(FollowRegister_Firebase.FollowedID), followedID);
@@ -584,7 +593,7 @@ public static class DatabaseManager
                 {
                     if(!follow)
                     {
-                        await CrossFirebaseFirestore.Current.GetCollection("Follows").GetDocument(register.RegisterID).DeleteDocumentAsync();
+                        await CrossFirebaseFirestore.Current.GetCollection(COLLECTION_FOLLOWS).GetDocument(register.RegisterID).DeleteDocumentAsync();
                         finalFollowersCount--;
                     }
                     preExistantFollowsCount++;
@@ -593,13 +602,13 @@ public static class DatabaseManager
 
             if (follow && preExistantFollowsCount == 0)
             {
-                await CrossFirebaseFirestore.Current.GetCollection("Follows").CreateDocument().SetDataAsync(new FollowRegister_Firebase(followerID, followedID));
+                await CrossFirebaseFirestore.Current.GetCollection(COLLECTION_FOLLOWS).CreateDocument().SetDataAsync(new FollowRegister_Firebase(followerID, followedID));
                 finalFollowersCount++;
             }
 
             if(followRegisters.Count !=  finalFollowersCount)
             {
-                await CrossFirebaseFirestore.Current.GetCollection("UserData").GetDocument(followedID).SetDataAsync((nameof(Client_Firebase.FollowersCount), finalFollowersCount));
+                await CrossFirebaseFirestore.Current.GetCollection(COLLECTION_FOLLOWS).GetDocument(followedID).SetDataAsync((nameof(Client_Firebase.FollowersCount), finalFollowersCount));
             }
 
             retVal = true;
