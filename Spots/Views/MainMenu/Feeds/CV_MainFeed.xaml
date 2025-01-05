@@ -23,7 +23,7 @@
                                         <Label Text="{Binding SpotFullName}" FontSize="Title" FontAttributes="Bold" TextColor="{DynamicResource SecondaryAccent}" MaxLines="2"/>
                                         <StackLayout Orientation="Horizontal">
                                             <Label Text="{Binding AuthorFullName}" FontSize="Small" FontAttributes="Italic" HorizontalTextAlignment="End" HorizontalOptions="FillAndExpand" VerticalOptions="Center" TextColor="{DynamicResource Tertiary}" MaxLines="1" Margin="10,0,10,0"/>
-                                            <Border x:Name="_FrameProfilePicture" Padding="0" StrokeShape="RoundRectangle 500" HeightRequest="25" WidthRequest="25">
+                                            <Border x:Name="_FrameProfilePicture" Padding="0" StrokeShape="RoundRectangle 500" HeightRequest="25" WidthRequest="25" StrokeThickness="0">
                                                 <Image Source="{Binding AuthorProfilePicture}" Aspect="AspectFill"/>
                                             </Border>
                                         </StackLayout>

@@ -46,10 +46,10 @@ public class SpotPraise
     public SpotPraise(SpotPraise_Firebase spotPraise_FB, Client author, Spot spot, ImageSource? attachment = null)
     {
         PraiseID = spotPraise_FB.PraiseID;
-        AuthorID = spotPraise_FB.AuthorID[0];
+        AuthorID = spotPraise_FB.AuthorID;
         AuthorFullName = author.FullName;
         AuthorProfilePicture = author.ProfilePictureSource;
-        SpotID = spotPraise_FB.SpotID[0];
+        SpotID = spotPraise_FB.SpotID;
         SpotFullName = spot.SpotName + " - " + spot.BrandName;
         SpotProfilePicture = spot.ProfilePictureSource;
         SpotLocation = spotPraise_FB.SpotLocation;
@@ -88,8 +88,8 @@ public class SpotPraise
 
     public static async Task<SpotPraise> GetPraiseFromFirebaseObject(SpotPraise_Firebase praise)
     {
-        Client author = await DatabaseManager.GetClientDataAsync(praise.AuthorID[0]);
-        Spot spot = await DatabaseManager.GetSpotDataAsync(praise.SpotID[0]);
+        Client author = await DatabaseManager.GetClientDataAsync(praise.AuthorID);
+        Spot spot = await DatabaseManager.GetSpotDataAsync(praise.SpotID);
         ImageSource? attachment = null;
 
         if (praise.AttachedPictureAddress.Length > 0)
@@ -113,8 +113,8 @@ public class SpotPraise
             if (document.Data != null)
             {
                 SpotPraise_Firebase praise = document.Data;
-                Client managed_author = author != null ? author : await DatabaseManager.GetClientDataAsync(praise.AuthorID[0]);
-                Spot managed_spot = spot != null ? spot : await DatabaseManager.GetSpotDataAsync(praise.SpotID[0]);
+                Client managed_author = author != null ? author : await DatabaseManager.GetClientDataAsync(praise.AuthorID);
+                Spot managed_spot = spot != null ? spot : await DatabaseManager.GetSpotDataAsync(praise.SpotID);
                 ImageSource? attachment = null;
 
                 if (praise.AttachedPictureAddress.Length > 0)
@@ -142,10 +142,13 @@ public class SpotPraise_Firebase
     public IList<string> SearchCriteria_ID { get; set; }
 
     [FirestoreProperty(nameof(AuthorID))]
-    public IList<string> AuthorID { get; set; }
+    public string AuthorID { get; set; }
+
+    [FirestoreProperty(nameof(AuthorID_Array))]
+    public IList<string> AuthorID_Array { get { return [AuthorID]; } private set { } }
 
     [FirestoreProperty(nameof(SpotID))]
-    public IList<string> SpotID { get; set; }
+    public string SpotID { get; set; }
 
     [FirestoreProperty(nameof(SpotLocation))]
     public FirebaseLocation SpotLocation { get; set; }
@@ -166,8 +169,8 @@ public class SpotPraise_Firebase
     {
         PraiseID = "";
         SearchCriteria_ID = [];
-        AuthorID = [];
-        SpotID = [];
+        AuthorID = "";
+        SpotID = "";
         SpotLocation = new();
         CreationDate = DateTimeOffset.Now;
         Comment = "";
@@ -179,8 +182,8 @@ public class SpotPraise_Firebase
     {
         PraiseID = spotPraise.PraiseID;
         SearchCriteria_ID = [spotPraise.PraiseID];
-        AuthorID = [spotPraise.AuthorID];
-        SpotID = [spotPraise.SpotID];
+        AuthorID = spotPraise.AuthorID;
+        SpotID = spotPraise.SpotID;
         SpotLocation = spotPraise.SpotLocation;
         CreationDate = spotPraise.CreationDate;
         Comment = spotPraise.Comment;
@@ -192,8 +195,8 @@ public class SpotPraise_Firebase
     {
         PraiseID = praiseID;
         SearchCriteria_ID = [praiseID];
-        AuthorID = [authorID];
-        SpotID = [spotID];
+        AuthorID = authorID;
+        SpotID = spotID;
         SpotLocation = spotLocation;
         CreationDate = creationDate;
         Comment = comment;

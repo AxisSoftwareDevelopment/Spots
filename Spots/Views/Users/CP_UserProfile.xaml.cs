@@ -48,12 +48,26 @@ public partial class CP_UserProfile : ContentPage
 
     private async Task RefreshFeed()
     {
-        ClientPraisesContext.RefreshFeed(await DatabaseManager.FetchSpotPraises_Filtered(author: user));
+        try
+        {
+            ClientPraisesContext.RefreshFeed(await DatabaseManager.FetchSpotPraises_Filtered(author: user));
+        }
+        catch (Exception ex)
+        {
+            await UserInterface.DisplayPopUp_Regular("Unhandled Database Exception", ex.Message, "Ok");
+        }
     }
 
     private async void OnItemThresholdReached(object? sender, EventArgs e)
     {
-        ClientPraisesContext.AddElements(await DatabaseManager.FetchSpotPraises_Filtered(author: user, lastPraise: ClientPraisesContext.LastItemFetched));
+        try
+        {
+            ClientPraisesContext.AddElements(await DatabaseManager.FetchSpotPraises_Filtered(author: user, lastPraise: ClientPraisesContext.LastItemFetched));
+        }
+        catch (Exception ex)
+        {
+            await UserInterface.DisplayPopUp_Regular("Unhandled Database Exception", ex.Message, "Ok");
+        }
     }
 
     private void _colClientPraises_SelectionChanged(object? sender, SelectionChangedEventArgs e)

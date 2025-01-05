@@ -1,3 +1,4 @@
+using Java.Util;
 using Microsoft.Maui.Controls.Maps;
 using Microsoft.Maui.Maps;
 
@@ -172,6 +173,7 @@ public partial class CV_DiscoverFeed : ContentView
     {
         if (CurrentLocation != null && SelectedLocation != null)
         {
+            
             CurrentFeedContext.RefreshFeed(await DatabaseManager.FetchDiscoveryPageItems(Filters, CurrentLocation, SelectedLocation));
         }
         else if (Filters.Location == DiscoveryPageFilters.FILTER_LOCATION.CURRENT)

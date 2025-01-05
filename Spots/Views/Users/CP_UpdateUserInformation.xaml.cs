@@ -94,7 +94,7 @@ public partial class CP_UpdateUserInformation : ContentPage
                     {
                         // We then have to log in and go to main page.
                         await DatabaseManager.LogInUserAsync(_email, _password, getUser: false);
-                        Application.Current.MainPage = new FP_MainShell(_user);
+                        Application.Current.Windows[0].Page = new FP_MainShell(_user);
                     }
                     else
                     {

@@ -209,7 +209,7 @@ public static class DatabaseManager
 
             if (praiseDocumentReference.Id.Length > 0 && imageFile != null)
             {
-                string attachmentAddress = await SavePraiseAttachment(praiseDocumentReference.Id, praise_Firebase.AuthorID[0], imageFile);
+                string attachmentAddress = await SavePraiseAttachment(praiseDocumentReference.Id, praise_Firebase.AuthorID, imageFile);
                 praise_Firebase.AttachedPictureAddress = attachmentAddress;
             }
 
@@ -312,14 +312,6 @@ public static class DatabaseManager
 
         
         IQuery query = CrossFirebaseFirestore.Current.GetCollection(COLLECTION_USER_DATA).LimitedTo(25);
-        if (lastClient != null)
-        {
-            IDocumentSnapshot<Client_Firebase> documentSnapshot = await CrossFirebaseFirestore.Current.GetCollection(COLLECTION_USER_DATA)
-            .GetDocument(lastClient.UserID)
-            .GetDocumentSnapshotAsync<Client_Firebase>();
-
-            query = query.StartingAfter(documentSnapshot);
-        }
         if (nameSearchTerms != null)
         {
             query = query.WhereArrayContainsAny(nameof(Client_Firebase.SearchTerms), nameSearchTerms);
@@ -334,6 +326,14 @@ public static class DatabaseManager
         if (order != null)
         {
             query = query.OrderBy(order);
+        }
+        if (lastClient != null)
+        {
+            IDocumentSnapshot<Client_Firebase> documentSnapshot = await CrossFirebaseFirestore.Current.GetCollection(COLLECTION_USER_DATA)
+            .GetDocument(lastClient.UserID)
+            .GetDocumentSnapshotAsync<Client_Firebase>();
+
+            query = query.StartingAfter(documentSnapshot);
         }
 
         IQuerySnapshot<Client_Firebase> documentReference = await query.GetDocumentsAsync<Client_Firebase>();
@@ -367,7 +367,7 @@ public static class DatabaseManager
         IQuery query = CrossFirebaseFirestore.Current.GetCollection(COLLECTION_PRAISES)
             .LimitedTo(5)
             .OrderBy(nameof(SpotPraise_Firebase.CreationDate))
-            .WhereArrayContainsAny(nameof(SpotPraise_Firebase.AuthorID), clientIDs.ToArray());
+            .WhereArrayContainsAny(nameof(SpotPraise_Firebase.AuthorID_Array), clientIDs.ToArray());
         if (lastPraise != null)
         {
             
@@ -409,35 +409,20 @@ public static class DatabaseManager
         string? order = null,
         SpotPraise? lastPraise = null)
     {
-        List<SpotPraise> spotPraises;
+        List<SpotPraise> spotPraises = [];
         IQuerySnapshot<SpotPraise_Firebase> documentReference;
         IQuery query = CrossFirebaseFirestore.Current.GetCollection(COLLECTION_PRAISES)
-                .OrderBy(nameof(SpotPraise_Firebase.CreationDate))
                 .LimitedTo(5);
 
-        if (lastPraise != null)
-        {
-            IDocumentSnapshot<SpotPraise_Firebase> documentSnapshot = await CrossFirebaseFirestore.Current.GetCollection(COLLECTION_PRAISES)
-                .GetDocument(lastPraise.PraiseID)
-                .GetDocumentSnapshotAsync<SpotPraise_Firebase>();
-
-            query = query.StartingAfter(documentSnapshot);
-        }
         if (author != null || authorId != null)
         {
-#pragma warning disable CS8604 // Possible null reference argument warning. Removed because it is not possible due to if and null asignation combination.
             author ??= await GetClientDataAsync(authorId);
-#pragma warning restore CS8604 // Possible null reference argument.
-            string[] id = [author.UserID];
-            query = query.WhereArrayContainsAny(nameof(SpotPraise_Firebase.AuthorID), id);
+            query = query.WhereEqualsTo(nameof(SpotPraise_Firebase.AuthorID), author.UserID);
         }
         if (spot != null || spotId != null)
         {
-#pragma warning disable CS8604 // Possible null reference argument. Removed because it is not possible due to if and null asignation combination.
             spot ??= await GetSpotDataAsync(spotId);
-#pragma warning restore CS8604 // Possible null reference argument.
-            string[] id = [spot.SpotID];
-            query = query.WhereArrayContainsAny(nameof(SpotPraise_Firebase.SpotID), id);
+            query = query.WhereEqualsTo(nameof(SpotPraise_Firebase.SpotID), spot.SpotID);
         }
         if (referenceLocation != null && searchAreaInKm != null)
         {
@@ -449,6 +434,18 @@ public static class DatabaseManager
         if (order != null)
         {
             query = query.OrderBy(order);
+        }
+        else
+        {
+            query = query.OrderBy(nameof(SpotPraise_Firebase.CreationDate));
+        }
+        if (lastPraise != null)
+        {
+            IDocumentSnapshot<SpotPraise_Firebase> documentSnapshot = await CrossFirebaseFirestore.Current.GetCollection(COLLECTION_PRAISES)
+                .GetDocument(lastPraise.PraiseID)
+                .GetDocumentSnapshotAsync<SpotPraise_Firebase>();
+
+            query = query.StartingAfter(documentSnapshot);
         }
 
         documentReference = await query.GetDocumentsAsync<SpotPraise_Firebase>();
@@ -475,6 +472,10 @@ public static class DatabaseManager
 
             query = query.WhereArrayContainsAny($"{nameof(Spot_Firebase.Location)}.Geohash", geohashesNearby.ToArray());
         }
+        if (order != null)
+        {
+            query = query.OrderBy(order);
+        }
         if (lastSpot != null)
         {
             IDocumentSnapshot<Spot_Firebase> documentSnapshot = await CrossFirebaseFirestore.Current.GetCollection(COLLECTION_SPOTS)
@@ -482,10 +483,6 @@ public static class DatabaseManager
             .GetDocumentSnapshotAsync<Spot_Firebase>();
 
             query = query.StartingAfter(documentSnapshot);
-        }
-        if (order != null)
-        {
-            query = query.OrderBy(order);
         }
         documentReference = await query.GetDocumentsAsync<Spot_Firebase>();
 
@@ -535,7 +532,7 @@ public static class DatabaseManager
                     string orderCode = nameof(Client.FollowersCount);
                     FirebaseLocation location = filters.Location == DiscoveryPageFilters.FILTER_LOCATION.CURRENT
                         ? currentLocation : selectedLocation;
-                    List<Client> clients = await FetchClients_Filtered(referenceLocation: location, searchAreaInKm: (int)filters.Area, order: orderCode, lastClient: (Client?)lastItem);
+                    List<Client> clients = await FetchClients_Filtered(referenceLocation: location, searchAreaInKm: (int)filters.Area, order: orderCode, lastClient: lastItem != null ? (Client)lastItem : null);
                     foreach(Client client in clients)
                     {
                         retVal.Add(client);
@@ -547,7 +544,7 @@ public static class DatabaseManager
                     string orderCode = nameof(Spot.PraiseCount);
                     FirebaseLocation location = filters.Location == DiscoveryPageFilters.FILTER_LOCATION.CURRENT
                         ? currentLocation : selectedLocation;
-                    List<Spot> spots = await FetchSpots_Filtered(referenceLocation: location, searchAreaInKm: (int)filters.Area, order: orderCode, lastSpot: (Spot?)lastItem);
+                    List<Spot> spots = await FetchSpots_Filtered(referenceLocation: location, searchAreaInKm: (int)filters.Area, order: orderCode, lastSpot: lastItem != null ? (Spot)lastItem : null);
                     foreach (Spot spot in spots)
                     {
                         retVal.Add(spot);
@@ -563,7 +560,7 @@ public static class DatabaseManager
                     };
                     FirebaseLocation location = filters.Location == DiscoveryPageFilters.FILTER_LOCATION.CURRENT
                         ? currentLocation : selectedLocation;
-                    List<SpotPraise> praises = await FetchSpotPraises_Filtered(referenceLocation: location, searchAreaInKm: (int)filters.Area, order: orderCode, lastPraise: (SpotPraise?)lastItem);
+                    List<SpotPraise> praises = await FetchSpotPraises_Filtered(referenceLocation: location, searchAreaInKm: (int)filters.Area, order: orderCode, lastPraise: lastItem != null ? (SpotPraise)lastItem : null);
                     foreach (SpotPraise praise in praises)
                     {
                         retVal.Add(praise);

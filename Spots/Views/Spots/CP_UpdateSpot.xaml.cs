@@ -83,7 +83,7 @@ public partial class CP_UpdateSpot : ContentPage
 
             if (DataChanged(newData))
             {
-                string profilePictureAddress = "";
+                //string profilePictureAddress = "";
                 _spot.PhoneNumber = newData.PhoneNumber;
                 _spot.PhoneCountryCode = newData.PhoneCountryCode;
                 _spot.BrandName = newData.BrandName;

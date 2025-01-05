@@ -7,8 +7,6 @@ public partial class CV_SearchBarDataTemplate : ContentView
         BindingContextChanged += CV_SearchBarDataTemplate_BindingContextChanged;
 
         InitializeComponent();
-
-        //SetBinginds(BindingContext);
     }
 
     private void CV_SearchBarDataTemplate_BindingContextChanged(object? sender, EventArgs e)

@@ -1,12 +1,12 @@
-using Android.Media;
-
 namespace Spots.DiscoveryPage;
 
 public partial class CV_DiscoveryFeedDataTemplate : ContentView
 {
 	public CV_DiscoveryFeedDataTemplate()
 	{
-		InitializeComponent();
+        BindingContextChanged += CV_SearchBarDataTemplate_BindingContextChanged;
+
+        InitializeComponent();
 	}
 
     private void CV_SearchBarDataTemplate_BindingContextChanged(object? sender, EventArgs e)
@@ -18,25 +18,25 @@ public partial class CV_DiscoveryFeedDataTemplate : ContentView
     {
         if (Item?.GetType() == typeof(Client))
         {
-            lblMainName.SetBinding(Label.TextProperty, "FullName");
-            lblSecondaryName.SetBinding(Label.TextProperty, "Email");
-            lblDetail.SetBinding(Label.TextProperty, "Description");
-            imgMainImage.SetBinding(Label.TextProperty, "ProfilePictureSource");
+            lblMainName.SetBinding(Label.TextProperty, nameof(Client.FullName));
+            lblSecondaryName.SetBinding(Label.TextProperty, nameof(Client.Email));
+            lblDetail.SetBinding(Label.TextProperty, nameof(Client.Description));
+            imgMainImage.SetBinding(Image.SourceProperty, nameof(Client.ProfilePictureSource));
         }
         else if (Item?.GetType() == typeof(Spot))
         {
-            lblMainName.SetBinding(Label.TextProperty, "SpotName");
-            lblSecondaryName.SetBinding(Label.TextProperty, "BrandName");
-            lblDetail.SetBinding(Label.TextProperty, "Location.Address");
-            imgMainImage.SetBinding(Label.TextProperty, "ProfilePictureSource");
+            lblMainName.SetBinding(Label.TextProperty, nameof(Spot.SpotName));
+            lblSecondaryName.SetBinding(Label.TextProperty, nameof(Spot.BrandName));
+            lblDetail.SetBinding(Label.TextProperty, $"{nameof(Spot.Location)}.{nameof(Spot.Location.Address)}");
+            imgMainImage.SetBinding(Image.SourceProperty, nameof(Spot.ProfilePictureSource));
         }
         else if (Item?.GetType() == typeof(SpotPraise))
         {
-            lblMainName.SetBinding(Label.TextProperty, "SpotFullName");
-            lblSecondaryName.SetBinding(Label.TextProperty, "AuthorFullName");
-            lblDetail.SetBinding(Label.TextProperty, "Comment");
-            imgMainImage.SetBinding(Label.TextProperty, "SpotProfilePicture");
-            imgSecondaryImage.SetBinding(Label.TextProperty, "AuthorProfilePicture");
+            lblMainName.SetBinding(Label.TextProperty, nameof(SpotPraise.SpotFullName));
+            lblSecondaryName.SetBinding(Label.TextProperty, nameof(SpotPraise.AuthorFullName));
+            lblDetail.SetBinding(Label.TextProperty, nameof(SpotPraise.Comment));
+            imgMainImage.SetBinding(Image.SourceProperty, nameof(SpotPraise.SpotProfilePicture));
+            imgSecondaryImage.SetBinding(Image.SourceProperty, nameof(SpotPraise.AuthorProfilePicture));
         }
     }
 }
