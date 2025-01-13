@@ -5,7 +5,7 @@
 
     <StackLayout Orientation="Vertical" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" BackgroundColor="{DynamicResource Tertiary}">
         <StackLayout Orientation="Horizontal" HorizontalOptions="Center">
-            <Button x:Name="_btnWritePraise" CornerRadius="15" BackgroundColor="{DynamicResource Primary}" TextColor="{DynamicResource PrimaryAccent}" FontSize="Small"
+            <Button x:Name="_btnWritePraise" CornerRadius="5" BackgroundColor="{DynamicResource Primary}" TextColor="{DynamicResource PrimaryAccent}" FontSize="Small"
                 Text="Write Praise" Margin="5,5,5,5" Clicked="_btnWritePraise_Clicked"/>
         </StackLayout>
         <RefreshView x:Name="_refreshView">
@@ -16,9 +16,9 @@
                         <ContentView>
                             <Border Margin="5, 0, 5, 5" StrokeShape="RoundRectangle 5,5,5,5" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="{DynamicResource Secondary}">
                                 <StackLayout Orientation="Horizontal" BackgroundColor="{DynamicResource Secondary}" HorizontalOptions="FillAndExpand" Margin="5,5">
-                                    <StackLayout>
+                                    <Border StrokeThickness="0" StrokeShape="RoundRectangle 5">
                                         <Image Source="{Binding SpotProfilePicture}" HeightRequest="125" WidthRequest="125" BackgroundColor="{DynamicResource Primary}"/>
-                                    </StackLayout>
+                                    </Border>
                                     <StackLayout Orientation="Vertical" HorizontalOptions="FillAndExpand" Margin="5,5">
                                         <Label Text="{Binding SpotFullName}" FontSize="Title" FontAttributes="Bold" TextColor="{DynamicResource SecondaryAccent}" MaxLines="2"/>
                                         <StackLayout Orientation="Horizontal">

@@ -57,13 +57,20 @@ public partial class CV_MainFeed : ContentView
 
 	private async Task<List<SpotPraise>> FetchPraises(SpotPraise? lastItemFetched = null)
 	{
+		List<SpotPraise> retVal = [];
+
 		if(SessionManager.CurrentSession?.Client != null)
 		{
-            return await DatabaseManager.FetchSpotPraises_FromFollowedClients(SessionManager.CurrentSession.Client, lastItemFetched);
+			try
+			{
+				retVal = await DatabaseManager.FetchSpotPraises_FromFollowedClients(SessionManager.CurrentSession.Client, lastItemFetched);
+			}
+			catch (Exception ex)
+			{
+				await UserInterface.DisplayPopUp_Regular("Unhandled Exeption", ex.Message, "Ok");
+			}
         }
-		else
-		{
-			return [];
-		}
+
+		return retVal;
 	}
 }

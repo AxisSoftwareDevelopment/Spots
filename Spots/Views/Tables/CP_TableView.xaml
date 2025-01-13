@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:maps="clr-namespace:Microsoft.Maui.Controls.Maps;assembly=Microsoft.Maui.Controls.Maps" 
+             x:Class="Spots.CP_TableView"
+             Title="CP_TableView"
+             BackgroundColor="{DynamicResource Primary}">
+
+    <NavigationPage.TitleView>
+        <Label Text="{DynamicResource lbl_TableInformation}" TextColor="{DynamicResource PrimaryAccent}" FontSize="24" FontAttributes="Bold" HorizontalOptions="Start" VerticalOptions="Center"></Label>
+    </NavigationPage.TitleView>
+
+    <StackLayout>
+        <ScrollView VerticalOptions="FillAndExpand" Margin="15, 0, 15, 15">
+            <Border StrokeShape="RoundRectangle 10" StrokeThickness="0" BackgroundColor="{DynamicResource Secondary}">
+                <StackLayout>
+                    <Border x:Name="_BorderCurrentState" HeightRequest="35" HorizontalOptions="FillAndExpand" StrokeThickness="0">
+                        <Label x:Name="_lblCurrentState" Text="Away" TextColor="{DynamicResource PrimaryAccent}" FontSize="Large" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" BackgroundColor="Yellow"/>
+                    </Border>
+                    <StackLayout x:Name="_TableCard" Margin="15, 0">
+                        <Border x:Name="_BorderTablePicture" Padding="0" Margin="15,15,15,0" StrokeShape="RoundRectangle 500" StrokeThickness="0">
+                            <ImageButton x:Name="_TableImage" Aspect="AspectFill" Source="{Binding TablePictureSource}"/>
+                        </Border>
+                        <Label Text="{Binding TableName}" HorizontalOptions="Center" TextColor="{DynamicResource SecondaryAccent}" 
+                        FontAttributes="Bold" FontSize="25" VerticalOptions="Start" HorizontalTextAlignment="Center" Margin="20,0,20,0"/>
+                    </StackLayout>
+
+                    <StackLayout x:Name="_DescriptionLayout" Margin="15,0,15,5">
+                        <Label Text="{DynamicResource lbl_Description}" FontSize="18" TextColor="{DynamicResource Tertiary}" FontAttributes="Bold"/>
+                        <Label Text="{Binding Description}" TextColor="{DynamicResource SecondaryAccent}"/>
+                    </StackLayout>
+
+                    <StackLayout Orientation="Horizontal" Margin="15,0,15,5">
+                        <Label Text="{DynamicResource lbl_Location}" TextColor="{DynamicResource Tertiary}" FontSize="18" FontAttributes="Bold" HorizontalOptions="Center" HorizontalTextAlignment="Center"/>
+                    </StackLayout>
+                    <maps:Map x:Name="_cvMiniMap" VerticalOptions="Start" HorizontalOptions="FillAndExpand" Margin="15,0,15,15" IsZoomEnabled="False" IsScrollEnabled ="False"/>
+                    <Label x:Name="_entryAddress" Text="{Binding Location.Address}" TextColor="{DynamicResource SecondaryAccent}" Margin="15,0"/>
+
+                    <Border VerticalOptions="FillAndExpand" Margin="15" StrokeThickness="0" StrokeShape="RoundRectangle 10" BackgroundColor="{DynamicResource Tertiary}">
+                        <StackLayout >
+                            <StackLayout Orientation="Horizontal" Margin="5">
+                                <Label x:Name="_lblMembersTitle" Text="{DynamicResource lbl_Members}" TextColor="{DynamicResource Secondary}" FontSize="Large" HorizontalOptions="FillAndExpand" HorizontalTextAlignment="Center"/>
+                                <Button Text="+" FontSize="Large" Padding="10,-2,10,0" BackgroundColor="{DynamicResource Primary}" CornerRadius="7"/>
+                            </StackLayout>
+                            <CollectionView x:Name="_colMembers" HorizontalOptions="FillAndExpand" HorizontalScrollBarVisibility="Never" VerticalOptions="FillAndExpand" VerticalScrollBarVisibility="Never" SelectionMode="Single"
+                                ItemsSource="{Binding ItemSource}">
+                                <CollectionView.ItemTemplate>
+                                    <DataTemplate>
+                                        <ContentView>
+                                            <Border Margin="5, 0, 5, 5" StrokeShape="RoundRectangle 5" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="{DynamicResource Secondary}">
+                                                <StackLayout Orientation="Horizontal" BackgroundColor="{DynamicResource Secondary}" HorizontalOptions="FillAndExpand" Margin="5,5">
+                                                    <Border StrokeShape="RoundRectangle 10" StrokeThickness="0">
+                                                        <Image Source="{Binding ProfilePictureSource}" HeightRequest="75" WidthRequest="75"/>
+                                                    </Border>
+                                                    <StackLayout Orientation="Vertical" HorizontalOptions="FillAndExpand" Margin="5,5">
+                                                        <Label Text="{Binding Name}" FontSize="Title" FontAttributes="Bold" TextColor="{DynamicResource SecondaryAccent}" MaxLines="2"/>
+                                                        <StackLayout Orientation="Horizontal" VerticalOptions="EndAndExpand">
+                                                            <Label Text="{Binding State}" FontSize="Small" FontAttributes="Italic" HorizontalTextAlignment="End" HorizontalOptions="FillAndExpand" VerticalOptions="Center" TextColor="{DynamicResource Tertiary}" MaxLines="1" Margin="0,0,5,0"/>
+                                                            <Border x:Name="_brdStatus" Padding="0" StrokeShape="RoundRectangle 500" HeightRequest="15" WidthRequest="15" StrokeThickness="0" BackgroundColor="{Binding StateColor}"/>
+                                                        </StackLayout>
+                                                    </StackLayout>
+                                                </StackLayout>
+                                            </Border>
+                                        </ContentView>
+                                    </DataTemplate>
+                                </CollectionView.ItemTemplate>
+                            </CollectionView>
+                        </StackLayout>
+                    </Border>
+                </StackLayout>
+            </Border>
+        </ScrollView>
+
+        <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand">
+            <Button x:Name="_btnInteractWithTable" Text="Sit at Table" Margin="35, 0, 5, 10" BackgroundColor="{DynamicResource Tertiary}" TextColor="{DynamicResource PrimaryAccent}" HorizontalOptions="FillAndExpand"/>
+            <Button x:Name="_btnAbandonTable" Text="{DynamicResource lbl_AbandonTable}" Margin="5, 0, 35, 10" BackgroundColor="{DynamicResource Tertiary}" TextColor="{DynamicResource PrimaryAccent}" HorizontalOptions="FillAndExpand"/>
+        </StackLayout>
+    </StackLayout>
+
+</ContentPage>

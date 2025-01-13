@@ -55,7 +55,7 @@
     <x:String x:Key="lbl_Apply">Apply</x:String> <!-- Label that indicates Apply changes -->
     <x:String x:Key="lbl_Cancel">Cancel</x:String> <!-- Label that indicates Cancelation -->
     <x:String x:Key="lbl_SelectLocation">Select Location</x:String> <!-- Label that indicates the user to select a location -->
-    <x:String x:Key="lbl_AddressPlaceholder">Street #0000 CP Coulbl_Descriptionntry City</x:String> <!-- Label that contains a placeholder for a geographical Address -->
+    <x:String x:Key="lbl_AddressPlaceholder">Street #0000 CP Country City</x:String> <!-- Label that contains a placeholder for a geographical Address -->
     <x:String x:Key="lbl_Welcome">Welcome!</x:String> <!-- Label that greets the user with short text -->
     <x:String x:Key="lbl_WelcomeToSpots">Welcome to Spots!</x:String> <!-- Label that greets the user to Spots App -->
     <x:String x:Key="lbl_ConnectionError">Connection Error</x:String> <!-- Label that indicates a Connection Error -->
@@ -93,14 +93,26 @@
     <x:String x:Key="lbl_SelectedLocation">Selected Location</x:String> <!-- Label that indicates Selected Location -->
     <x:String x:Key="lbl_Select">Select</x:String> <!-- Label that indicates to Select -->
     <x:String x:Key="lbl_Popularity">Popularity</x:String> <!-- Label that indicates Recent -->
-    <x:String x:Key="lbl_Recent">Recent</x:String> <!-- Label that indicates Popularity -->
-    <x:String x:Key="lbl_Time_twoDots">Time:</x:String> <!-- Label that indicates Popularity -->
-    <x:String x:Key="lbl_OrderBy_twoDots">Order by:</x:String> <!-- Label that indicates Popularity -->
-    <x:String x:Key="lbl_Location_twoDots">Location:</x:String> <!-- Label that indicates Popularity -->
-    <x:String x:Key="lbl_Subject_twoDots">Subject:</x:String> <!-- Label that indicates Popularity -->
-    <x:String x:Key="lbl_ClosestTo_twoDots">Closest to:</x:String> <!-- Label that indicates Popularity -->
-    <x:String x:Key="lbl_SearchArea_twoDots">Search area:</x:String> <!-- Label that indicates Popularity -->
-    
+    <x:String x:Key="lbl_Recent">Recent</x:String> <!-- Label that indicates Recent -->
+    <x:String x:Key="lbl_Time_twoDots">Time:</x:String> <!-- Label that indicates Time field -->
+    <x:String x:Key="lbl_OrderBy_twoDots">Order by:</x:String> <!-- Label that indicates Order by field -->
+    <x:String x:Key="lbl_Location_twoDots">Location:</x:String> <!-- Label that indicates location field -->
+    <x:String x:Key="lbl_Subject_twoDots">Subject:</x:String> <!-- Label that indicates Subject field -->
+    <x:String x:Key="lbl_ClosestTo_twoDots">Closest to:</x:String> <!-- Label that indicates Closest To field -->
+    <x:String x:Key="lbl_SearchArea_twoDots">Search area:</x:String> <!-- Label that indicates Search area field -->
+    <x:String x:Key="lbl_TablesTitle">Tables</x:String> <!-- Label that indicates Tables -->
+    <x:String x:Key="lbl_PeopleOnline">People Seated</x:String> <!-- Label that indicates People Online -->
+    <x:String x:Key="lbl_TableInformation">Table Information</x:String> <!-- Label that indicates Table information -->
+    <x:String x:Key="lbl_TablePictureField">Table Picture:</x:String> <!-- Label that indicates Table Picture field -->
+    <x:String x:Key="lbl_TableName">Table Name</x:String> <!-- Label that indicates Table Name -->
+    <x:String x:Key="lbl_Members">Members</x:String> <!-- Label that indicates Members -->
+    <x:String x:Key="lbl_AbandonTable">Abandon Table</x:String> <!-- Label that indicates to abandon a Table -->
+    <x:String x:Key="lbl_CurrentTableState_Sitting">You Are Sitting At This Table</x:String> <!-- Label that indicates the current sitting state of a user to a table -->
+    <x:String x:Key="lbl_CurrentTableState_Away">You Are Away From This Table</x:String> <!-- Label that indicates the current away state of a user to a table -->
+    <x:String x:Key="lbl_TableInteract_Sit">Sit at Table</x:String> <!-- Label that indicates to sit at a table -->
+    <x:String x:Key="lbl_TableInteract_StanUp">Stand from Table</x:String> <!-- Label that indicates to stand from a table -->
+    <x:String x:Key="lbl_TableState_Sitting">Seated</x:String> <!-- Label that indicates Table state of sitting -->
+    <x:String x:Key="lbl_TableState_Away">Away</x:String> <!-- Label that indicates Table state of away -->
 
     <x:String x:Key="txt_ConfirmLogOut">Are you sure you want to want to log out?</x:String> <!-- Text that questions the user if is sure of logout action -->
     <x:String x:Key="txt_LogIn">Log in to your account</x:String> <!-- Log in text -->
@@ -125,5 +137,8 @@
     <x:String x:Key="txt_ConnectionError">Spots doesnt hace Internet access. Please verify your connection.</x:String> <!-- Error message displayed when theres no Internet Access -->
     <x:String x:Key="txt_GeolocationError">Error encountered while trying to retrive your geolocation.</x:String> <!-- Error message displayed when it is impossible to retrive the current location -->
     <x:String x:Key="txt_BussinessError_NoValidLocationSelected">Please select just 1 valid Location on the map.</x:String> <!-- Error message displayed when no valid location is selected -->
+    <x:String x:Key="txt_TableError_NoValidLocationSelected">Please select just 1 valid Location on the map.</x:String> <!-- Error message displayed when no valid location is selected -->
+    <x:String x:Key="txt_TableError_EmptyFields">One or more fields are empty. Please fill the information correctly.</x:String> <!-- Error message displayed when one or more Modification entry fields are empty -->
+    <x:String x:Key="txt_TableInfoError_DescriptionTooLong">Table description must be under 150 characters.</x:String> <!-- Error message displayed when the CreateUser method returns false, indicating there was an error trying to register the account -->
 
 </ResourceDictionary>

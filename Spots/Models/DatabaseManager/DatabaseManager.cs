@@ -3,6 +3,7 @@ using Plugin.Firebase.Firestore;
 using Plugin.Firebase.Core.Exceptions;
 using Plugin.Firebase.Storage;
 using Firebase.Firestore;
+using static Google.Firestore.V1.StructuredQuery;
 
 namespace Spots;
 public static class DatabaseManager
@@ -11,6 +12,7 @@ public static class DatabaseManager
     private const string COLLECTION_SPOTS = "Spots";
     private const string COLLECTION_PRAISES = "Praises";
     private const string COLLECTION_FOLLOWS = "Follows";
+    private const string COLLECTION_TABLES = "Tables";
     const long MAX_IMAGE_STREAM_DIMENSION = 1024;
 
     #region Public Methods
@@ -146,6 +148,42 @@ public static class DatabaseManager
                     spot_Firebase.SpotID = documentReference.Id;
                     spot_Firebase.ProfilePictureAddress = await SaveFile($"{COLLECTION_SPOTS}/{spot.SpotID}", "SpotsPicture", imageFile);
                     await documentReference.SetDataAsync(spot_Firebase);
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            await UserInterface.DisplayPopUp_Regular("Unhandled Database Exception", ex.Message, "Ok");
+            return false;
+        }
+
+        return true;
+    }
+
+    public static async Task<bool> SaveTableDataAsync(Table table, ImageFile? imageFile = null)
+    {
+        try
+        {
+            ICollectionReference collectionReference = CrossFirebaseFirestore.Current.GetCollection(COLLECTION_TABLES);
+
+            if (table.TableID.Length > 0)
+            {
+                string profilePictureAddress = "";
+                if (imageFile != null)
+                {
+                    profilePictureAddress = await SaveFile($"{COLLECTION_TABLES}/{table.TableID}", "TablePicture", imageFile);
+                }
+                await collectionReference.GetDocument(table.TableID).SetDataAsync(new Table_Firebase(table, profilePictureAddress));
+            }
+            else
+            {
+                Table_Firebase table_Firebase = new(table, "");
+                IDocumentReference documentReference = await collectionReference.AddDocumentAsync(table_Firebase);
+                if (imageFile != null)
+                {
+                    table_Firebase.TableID = documentReference.Id;
+                    table_Firebase.TablePictureAddress = await SaveFile($"{COLLECTION_TABLES}/{table.TableID}", "TablePicture", imageFile);
+                    await documentReference.SetDataAsync(table_Firebase);
                 }
             }
         }
@@ -569,6 +607,39 @@ public static class DatabaseManager
                 }
             default:
                 break;
+        }
+
+        return retVal;
+    }
+
+    public static async Task<List<Table>> FetchTables_Filtered(string? tableOwnerID = null, Table? lastItem = null)
+    {
+        List<Table> retVal = [];
+
+        IQuerySnapshot<Table_Firebase> documentReference;
+        IQuery query = CrossFirebaseFirestore.Current.GetCollection(COLLECTION_TABLES).LimitedTo(5);
+        if (tableOwnerID != null)
+        {
+            query = query.WhereArrayContains(nameof(Table_Firebase.TableMembers), tableOwnerID);
+        }
+        //if (order != null)
+        //{
+        //    query = query.OrderBy(order);
+        //}
+        if (lastItem != null)
+        {
+            IDocumentSnapshot<Table_Firebase> documentSnapshot = await CrossFirebaseFirestore.Current.GetCollection(COLLECTION_TABLES)
+            .GetDocument(lastItem.TableID)
+            .GetDocumentSnapshotAsync<Table_Firebase>();
+
+            query = query.StartingAfter(documentSnapshot);
+        }
+        documentReference = await query.GetDocumentsAsync<Table_Firebase>();
+
+        foreach (var document in documentReference.Documents)
+        {
+            ImageSource profilePictureImageSource = await document.Data.GetImageSource();
+            retVal.Add(new(document.Data, profilePictureImageSource));
         }
 
         return retVal;

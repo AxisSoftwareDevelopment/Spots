@@ -13,16 +13,51 @@
         <Label x:Name="_lblUserName" Grid.Row="1" HorizontalOptions="FillAndExpand" TextColor="{DynamicResource PrimaryAccent}" Text="{Binding FullName}"
             FontAttributes="Bold" FontSize="25" VerticalOptions="Start" HorizontalTextAlignment="Center"/>
 
-        <Border Grid.Row="1" VerticalOptions="FillAndExpand" Margin="10,15" StrokeShape="RoundRectangle 25" BackgroundColor="{DynamicResource Secondary}">
+        <Border Grid.Row="1" VerticalOptions="FillAndExpand" Margin="10,15" StrokeShape="RoundRectangle 15" BackgroundColor="{DynamicResource Secondary}">
             <StackLayout x:Name="_ButtonStack"  Margin="10">
-                <StackLayout VerticalOptions="FillAndExpand">
+                <StackLayout>
                     <Button HorizontalOptions="FillAndExpand" Text="{DynamicResource lbl_MyProfile}" BackgroundColor="{DynamicResource Tertiary}"
-                            Clicked="ProfilePictureOrMyProfileOnClicked" TextColor="{DynamicResource PrimaryAccent}" CornerRadius="15" Margin="0,0,0,15"/>
+                            Clicked="ProfilePictureOrMyProfileOnClicked" TextColor="{DynamicResource PrimaryAccent}" CornerRadius="10" Margin="0,0,0,15"/>
                     <Button HorizontalOptions="FillAndExpand" Text="{DynamicResource lbl_Preferences}" BackgroundColor="{DynamicResource Tertiary}"
-                            Clicked="PreferencesOnClicked" TextColor="{DynamicResource PrimaryAccent}" CornerRadius="15" Margin="0,0,0,15"/>
+                            Clicked="PreferencesOnClicked" TextColor="{DynamicResource PrimaryAccent}" CornerRadius="10"/>
                 </StackLayout>
+                <Border VerticalOptions="FillAndExpand" Margin="0,10,0,10" StrokeThickness="0" StrokeShape="RoundRectangle 10" BackgroundColor="{DynamicResource Tertiary}">
+                    <StackLayout >
+                        <StackLayout Orientation="Horizontal" Margin="5">
+                            <Label x:Name="_lblTablesTitle" Text="{DynamicResource lbl_TablesTitle}" TextColor="{DynamicResource Secondary}" FontSize="Large" HorizontalOptions="FillAndExpand" HorizontalTextAlignment="Center"/>
+                            <Button Text="+" FontSize="Large" Padding="10,-2,10,0" BackgroundColor="{DynamicResource Primary}" CornerRadius="7" Clicked="AddTableOnClicked"/>
+                        </StackLayout>
+                        <RefreshView x:Name="_refreshView">
+                            <CollectionView x:Name="_colTables" HorizontalOptions="FillAndExpand" HorizontalScrollBarVisibility="Never" VerticalScrollBarVisibility="Never" SelectionMode="Single"
+                                            ItemsSource="{Binding ItemSource}">
+                                <CollectionView.ItemTemplate>
+                                    <DataTemplate>
+                                        <ContentView>
+                                            <Border Margin="5, 0, 5, 5" StrokeShape="RoundRectangle 5" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="{DynamicResource Secondary}">
+                                                <StackLayout Orientation="Horizontal" BackgroundColor="{DynamicResource Secondary}" HorizontalOptions="FillAndExpand" Margin="5,5">
+                                                    <Border StrokeShape="RoundRectangle 10" StrokeThickness="0">
+                                                        <Image Source="{Binding TablePictureSource}" HeightRequest="75" WidthRequest="75"/>
+                                                    </Border>
+                                                    <StackLayout Orientation="Vertical" HorizontalOptions="FillAndExpand" Margin="5,5">
+                                                        <Label Text="{Binding TableName}" FontSize="Title" FontAttributes="Bold" TextColor="{DynamicResource SecondaryAccent}" MaxLines="2"/>
+                                                        <StackLayout Orientation="Horizontal" VerticalOptions="EndAndExpand">
+                                                            <Label Text="{Binding OnlineCount}" FontSize="Small" FontAttributes="Italic" HorizontalTextAlignment="End" HorizontalOptions="FillAndExpand" VerticalOptions="Center" TextColor="{DynamicResource Tertiary}" MaxLines="1" Margin="10,0,0,0"/>
+                                                            <Label Text="{DynamicResource lbl_PeopleOnline}" FontSize="Small" FontAttributes="Italic" HorizontalTextAlignment="End" VerticalOptions="Center" TextColor="{DynamicResource Tertiary}" MaxLines="1" Margin="5,0,10,0"/>
+                                                            <Border x:Name="_brdStatus" Padding="0" StrokeShape="RoundRectangle 500" HeightRequest="15" WidthRequest="15" StrokeThickness="0" BackgroundColor="{Binding TableStateColor}"/>
+                                                        </StackLayout>
+                                                    </StackLayout>
+                                                </StackLayout>
+                                            </Border>
+                                        </ContentView>
+                                    </DataTemplate>
+                                </CollectionView.ItemTemplate>
+                            </CollectionView>
+                        </RefreshView>
+                    </StackLayout>
+                </Border>
+                
                 <Button x:Name="_ButtonLogOut" HorizontalOptions="FillAndExpand" Text="{DynamicResource lbl_LogOut}" BackgroundColor="{DynamicResource Tertiary}"
-                        Clicked="LogOutOnClickedAsync" TextColor="{DynamicResource PrimaryAccent}" CornerRadius="15" />
+                        Clicked="LogOutOnClickedAsync" TextColor="{DynamicResource PrimaryAccent}" CornerRadius="10" />
             </StackLayout>
         </Border>
     </StackLayout>

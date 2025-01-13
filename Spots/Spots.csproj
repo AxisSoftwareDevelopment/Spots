@@ -91,6 +91,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Compile Update="Views\Tables\CP_TableView.xaml.cs">
+	    <DependentUpon>CP_TableView.xaml</DependentUpon>
+	  </Compile>
 	  <Compile Update="Views\Users\FollowedClients\CV_FollowedClientDataTemplate.xaml.cs">
 	    <DependentUpon>CV_FollowedClientDataTemplate.xaml</DependentUpon>
 	  </Compile>
@@ -116,6 +119,12 @@
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\Spots\CP_UpdateSpot.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\Tables\CP_TableView.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\Tables\CP_UpdateTable.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\Users\FollowedClients\CP_FollowedClientsView.xaml">
