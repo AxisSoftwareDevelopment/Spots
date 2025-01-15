@@ -11,6 +11,8 @@ public partial class CP_TableView : ContentPage
     private string[] MemberStateLables = ["lbl_TableState_Sitting", "lbl_TableState_Away"];
     private string[] CurrentStateLables = ["lbl_CurrentTableState_Sitting", "lbl_CurrentTableState_Away"];
     private string[] InteractionLables = ["lbl_TableInteract_StanUp", "lbl_TableInteract_Sit"];
+    private string[] ErrorLables = ["lbl_UnhandledError", "lbl_Ok"];
+    private string[] DialogLables = ["lbl_AreYouSure", "txt_TableAbandonConfirmationMessage", "lbl_Abandon", "lbl_Cancel"];
     private Table CachedTable;
     private readonly FeedContext<TableMember> CurrentFeedContext = new();
 
@@ -20,6 +22,8 @@ public partial class CP_TableView : ContentPage
         MemberStateLables = ResourceManagement.GetStringResources(Application.Current?.Resources, MemberStateLables);
         CurrentStateLables = ResourceManagement.GetStringResources(Application.Current?.Resources, CurrentStateLables);
         InteractionLables = ResourceManagement.GetStringResources(Application.Current?.Resources, InteractionLables);
+        ErrorLables = ResourceManagement.GetStringResources(Application.Current?.Resources, ErrorLables);
+        DialogLables = ResourceManagement.GetStringResources(Application.Current?.Resources, DialogLables);
 
         DisplayInfo displayInfo = DeviceDisplay.MainDisplayInfo;
         double profilePictureDimensions = displayInfo.Height * 0.065;
@@ -63,8 +67,8 @@ public partial class CP_TableView : ContentPage
 
     private async void _btnAbandonTable_Clicked(object? sender, EventArgs e)
     {
-        if( await UserInterface.DisplayPopPup_Choice("Are you sure?", "Abandoning the table means you will no longer have access to it, unless you receive an invitation by another member.",
-            "Abandon", "Cancel"))
+        if( await UserInterface.DisplayPopPup_Choice(DialogLables[0], DialogLables[1],
+            DialogLables[2], DialogLables[3]))
         {
 
         }
@@ -107,9 +111,8 @@ public partial class CP_TableView : ContentPage
             }
             catch (Exception ex)
             {
-                await UserInterface.DisplayPopUp_Regular("Unhandled Error", ex.Message, "Ok");
+                await UserInterface.DisplayPopUp_Regular(ErrorLables[0], ex.Message, ErrorLables[1]);
             }
-
         }
 
         return retVal;

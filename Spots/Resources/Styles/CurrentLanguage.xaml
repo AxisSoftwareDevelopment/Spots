@@ -61,6 +61,7 @@
     <x:String x:Key="lbl_ConnectionError">Connection Error</x:String> <!-- Label that indicates a Connection Error -->
     <x:String x:Key="lbl_Retry">Retry</x:String> <!-- Label that indicates to try again -->
     <x:String x:Key="lbl_Error">Error</x:String> <!-- Label that indicates an Error-->
+    <x:String x:Key="lbl_UnhandledError">Unhandled Error</x:String> <!-- Label that indicates an Error-->
     <x:String x:Key="lbl_WriteSpotReview">Write Spot Review</x:String> <!-- Label that indicates an Error-->
     <x:String x:Key="lbl_SpotSearchBar">Spot</x:String> <!-- Label that indicates business Brand Name -->
     <x:String x:Key="lbl_Brand">Profile Picture:</x:String> <!-- Label that indicates the profile picture field -->
@@ -113,6 +114,7 @@
     <x:String x:Key="lbl_TableInteract_StanUp">Stand from Table</x:String> <!-- Label that indicates to stand from a table -->
     <x:String x:Key="lbl_TableState_Sitting">Seated</x:String> <!-- Label that indicates Table state of sitting -->
     <x:String x:Key="lbl_TableState_Away">Away</x:String> <!-- Label that indicates Table state of away -->
+    <x:String x:Key="lbl_Abandon">Abandon</x:String> <!-- Label that indicates to Abandon -->
 
     <x:String x:Key="txt_ConfirmLogOut">Are you sure you want to want to log out?</x:String> <!-- Text that questions the user if is sure of logout action -->
     <x:String x:Key="txt_LogIn">Log in to your account</x:String> <!-- Log in text -->
@@ -140,5 +142,7 @@
     <x:String x:Key="txt_TableError_NoValidLocationSelected">Please select just 1 valid Location on the map.</x:String> <!-- Error message displayed when no valid location is selected -->
     <x:String x:Key="txt_TableError_EmptyFields">One or more fields are empty. Please fill the information correctly.</x:String> <!-- Error message displayed when one or more Modification entry fields are empty -->
     <x:String x:Key="txt_TableInfoError_DescriptionTooLong">Table description must be under 150 characters.</x:String> <!-- Error message displayed when the CreateUser method returns false, indicating there was an error trying to register the account -->
+    <x:String x:Key="txt_LocationError_CouldntCalculateLocation">Couldn't calculate your location.</x:String> <!-- Error message displayed when the Location could not be calculated -->
+    <x:String x:Key="txt_TableAbandonConfirmationMessage">Abandoning the table means you will no longer have access to it, unless you receive an invitation by another member.</x:String> <!-- Information message displayed when the User tries to abandon a table -->
 
 </ResourceDictionary>

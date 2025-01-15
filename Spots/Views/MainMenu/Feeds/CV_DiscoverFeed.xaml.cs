@@ -14,9 +14,12 @@ public partial class CV_DiscoverFeed : ContentView
     private FirebaseLocation? CurrentLocation;
     private FirebaseLocation? SelectedLocation;
     private double FilterSectionHeight = FILTER_SECTION_HEIGHT_MIN;
+    private string[] ErrorLables = ["lbl_Error", "lbl_UnhandledError", "txt_LocationError_CouldntCalculateLocation", "lbl_Ok"];
 	public CV_DiscoverFeed()
 	{
         InitializeComponent();
+
+        ErrorLables = ResourceManagement.GetStringResources(Application.Current?.Resources, ErrorLables);
 
         #region Filters
         // Set animations
@@ -171,54 +174,44 @@ public partial class CV_DiscoverFeed : ContentView
 
     private async Task RefreshFeed()
     {
-        if (CurrentLocation != null && SelectedLocation != null)
-        {
-            
-            CurrentFeedContext.RefreshFeed(await DatabaseManager.FetchDiscoveryPageItems(Filters, CurrentLocation, SelectedLocation));
-        }
-        else if (Filters.Location == DiscoveryPageFilters.FILTER_LOCATION.CURRENT)
-        {
-            Location? newLocation = await LocationManager.GetUpdatedLocaionAsync();
-            if(newLocation != null)
-            {
-                CurrentLocation = new FirebaseLocation(newLocation);
-                SelectedLocation ??= CurrentLocation;
-                CurrentFeedContext.RefreshFeed(await DatabaseManager.FetchDiscoveryPageItems(Filters, CurrentLocation, SelectedLocation));
-            }
-            else
-            {
-                // TODO: Create strings
-                await UserInterface.DisplayPopUp_Regular("Error", "Couldn't calculate your location.", "ok");
-            }
-        }
-        else
-        {
-            // TODO: Create strings
-            await UserInterface.DisplayPopUp_Regular("Error", "No location selected.", "ok");
-        }
+        CurrentFeedContext.RefreshFeed(await FetchItems(false));
     }
 
     private async void OnItemThresholdReached(object? sender, EventArgs e)
     {
-        if (CurrentLocation != null && SelectedLocation != null)
-        {
-            CurrentFeedContext.AddElements(await DatabaseManager.FetchDiscoveryPageItems(Filters, CurrentLocation, SelectedLocation, CurrentFeedContext.LastItemFetched));
-        }
-        else
+        CurrentFeedContext.AddElements(await FetchItems(true));
+    }
+
+    private async Task<List<object>> FetchItems(bool bUseLastItem)
+    {
+        List<object> retVal = [];
+
+        if (CurrentLocation == null)
         {
             Location? newLocation = await LocationManager.GetUpdatedLocaionAsync();
             if (newLocation != null)
             {
                 CurrentLocation = new FirebaseLocation(newLocation);
-                SelectedLocation ??= CurrentLocation;
-                CurrentFeedContext.AddElements(await DatabaseManager.FetchDiscoveryPageItems(Filters, CurrentLocation, SelectedLocation, CurrentFeedContext.LastItemFetched));
             }
             else
             {
                 // TODO: Create strings
-                await UserInterface.DisplayPopUp_Regular("Error", "Couldnt calculate your location", "ok");
+                await UserInterface.DisplayPopUp_Regular(ErrorLables[0], ErrorLables[2], ErrorLables[3]);
+                return retVal;
             }
         }
+
+        SelectedLocation ??= CurrentLocation;
+        try
+        {
+            retVal = await DatabaseManager.FetchDiscoveryPageItems(Filters, CurrentLocation, SelectedLocation, bUseLastItem ? CurrentFeedContext.LastItemFetched : null);
+        }
+        catch (Exception ex)
+        {
+            await UserInterface.DisplayPopUp_Regular(ErrorLables[1], ex.Message, ErrorLables[3]);
+        }
+
+        return retVal;
     }
 
     private void _btnApply_Clicked(object sender, EventArgs e)
