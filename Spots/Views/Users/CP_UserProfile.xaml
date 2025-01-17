@@ -21,18 +21,18 @@
                 </StackLayout>
 
                 <StackLayout x:Name="_DescriptionLayout" Margin="25,0,25,5">
-                    <Label Text="{DynamicResource lbl_Description}" FontSize="18" TextColor="{DynamicResource Tertiary}" FontAttributes="Bold"/>
+                    <Label Text="{DynamicResource lbl_Description}" FontSize="18" TextColor="{DynamicResource SecondaryAccent}" FontAttributes="Bold"/>
                     <Label Text="{Binding Description}" TextColor="{DynamicResource SecondaryAccent}"/>
                 </StackLayout>
 
                 <StackLayout x:Name="_UserInformation" Margin="25,0,25,5">
-                    <Label Text="{DynamicResource lbl_PersonalInformation}" FontSize="18" TextColor="{DynamicResource Tertiary}" FontAttributes="Bold"/>
+                    <Label Text="{DynamicResource lbl_PersonalInformation}" FontSize="18" TextColor="{DynamicResource SecondaryAccent}" FontAttributes="Bold"/>
                     <StackLayout Orientation="Horizontal">
-                        <Label Text="{DynamicResource lbl_RegisterEmailField}" TextColor="{DynamicResource Tertiary}" Margin="0,0,5,0"/>
+                        <Label Text="{DynamicResource lbl_RegisterEmailField}" TextColor="{DynamicResource SecondaryAccent}" Margin="0,0,5,0"/>
                         <Label Text="{Binding Email}" TextColor="{DynamicResource SecondaryAccent}"/>
                     </StackLayout>
                     <StackLayout Orientation="Horizontal">
-                        <Label Text="{DynamicResource lbl_PhoneField}" TextColor="{DynamicResource Tertiary}" Margin="0,0,5,0"/>
+                        <Label Text="{DynamicResource lbl_PhoneField}" TextColor="{DynamicResource SecondaryAccent}" Margin="0,0,5,0"/>
                         <Label Text="{Binding FullPhoneNumber}" TextColor="{DynamicResource SecondaryAccent}"/>
                     </StackLayout>
                 </StackLayout>
@@ -45,7 +45,7 @@
                 </StackLayout>
 
                 <!-- Praises -->
-                <CollectionView x:Name="_colClientPraises" VerticalOptions="FillAndExpand" HorizontalScrollBarVisibility="Never" VerticalScrollBarVisibility="Never" BackgroundColor="{DynamicResource Tertiary}"
+                <CollectionView x:Name="_colClientPraises" VerticalOptions="FillAndExpand" HorizontalScrollBarVisibility="Never" VerticalScrollBarVisibility="Never" BackgroundColor="{DynamicResource BackgroundGrey}"
                     ItemsSource="{Binding ItemSource}" SelectionMode="Single">
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
@@ -74,9 +74,12 @@
                 </CollectionView>
             </StackLayout>
         </ScrollView>
-        <Button x:Name="_btnEdit" Text="{DynamicResource lbl_EditPersonalInfo}" CornerRadius="15" Margin="35, 10, 35, 10" BackgroundColor="{DynamicResource Primary}" TextColor="{DynamicResource PrimaryAccent}" Clicked="EditPersonalInformation_OnClicked"/>
-        <Button x:Name="_btnFollow" Text="{DynamicResource lbl_Follow}" CornerRadius="15" Margin="35, 10, 35, 10" BackgroundColor="{DynamicResource Primary}" TextColor="{DynamicResource PrimaryAccent}" Clicked="FollowClient_OnClicked"/>
-        <Button x:Name="_btnUnfollow" Text="{DynamicResource lbl_Unfollow}" CornerRadius="15" Margin="35, 10, 35, 10" BackgroundColor="{DynamicResource Tertiary}" TextColor="{DynamicResource PrimaryAccent}" Clicked="UnfollowClient_OnClicked"/>
+        <StackLayout Orientation="Horizontal" Margin="20, 0, 20, 0">
+            <Button x:Name="_btnEdit" Text="{DynamicResource lbl_EditPersonalInfo}" CornerRadius="15" Margin="5" BackgroundColor="{DynamicResource Primary}" TextColor="{DynamicResource PrimaryAccent}" Clicked="EditPersonalInformation_OnClicked" HorizontalOptions="FillAndExpand"/>
+            <Button x:Name="_btnFollow" Text="{DynamicResource lbl_Follow}" CornerRadius="15" Margin="5" BackgroundColor="{DynamicResource Primary}" TextColor="{DynamicResource PrimaryAccent}" Clicked="FollowClient_OnClicked" HorizontalOptions="FillAndExpand"/>
+            <Button x:Name="_btnUnfollow" Text="{DynamicResource lbl_Unfollow}" CornerRadius="15" Margin="5" BackgroundColor="{DynamicResource Tertiary}" TextColor="{DynamicResource PrimaryAccent}" Clicked="UnfollowClient_OnClicked" HorizontalOptions="FillAndExpand"/>
+            <Button x:Name="_btnInviteToTable" Text="{DynamicResource lbl_InviteToTable}" CornerRadius="15" Margin="5" BackgroundColor="{DynamicResource Tertiary}" TextColor="{DynamicResource PrimaryAccent}" Clicked="UnfollowClient_OnClicked" HorizontalOptions="FillAndExpand"/>
+        </StackLayout>
     </StackLayout>
 
 </ContentPage>

@@ -49,11 +49,7 @@ public partial class CP_SpotPraise : ContentPage
     {
         LockView();
         Client client = await DatabaseManager.GetClientDataAsync(_SpotPraise.AuthorID);
-        if (SessionManager.CurrentSession?.Client?.UserID != null)
-        {
-            List<FollowRegister_Firebase> followRegisters = await DatabaseManager.FetchFollowRegisters(followerID: SessionManager.CurrentSession?.Client?.UserID, followedID: client.UserID);
-            await Navigation.PushAsync(new CP_UserProfile(client, followRegisters.Count > 0));
-        }
+        await client.OpenClientView(FP_MainShell.MainNavigation);
         UnlockView();
     }
 

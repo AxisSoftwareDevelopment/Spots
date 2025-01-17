@@ -4,7 +4,7 @@
              xmlns:discoveryPage="clr-namespace:Spots.DiscoveryPage"
              xmlns:maps="clr-namespace:Microsoft.Maui.Controls.Maps;assembly=Microsoft.Maui.Controls.Maps"
              x:Class="Spots.CV_DiscoverFeed"
-             BackgroundColor="{DynamicResource Tertiary}">
+             BackgroundColor="{DynamicResource BackgroundGrey}">
 
     <RefreshView x:Name="_refreshView" Margin="0,5,0,0">
         <CollectionView x:Name="_colFeed" HorizontalOptions="FillAndExpand" HorizontalScrollBarVisibility="Never" VerticalScrollBarVisibility="Never"
@@ -40,7 +40,7 @@
                                 </StackLayout>
                                 <StackLayout Orientation="Horizontal" Margin="0, 0, 3, 3">
                                     <Label Text="{DynamicResource lbl_SearchArea_twoDots}" TextColor="{DynamicResource PrimaryAccent}" Margin="15, 10, 10, 0"/>
-                                    <Picker x:Name="_PickerLocationOptions" Margin="5, 0, 5, 0" TextColor="{DynamicResource Primary}" Background="{DynamicResource Tertiary}"/>
+                                    <Picker x:Name="_PickerLocationOptions" Margin="5, 0, 5, 0" TextColor="{DynamicResource PrimaryAccent}" Background="{DynamicResource Primary}"/>
                                 </StackLayout>
                             </StackLayout>
 

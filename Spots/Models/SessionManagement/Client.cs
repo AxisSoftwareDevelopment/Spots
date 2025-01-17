@@ -218,6 +218,18 @@ public class Client : INotifyPropertyChanged
             ImageSource.FromFile("placeholder_logo.jpg");
         }
     }
+
+    public async Task OpenClientView(INavigation? navigation)
+    {
+        if (navigation != null)
+        {
+            List<string> followers = await DatabaseManager.FetchFollowers(UserID);
+            bool bFollowing = UserID != SessionManager.CurrentSession?.Client?.UserID
+                && followers.Contains(SessionManager.CurrentSession?.Client?.UserID ?? "NULL");
+
+            await navigation.PushAsync(new CP_UserProfile(this, bFollowing));
+        }
+    }
 }
 
 public class Client_Firebase
@@ -380,6 +392,27 @@ public class Client_Firebase
     }
 }
 
+public class FollowRegister
+{
+    public string RegisterID { get; set; }
+    public string FollowedID { get; set; }
+    public string FollowerID { get; set; }
+
+    public FollowRegister()
+    {
+        RegisterID = string.Empty;
+        FollowedID = string.Empty;
+        FollowerID = string.Empty;
+    }
+
+    public FollowRegister(FollowRegister_Firebase register)
+    {
+        RegisterID = register.RegisterID;
+        FollowedID = register.FollowedID;
+        FollowerID = register.FollowerID;
+    }
+}
+
 public class FollowRegister_Firebase
 {
     [FirestoreDocumentId]
@@ -401,5 +434,12 @@ public class FollowRegister_Firebase
         RegisterID = id;
         FollowerID = folloer;
         FollowedID = followed;
+    }
+
+    public FollowRegister_Firebase(FollowRegister register)
+    {
+        RegisterID = register.RegisterID;
+        FollowedID = register.FollowedID;
+        FollowerID = register.FollowerID;
     }
 }

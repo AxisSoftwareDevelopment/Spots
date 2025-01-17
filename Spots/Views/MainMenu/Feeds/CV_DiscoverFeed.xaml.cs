@@ -151,23 +151,16 @@ public partial class CV_DiscoverFeed : ContentView
             if(e.CurrentSelection[0] is Spot spot)
             {
                 await Navigation.PushAsync(new CP_SpotView(spot));
-                _colFeed.SelectedItem = null;
             }
             else if (e.CurrentSelection[0] is Client client)
             {
-                if (SessionManager.CurrentSession?.Client?.UserID != null)
-                {
-                    List<FollowRegister_Firebase> followRegisters = await DatabaseManager.FetchFollowRegisters(followerID: SessionManager.CurrentSession?.Client?.UserID,
-                        followedID: client.UserID);
-                    await Navigation.PushAsync(new CP_UserProfile(client, followRegisters.Count > 0));
-                }
-                _colFeed.SelectedItem = null;
+                await client.OpenClientView(Navigation);
             }
             else if (e.CurrentSelection[0] is SpotPraise praise)
             {
                 await Navigation.PushAsync(new CP_SpotPraise(praise));
-                _colFeed.SelectedItem = null;
             }
+            _colFeed.SelectedItem = null;
         }
     }
 
@@ -213,7 +206,7 @@ public partial class CV_DiscoverFeed : ContentView
         return retVal;
     }
 
-    private void _btnApply_Clicked(object sender, EventArgs e)
+    private async void _btnApply_Clicked(object sender, EventArgs e)
     {
         // Gather selected filters
         DiscoveryPageFilters.FILTER_SUBJECT subjectSelected = _radioSpotsFilter.IsChecked ? DiscoveryPageFilters.FILTER_SUBJECT.SPOTS
@@ -234,6 +227,9 @@ public partial class CV_DiscoverFeed : ContentView
         Filters.Area = areaSelected;
         Filters.Time = timeSelected;
         Filters.Order = orderSelected;
+
+        // Refresh
+        await RefreshFeed();
     }
 }
 

@@ -6,7 +6,7 @@ namespace Spots;
 public partial class CP_TableView : ContentPage
 {
     private const string STATE_COLOR_SITTING = "Green";
-    private const string STATE_COLOR_AWAY = "Red";
+    private const string STATE_COLOR_AWAY = "#D42626";
     private string[] MemberStateLables = ["lbl_TableState_Sitting", "lbl_TableState_Away"];
     private string[] CurrentStateLables = ["lbl_CurrentTableState_Sitting", "lbl_CurrentTableState_Away"];
     private string[] InteractionLables = ["lbl_TableInteract_StanUp", "lbl_TableInteract_Sit"];
@@ -117,11 +117,11 @@ public partial class CP_TableView : ContentPage
         return retVal;
     }
 
-    private void _colMembers_SelectionChanged(object? sender, SelectionChangedEventArgs e)
+    private async void _colMembers_SelectionChanged(object? sender, SelectionChangedEventArgs e)
     {
         if (e.CurrentSelection.Count > 0)
         {
-            ((TableMember)e.CurrentSelection[0]).LaunchClientView();
+            await ((TableMember)e.CurrentSelection[0]).LaunchClientView();
             _colMembers.SelectedItem = null;
         }
     }
@@ -152,9 +152,9 @@ public partial class CP_TableView : ContentPage
             ProfilePictureSource = client.ProfilePictureSource;
         }
 
-        public void LaunchClientView()
+        public async Task LaunchClientView()
         {
-            FP_MainShell.MainNavigation?.PushAsync(new CP_UserProfile(CachedClient));
+            await CachedClient.OpenClientView(FP_MainShell.MainNavigation);
         }
     }
 }

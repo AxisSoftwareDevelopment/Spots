@@ -9,23 +9,25 @@
         <Label Text="{DynamicResource lbl_SpotReview}" TextColor="{DynamicResource PrimaryAccent}" FontSize="24" FontAttributes="Bold" HorizontalOptions="Start" VerticalOptions="Center"></Label>
     </NavigationPage.TitleView>
 
-    <Border Margin="20, 0, 20, 20" StrokeShape="RoundRectangle 50,50,50,50" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="{DynamicResource Secondary}">
+    <Border Margin="15, 0, 15, 15" StrokeShape="RoundRectangle 15" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="{DynamicResource Secondary}">
         <StackLayout Margin="10, 10" VerticalOptions="FillAndExpand">
             <ScrollView x:Name="_scrollviewMain" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" HorizontalScrollBarVisibility="Never" VerticalScrollBarVisibility="Never">
                 <StackLayout>
                     <!-- Author -->
                     <StackLayout Orientation="Horizontal" HorizontalOptions="End">
                         <Label x:Name="_lblAuthorName" Text="Author" TextColor="{DynamicResource Tertiary}" VerticalOptions="Center"/>
-                        <Border x:Name="_FrameAuthorPicture" Padding="0" StrokeShape="RoundRectangle 500" BackgroundColor="{DynamicResource Tertiary}" Margin="5">
+                        <Border x:Name="_FrameAuthorPicture" Padding="0" StrokeShape="RoundRectangle 500" BackgroundColor="{DynamicResource Tertiary}" Margin="5" StrokeThickness="0">
                             <ImageButton x:Name="_imgAuthorPicture" Aspect="AspectFill"/>
                         </Border>
                     </StackLayout>
                     <!-- Spot -->
                     <StackLayout Orientation="Horizontal">
-                        <Border x:Name="_FrameSpotPicture" Padding="0" Margin="15,15,15,0" StrokeShape="RoundRectangle 500" BackgroundColor="{DynamicResource Tertiary}">
+                        <Border x:Name="_FrameSpotPicture" Padding="0" Margin="15,15,15,0" StrokeShape="RoundRectangle 500" BackgroundColor="{DynamicResource Tertiary}" StrokeThickness="0">
                             <ImageButton x:Name="_imgSpotImage" Aspect="AspectFill"/>
                         </Border>
-                        <Label x:Name="_lblBrand" TextColor="{DynamicResource SecondaryAccent}" FontAttributes="Bold" Margin="0,20,0,0" VerticalOptions="Center"/>
+                        <Border HorizontalOptions="FillAndExpand" StrokeThickness="0">
+                            <Label x:Name="_lblBrand" TextColor="{DynamicResource SecondaryAccent}" FontAttributes="Bold" Margin="0,20,0,0" VerticalOptions="Center"/>
+                        </Border>
                     </StackLayout>
                     <!-- Review Comment -->
                     <Label Text="{DynamicResource lbl_Comment}" TextColor="{DynamicResource Tertiary}" HorizontalOptions="FillAndExpand" HorizontalTextAlignment="Start" Margin="15, 15, 0, 0"/>
@@ -34,9 +36,9 @@
                     <Image x:Name="_imgAttachmentImage" Aspect="AspectFit" VerticalOptions="StartAndExpand"  HorizontalOptions="CenterAndExpand" Margin="10, 10"/>
                 </StackLayout>
             </ScrollView>
-            <StackLayout Orientation="Horizontal" HorizontalOptions="Center">
-                <Button x:Name="_btnEdit" CornerRadius="15" BackgroundColor="{DynamicResource Tertiary}" TextColor="{DynamicResource PrimaryAccent}" FontSize="Medium"
-                    Text="{DynamicResource lbl_Edit}" Margin="20,20,20,20" />
+            <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand">
+                <Button x:Name="_btnEdit" CornerRadius="10" BackgroundColor="{DynamicResource Tertiary}" TextColor="{DynamicResource PrimaryAccent}"
+                    Text="{DynamicResource lbl_Edit}" Margin="25,10,25,0" HorizontalOptions="FillAndExpand"/>
             </StackLayout>
         </StackLayout>
     </Border>

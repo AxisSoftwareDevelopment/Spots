@@ -59,12 +59,7 @@ public partial class CP_SearchPage : ContentPage
         {
             if (CurrentFilterApplyed == ESearchFocus.CLIENT)
             {
-                if (SessionManager.CurrentSession?.Client?.UserID != null)
-                {
-                    List<FollowRegister_Firebase> followRegisters = await DatabaseManager.FetchFollowRegisters(followerID: SessionManager.CurrentSession?.Client?.UserID,
-                        followedID: ((Client)e.CurrentSelection[0]).UserID);
-                    await Navigation.PushAsync(new CP_UserProfile((Client)e.CurrentSelection[0], followRegisters.Count > 0));
-                }
+                await ((Client)e.CurrentSelection[0]).OpenClientView(Navigation);
             }
             else
             {

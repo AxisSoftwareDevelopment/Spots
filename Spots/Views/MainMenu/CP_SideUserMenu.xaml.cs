@@ -55,13 +55,7 @@ public partial class CP_SideUserMenu : ContentPage
             FP_MainShell.MainFlyout.IsPresented = false;
         }
 
-        if (SessionManager.CurrentSession != null)
-        {
-            if (SessionManager.CurrentSession.Client != null)
-            {
-                FP_MainShell.MainNavigation?.PushAsync(new CP_UserProfile(SessionManager.CurrentSession.Client));
-            }
-        }
+        SessionManager.CurrentSession?.Client?.OpenClientView(FP_MainShell.MainNavigation);
     }
 
     private void PreferencesOnClicked(object sender, EventArgs e)

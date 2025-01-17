@@ -27,6 +27,7 @@ public partial class CP_UserProfile : ContentPage
 		{
 			_btnEdit.IsVisible = false;
             _stackFollowingZone.IsVisible = false;
+            _btnInviteToTable.IsVisible = true;
             if (following)
             {
                 _btnFollow.IsVisible = false;
@@ -37,9 +38,10 @@ public partial class CP_UserProfile : ContentPage
                 _btnFollow.IsVisible = true;
                 _btnUnfollow.IsVisible = false;
             }
-		}
+        }
 		else
 		{
+            _btnInviteToTable.IsVisible = false;
             _btnEdit.IsVisible = true;
             _btnFollow.IsVisible = false;
 			_btnUnfollow.IsVisible = false;
@@ -86,9 +88,9 @@ public partial class CP_UserProfile : ContentPage
 
     private async void FollowedClientsView(object? sender, EventArgs e)
     {
-        List<FollowRegister_Firebase> followRegisters = await DatabaseManager.FetchFollowRegisters(followerID: user.UserID);
+        List<FollowRegister> followRegisters = await DatabaseManager.FetchFollowRegisters(followerID: user.UserID);
         List<string> folloewdIDs = [];
-        foreach (FollowRegister_Firebase register in followRegisters)
+        foreach (FollowRegister register in followRegisters)
         {
             folloewdIDs.Add(register.FollowedID);
         }

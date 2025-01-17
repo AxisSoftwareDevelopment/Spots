@@ -40,7 +40,6 @@
                         <StackLayout >
                             <StackLayout Orientation="Horizontal" Margin="5">
                                 <Label x:Name="_lblMembersTitle" Text="{DynamicResource lbl_Members}" TextColor="{DynamicResource Secondary}" FontSize="Large" HorizontalOptions="FillAndExpand" HorizontalTextAlignment="Center"/>
-                                <Button Text="+" FontSize="Large" Padding="10,-2,10,0" BackgroundColor="{DynamicResource Primary}" CornerRadius="7"/>
                             </StackLayout>
                             <CollectionView x:Name="_colMembers" HorizontalOptions="FillAndExpand" HorizontalScrollBarVisibility="Never" VerticalOptions="FillAndExpand" VerticalScrollBarVisibility="Never" SelectionMode="Single"
                                 ItemsSource="{Binding ItemSource}">

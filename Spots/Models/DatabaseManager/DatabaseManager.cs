@@ -390,9 +390,9 @@ public static class DatabaseManager
     {
         List<SpotPraise> spotPraises = [];
         IQuerySnapshot<SpotPraise_Firebase> documentReference;
-        List<FollowRegister_Firebase> followRegisters = await FetchFollowRegisters(followerID: client.UserID);
+        List<FollowRegister> followRegisters = await FetchFollowRegisters(followerID: client.UserID);
         List<string> clientIDs = [client.UserID];
-        foreach (FollowRegister_Firebase register in followRegisters)
+        foreach (FollowRegister register in followRegisters)
         {
             if (!clientIDs.Contains(register.FollowedID))
             {
@@ -531,9 +531,9 @@ public static class DatabaseManager
         return retVal ?? [];
     }
 
-    public static async Task<List<FollowRegister_Firebase>> FetchFollowRegisters(string? followerID = null, string? followedID = null)
+    public static async Task<List<FollowRegister>> FetchFollowRegisters(string? followerID = null, string? followedID = null)
     {
-        List<FollowRegister_Firebase> retVal = [];
+        List<FollowRegister> retVal = [];
 
         IQuery query = CrossFirebaseFirestore.Current.GetCollection(COLLECTION_FOLLOWS).OrderBy(nameof(FollowRegister_Firebase.FollowerID));
         if(followedID != null)
@@ -550,8 +550,36 @@ public static class DatabaseManager
         {
             if(doc.Data != null)
             {
-                retVal.Add(doc.Data);
+                retVal.Add(new(doc.Data));
             }
+        }
+
+        return retVal;
+    }
+
+    public static async Task<List<string>> FetchFollowers(string followedID)
+    {
+        List<string> retVal = [];
+
+        List<FollowRegister> registers = await FetchFollowRegisters(followedID: followedID);
+
+        foreach (FollowRegister register in registers)
+        {
+            retVal.Add(register.FollowerID);
+        }
+
+        return retVal;
+    }
+
+    public static async Task<List<string>> FetchFollowed(string followerID)
+    {
+        List<string> retVal = [];
+
+        List<FollowRegister> registers = await FetchFollowRegisters(followerID: followerID);
+
+        foreach (FollowRegister register in registers)
+        {
+            retVal.Add(register.FollowedID);
         }
 
         return retVal;
@@ -649,11 +677,11 @@ public static class DatabaseManager
 
         try
         {
-            List<FollowRegister_Firebase> followRegisters = await FetchFollowRegisters(followedID: followedID);
+            List<FollowRegister> followRegisters = await FetchFollowRegisters(followedID: followedID);
             int finalFollowersCount = followRegisters.Count;
             int preExistantFollowsCount = 0;
 
-            foreach (FollowRegister_Firebase register in followRegisters)
+            foreach (FollowRegister register in followRegisters)
             {
                 if (register.FollowerID == followerID)
                 {

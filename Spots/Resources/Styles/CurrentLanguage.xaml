@@ -41,6 +41,7 @@
     <x:String x:Key="lbl_LoadImage">Load Image</x:String> <!-- Label that indicates to load an image -->
     <x:String x:Key="lbl_ProfilePictureField">Profile Picture:</x:String> <!-- Label that indicates the profile picture field -->
     <x:String x:Key="lbl_EditPersonalInfo">Edit Personal Information</x:String> <!-- Label that indicates to edit personal information -->
+    <x:String x:Key="lbl_EditSpotInfo">Edit Spot Information</x:String> <!-- Label that indicates to edit spot information -->
     <x:String x:Key="lbl_Skip">Skip</x:String> <!-- Label that indicates to Skip -->
     <x:String x:Key="lbl_Description">Description</x:String> <!-- Label that indicates Description section -->
     <x:String x:Key="lbl_FirstTime">First Time?</x:String> <!-- Label that asks first time? -->
@@ -115,6 +116,7 @@
     <x:String x:Key="lbl_TableState_Sitting">Seated</x:String> <!-- Label that indicates Table state of sitting -->
     <x:String x:Key="lbl_TableState_Away">Away</x:String> <!-- Label that indicates Table state of away -->
     <x:String x:Key="lbl_Abandon">Abandon</x:String> <!-- Label that indicates to Abandon -->
+    <x:String x:Key="lbl_InviteToTable">Invite to a Table</x:String> <!-- Label that indicates to Invite someone to a table -->
 
     <x:String x:Key="txt_ConfirmLogOut">Are you sure you want to want to log out?</x:String> <!-- Text that questions the user if is sure of logout action -->
     <x:String x:Key="txt_LogIn">Log in to your account</x:String> <!-- Log in text -->

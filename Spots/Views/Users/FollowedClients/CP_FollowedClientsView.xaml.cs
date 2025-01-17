@@ -17,12 +17,7 @@ public partial class CP_FollowedClientsView : ContentPage
     {
         if (e.CurrentSelection.Count > 0)
         {
-            if (SessionManager.CurrentSession?.Client?.UserID != null)
-            {
-                List<FollowRegister_Firebase> followRegisters = await DatabaseManager.FetchFollowRegisters(followerID: SessionManager.CurrentSession?.Client?.UserID,
-                    followedID: ((Client)e.CurrentSelection[0]).UserID);
-                await Navigation.PushAsync(new CP_UserProfile((Client)e.CurrentSelection[0], followRegisters.Count > 0));
-            }
+            await ((Client)e.CurrentSelection[0]).OpenClientView(FP_MainShell.MainNavigation);
             _colFollowedClientsCollectionView.SelectedItem = null;
         }
     }

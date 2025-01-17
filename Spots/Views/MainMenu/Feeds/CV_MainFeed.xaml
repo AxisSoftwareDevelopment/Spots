@@ -3,13 +3,13 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Spots.CV_MainFeed">
 
-    <StackLayout Orientation="Vertical" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" BackgroundColor="{DynamicResource Tertiary}">
+    <StackLayout Orientation="Vertical" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" BackgroundColor="{DynamicResource BackgroundGrey}">
         <StackLayout Orientation="Horizontal" HorizontalOptions="Center">
             <Button x:Name="_btnWritePraise" CornerRadius="5" BackgroundColor="{DynamicResource Primary}" TextColor="{DynamicResource PrimaryAccent}" FontSize="Small"
                 Text="Write Praise" Margin="5,5,5,5" Clicked="_btnWritePraise_Clicked"/>
         </StackLayout>
         <RefreshView x:Name="_refreshView">
-            <CollectionView x:Name="_colFeed" HorizontalOptions="FillAndExpand" HorizontalScrollBarVisibility="Never" VerticalScrollBarVisibility="Never" BackgroundColor="{DynamicResource Tertiary}"
+            <CollectionView x:Name="_colFeed" HorizontalOptions="FillAndExpand" HorizontalScrollBarVisibility="Never" VerticalScrollBarVisibility="Never" BackgroundColor="{DynamicResource BackgroundGrey}"
                                 ItemsSource="{Binding ItemSource}" SelectionMode="Single">
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
