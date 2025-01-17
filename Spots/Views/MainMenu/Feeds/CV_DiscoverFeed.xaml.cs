@@ -1,4 +1,3 @@
-using Java.Util;
 using Microsoft.Maui.Controls.Maps;
 using Microsoft.Maui.Maps;
 

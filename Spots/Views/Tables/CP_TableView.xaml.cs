@@ -1,4 +1,3 @@
-using Android.Media;
 using Microsoft.Maui.Controls.Maps;
 using Microsoft.Maui.Maps;
 

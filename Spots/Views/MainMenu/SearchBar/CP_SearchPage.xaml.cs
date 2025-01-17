@@ -1,5 +1,3 @@
-using static Android.Gms.Common.Apis.Api;
-
 namespace Spots;
 
 public partial class CP_SearchPage : ContentPage

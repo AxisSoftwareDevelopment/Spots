@@ -1,5 +1,4 @@
-﻿using Firebase.Firestore;
-using Plugin.Firebase.Firestore;
+﻿using Plugin.Firebase.Firestore;
 
 namespace Spots;
 

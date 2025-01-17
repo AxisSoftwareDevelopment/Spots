@@ -2,8 +2,6 @@
 using Plugin.Firebase.Firestore;
 using Plugin.Firebase.Core.Exceptions;
 using Plugin.Firebase.Storage;
-using Firebase.Firestore;
-using static Google.Firestore.V1.StructuredQuery;
 
 namespace Spots;
 public static class DatabaseManager
