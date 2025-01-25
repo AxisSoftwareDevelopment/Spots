@@ -33,9 +33,9 @@
                                     <Label Text="{DynamicResource lbl_ClosestTo_twoDots}" TextColor="{DynamicResource PrimaryAccent}" VerticalOptions="Center" Margin="15, 5, 15, 0"/>
                                     <RadioButton x:Name="_radioCurrentLoc" GroupName="Location" Content="{DynamicResource lbl_CurrentLocation}" FontAttributes="Italic" HorizontalOptions="FillAndExpand" BackgroundColor="{DynamicResource TertiaryDarker}" TextColor="{DynamicResource PrimaryAccent}" IsChecked="True"/>
                                     <RadioButton x:Name="_radioSelectedLoc" GroupName="Location" FontAttributes="Italic" BackgroundColor="{DynamicResource TertiaryDarker}" TextColor="{DynamicResource PrimaryAccent}"/>
-                                    <StackLayout Orientation="Vertical" HorizontalOptions="FillAndExpand">
-                                        <maps:Map x:Name="_cvMiniMap" HorizontalOptions="FillAndExpand" Margin="-15, 0, 15, 0" IsZoomEnabled="False" IsScrollEnabled ="False"/>
-                                        <Button Clicked="_cvMiniMap_MapClicked" Text="{DynamicResource lbl_SelectLocation}" HorizontalOptions="FillAndExpand" Margin="-15, 0, 15, 0"/>
+                                    <StackLayout Orientation="Vertical" HorizontalOptions="FillAndExpand" Margin="-15, 0, 15, 0">
+                                        <maps:Map x:Name="_cvMiniMap" HorizontalOptions="FillAndExpand" IsZoomEnabled="False" IsScrollEnabled ="False"/>
+                                        <Button Clicked="_cvMiniMap_MapClicked" Text="{DynamicResource lbl_SelectLocation}" BackgroundColor="{DynamicResource Primary}" TextColor="{DynamicResource PrimaryAccent}" HorizontalOptions="FillAndExpand" />
                                     </StackLayout>
                                 </StackLayout>
                                 <StackLayout Orientation="Horizontal" Margin="0, 0, 3, 3">
@@ -61,7 +61,7 @@
                                     <RadioButton x:Name="_radioRecent" GroupName="Order" Content="{DynamicResource lbl_Recent}" FontAttributes="Italic" BackgroundColor="{DynamicResource TertiaryDarker}" HorizontalOptions="FillAndExpand" TextColor="{DynamicResource PrimaryAccent}"/>
                                 </StackLayout>
                             </StackLayout>
-                            <Button Text="{DynamicResource lbl_Apply}" FontAttributes="Bold" HorizontalOptions="EndAndExpand" Margin="10" Clicked="_btnApply_Clicked"/>
+                            <Button Text="{DynamicResource lbl_Apply}" FontAttributes="Bold" HorizontalOptions="EndAndExpand" BackgroundColor="{DynamicResource Primary}" TextColor="{DynamicResource PrimaryAccent}" Margin="10" Clicked="_btnApply_Clicked"/>
                         </StackLayout>
                             
                     </StackLayout>

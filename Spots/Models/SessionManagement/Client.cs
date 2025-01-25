@@ -17,7 +17,9 @@ public class Client : INotifyPropertyChanged
     private string? _Description;
     private ImageSource? _ProfilePictureSource;
     private FirebaseLocation? _LastLocation;
-    private int? _FollowersCount;
+    private List<string>? _Followers;
+    private List<string>? _Followed;
+    private int? _LikesCount;
     #endregion
 
     #region Public Parameters
@@ -118,14 +120,33 @@ public class Client : INotifyPropertyChanged
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Description)));
         }
     }
-    public int FollowersCount
+    public List<string> Followers
     {
-        get => _FollowersCount ?? 0;
+        get => _Followers ?? [];
         set
         {
-            _FollowersCount = value;
+            _Followers = value;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Followers)));
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(FollowersCount)));
         }
+    }
+    public int FollowersCount
+    {
+        get => _Followers?.Count ?? 0;
+    }
+    public List<string> Followed
+    {
+        get => _Followed ?? [];
+        set
+        {
+            _Followed = value;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Followed)));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(FollowedCount)));
+        }
+    }
+    public int FollowedCount
+    {
+        get => _Followed?.Count ?? 0;
     }
     public FirebaseLocation? LastLocation
     {
@@ -139,6 +160,15 @@ public class Client : INotifyPropertyChanged
             }
         }
     }
+    public int LikesCount
+    {
+        get => _LikesCount ?? 0;
+        set
+        {
+            _LikesCount = value;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(LikesCount)));
+        }
+    }
     #endregion
     public Client()
     {
@@ -150,13 +180,15 @@ public class Client : INotifyPropertyChanged
         PhoneCountryCode = "";
         PhoneNumber = "";
         Description = "";
-        FollowersCount = 0;
+        Followers = [];
+        Followed = [];
         LastLocation = null;
+        LikesCount = 0;
     }
 
     public Client(string userID, string firstName, string lastName, DateTimeOffset birthDate, string mail, 
         ImageSource? profilePictureSrc = null, string phoneNumber = "", string phoneCountryCode = "", string description = "",
-        int followersCount = 0, FirebaseLocation? lastLocation = null)
+        List<string>? followers = null, List<string>? followed = null, FirebaseLocation? lastLocation = null, int likesCount = 0)
     {
         UserID = userID;
         FirstName = firstName;
@@ -167,8 +199,10 @@ public class Client : INotifyPropertyChanged
         PhoneNumber = phoneNumber;
         PhoneCountryCode = phoneCountryCode;
         Description = description;
-        FollowersCount = followersCount;
+        Followers = followers ?? [];
+        Followed = followed ?? [];
         LastLocation = lastLocation;
+        LikesCount = likesCount;
     }
 
     public Client(Client_Firebase firebaseData, ImageSource profilePictureSrc)
@@ -186,7 +220,9 @@ public class Client : INotifyPropertyChanged
             && firebaseData.LastLocation.Latitude == 0
             && firebaseData.LastLocation.Longitude == 0)
             ? null : firebaseData.LastLocation;
-        FollowersCount = firebaseData.FollowersCount;
+        Followers = [.. firebaseData.Followers];
+        Followed = [.. firebaseData.Followed];
+        LikesCount = firebaseData?.LikesCount ?? 0;
     }
 
     public void UpdateUserData(Client userData)
@@ -200,7 +236,8 @@ public class Client : INotifyPropertyChanged
         PhoneNumber = userData.PhoneNumber;
         PhoneCountryCode = userData.PhoneCountryCode;
         Description = userData.Description;
-        FollowersCount = userData.FollowersCount;
+        Followers = userData.Followers;
+        Followed = userData.Followed;
         LastLocation = userData.LastLocation;
     }
 
@@ -223,9 +260,8 @@ public class Client : INotifyPropertyChanged
     {
         if (navigation != null)
         {
-            List<string> followers = await DatabaseManager.FetchFollowers(UserID);
             bool bFollowing = UserID != SessionManager.CurrentSession?.Client?.UserID
-                && followers.Contains(SessionManager.CurrentSession?.Client?.UserID ?? "NULL");
+                && Followers.Contains(SessionManager.CurrentSession?.Client?.UserID ?? "NULL");
 
             await navigation.PushAsync(new CP_UserProfile(this, bFollowing));
         }
@@ -264,14 +300,20 @@ public class Client_Firebase
     [FirestoreProperty(nameof(SearchTerms))]
     public IList<string> SearchTerms { get; set; }
 
-    [FirestoreProperty(nameof(FollowersCount))]
-    public int FollowersCount { get; set; }
+    [FirestoreProperty(nameof(Followers))]
+    public IList<string> Followers { get; set; }
+
+    [FirestoreProperty(nameof(Followed))]
+    public IList<string> Followed { get; set; }
 
     [FirestoreProperty(nameof(LastLocation))]
     public FirebaseLocation LastLocation { get; set; }
 
     [FirestoreProperty(nameof(ClientID_ForSearch))]
     public IList<string> ClientID_ForSearch { get; set; }
+
+    [FirestoreProperty(nameof(LikesCount))]
+    public int LikesCount { get; set; }
 
 
     public Client_Firebase()
@@ -286,37 +328,11 @@ public class Client_Firebase
         Description = "";
         ProfilePictureAddress = "";
         SearchTerms = [];
-        FollowersCount = 0;
+        Followers = [];
+        Followed = [];
         ClientID_ForSearch = [];
         LastLocation = new("", 0, 0);
-    }
-
-    public Client_Firebase(string userID,
-        string firstName,
-        string lastName,
-        DateTimeOffset birthDate,
-        string email,
-        string phoneNumber,
-        string phoneCountryCode,
-        string description,
-        string profilePictureAddress,
-        List<string> searchTerms,
-        FirebaseLocation lastLocation,
-        int followersCount)
-    {
-        UserID = userID;
-        FirstName = firstName;
-        LastName = lastName;
-        BirthDate = birthDate;
-        Email = email;
-        PhoneNumber = phoneNumber;
-        PhoneCountryCode = phoneCountryCode;
-        Description = description;
-        ProfilePictureAddress = profilePictureAddress;
-        SearchTerms = searchTerms;
-        FollowersCount = followersCount;
-        LastLocation = lastLocation;
-        ClientID_ForSearch = [userID];
+        LikesCount = 0;
     }
 
     public Client_Firebase(Client userData, string profilePictureAddress)
@@ -331,9 +347,11 @@ public class Client_Firebase
         Description = userData.Description;
         ProfilePictureAddress = profilePictureAddress;
         SearchTerms = GenerateSearchTerms(FirstName, LastName);
-        FollowersCount = userData.FollowersCount;
+        Followers = userData.Followers;
+        Followed = userData.Followed;
         LastLocation = userData.LastLocation ?? new("", 0, 0);
         ClientID_ForSearch = [userData.UserID];
+        LikesCount = userData.LikesCount;
     }
 
     private static List<string> GenerateSearchTerms(string firstName, string lastName)
@@ -389,57 +407,5 @@ public class Client_Firebase
         {
             return ImageSource.FromFile("placeholder_logo.jpg");
         }
-    }
-}
-
-public class FollowRegister
-{
-    public string RegisterID { get; set; }
-    public string FollowedID { get; set; }
-    public string FollowerID { get; set; }
-
-    public FollowRegister()
-    {
-        RegisterID = string.Empty;
-        FollowedID = string.Empty;
-        FollowerID = string.Empty;
-    }
-
-    public FollowRegister(FollowRegister_Firebase register)
-    {
-        RegisterID = register.RegisterID;
-        FollowedID = register.FollowedID;
-        FollowerID = register.FollowerID;
-    }
-}
-
-public class FollowRegister_Firebase
-{
-    [FirestoreDocumentId]
-    public string RegisterID { get; set; }
-    [FirestoreProperty(nameof(FollowedID))]
-    public string FollowedID { get; set; }
-    [FirestoreProperty(nameof(FollowerID))]
-    public string FollowerID { get; set; }
-
-    public FollowRegister_Firebase()
-    {
-        RegisterID = string.Empty;
-        FollowedID = string.Empty;
-        FollowerID = string.Empty;
-    }
-
-    public FollowRegister_Firebase(string folloer, string followed, string id = "")
-    {
-        RegisterID = id;
-        FollowerID = folloer;
-        FollowedID = followed;
-    }
-
-    public FollowRegister_Firebase(FollowRegister register)
-    {
-        RegisterID = register.RegisterID;
-        FollowedID = register.FollowedID;
-        FollowerID = register.FollowerID;
     }
 }

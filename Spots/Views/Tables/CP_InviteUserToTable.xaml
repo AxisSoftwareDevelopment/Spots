@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Spots.CP_InviteUserToTable"
+             Title="CP_InviteUserToTable"
+             BackgroundColor="{DynamicResource Primary}">
+
+    <NavigationPage.TitleView>
+        <Label Text="{DynamicResource lbl_InviteToTable}" TextColor="{DynamicResource PrimaryAccent}" FontSize="24" FontAttributes="Bold" HorizontalOptions="Start" VerticalOptions="Center"/>
+    </NavigationPage.TitleView>
+
+    <Border StrokeShape="RoundRectangle 5" StrokeThickness="0" Margin="15, 0, 15, 15" BackgroundColor="{DynamicResource Secondary}">
+        <StackLayout Orientation="Vertical">
+            <StackLayout Orientation="Vertical" HorizontalOptions="FillAndExpand" Margin="10,5">
+                <Label x:Name="_lblInvitationText" Text="{DynamicResource txt_SelectATableForInviteMessage}" FontSize="Medium" FontAttributes="Bold" TextColor="{DynamicResource SecondaryAccent}" VerticalOptions="Center"/>
+                <StackLayout Orientation="Horizontal">
+                    <Border StrokeShape="RoundRectangle 500" StrokeThickness="0">
+                        <Image Source="{Binding ProfilePictureSource}" Aspect="Fill" HeightRequest="35" WidthRequest="35" BackgroundColor="{DynamicResource Primary}"/>
+                    </Border>
+                    <Label x:Name="_lblMainName" Text="{Binding FullName}" FontSize="Medium" FontAttributes="Bold" TextColor="{DynamicResource SecondaryAccent}" MaxLines="2" VerticalOptions="Center"/>
+                </StackLayout>
+            </StackLayout>
+
+            <Border x:Name="_frameSearchResults" Margin="10,0,10,10" StrokeShape="RoundRectangle 5" BackgroundColor="{DynamicResource BackgroundGrey}" VerticalOptions="FillAndExpand">
+                <StackLayout Orientation="Vertical" Margin="5,10,5,5">
+                    <!-- Users Search Results -->
+                    <CollectionView x:Name="_colTables" HorizontalOptions="FillAndExpand" HorizontalScrollBarVisibility="Never" VerticalScrollBarVisibility="Never" SelectionMode="Single"
+                                                ItemsSource="{Binding ItemSource}">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <ContentView>
+                                    <Border Margin="5, 0, 5, 5" StrokeShape="RoundRectangle 5" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="{DynamicResource Secondary}">
+                                        <StackLayout Orientation="Horizontal" BackgroundColor="{DynamicResource Secondary}" HorizontalOptions="FillAndExpand" Margin="5,5">
+                                            <Border StrokeShape="RoundRectangle 10" StrokeThickness="0">
+                                                <Image Source="{Binding TablePictureSource}" HeightRequest="75" WidthRequest="75"/>
+                                            </Border>
+                                            <StackLayout Orientation="Vertical" HorizontalOptions="FillAndExpand" Margin="5,5" VerticalOptions="Center">
+                                                <Label Text="{Binding TableName}" FontSize="Title" FontAttributes="Bold" TextColor="{DynamicResource SecondaryAccent}" MaxLines="2"/>
+                                            </StackLayout>
+                                        </StackLayout>
+                                    </Border>
+                                </ContentView>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </StackLayout>
+            </Border>
+        </StackLayout>
+    </Border>
+</ContentPage>

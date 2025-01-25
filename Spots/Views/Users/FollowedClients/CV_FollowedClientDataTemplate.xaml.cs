@@ -22,10 +22,7 @@ public partial class CV_FollowedClientDataTemplate : ContentView
             {
                 _btnFollow.IsVisible = true;
                 _btnUnfollow.IsVisible = false;
-                if(SessionManager.CurrentSession != null && SessionManager.CurrentSession.Client != null)
-                {
-                    SessionManager.CurrentSession.Client.FollowersCount--;
-                }
+                SessionManager.CurrentSession?.Client?.Followed.Remove(followedID);
             }
         }
     }
@@ -40,10 +37,7 @@ public partial class CV_FollowedClientDataTemplate : ContentView
             {
                 _btnFollow.IsVisible = false;
                 _btnUnfollow.IsVisible = true;
-                if (SessionManager.CurrentSession != null && SessionManager.CurrentSession.Client != null)
-                {
-                    SessionManager.CurrentSession.Client.FollowersCount++;
-                }
+                SessionManager.CurrentSession?.Client?.Followed.Add(followedID);
             }
         }
     }

@@ -1,11 +1,15 @@
 ﻿using Plugin.Firebase.Firestore;
+using System.ComponentModel;
 
 namespace Spots;
 
-public class SpotPraise
+public class SpotPraise : INotifyPropertyChanged
 {
     private ImageSource? _AuthorProfilePicture;
     private ImageSource? _SpotProfilePicture;
+    private int _LikesCount = 0;
+
+    public event PropertyChangedEventHandler? PropertyChanged;
 
     public string PraiseID { get; private set; }
     public string AuthorID { get; private set; }
@@ -40,7 +44,23 @@ public class SpotPraise
     public DateTimeOffset CreationDate { get; set; }
     public string Comment { get; set; }
     public ImageSource? AttachedPicture { get; set; }
-    public int LikesCount { get; set; }
+    public List<string> Likes { get; private set; }
+    public int LikesCount {
+        get => _LikesCount;
+        set
+        {
+            _LikesCount = value;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(LikeColor)));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(LikesCount)));
+        }
+    }
+    public string LikeColor
+    {
+        get
+        {
+            return Likes.Contains(SessionManager.CurrentSession?.Client?.UserID ?? "NULL") ? "#FFA500" : "#6E6E6E";
+        }
+    }
 
     public SpotPraise(SpotPraise_Firebase spotPraise_FB, Client author, Spot spot, ImageSource? attachment = null)
     {
@@ -55,6 +75,7 @@ public class SpotPraise
         CreationDate = spotPraise_FB.CreationDate;
         Comment = spotPraise_FB.Comment;
         AttachedPicture = attachment;
+        Likes = [.. spotPraise_FB.Likes];
         LikesCount = spotPraise_FB.LikesCount;
     }
 
@@ -69,6 +90,7 @@ public class SpotPraise
         FirebaseLocation? spotLocation = null,
         string comment = "",
         ImageSource? attachedPicture = null,
+        List<string>? likes = null,
         int likesCount = 0)
     {
         PraiseID = praiseID;
@@ -82,6 +104,7 @@ public class SpotPraise
         CreationDate = creationDate;
         Comment = comment;
         AttachedPicture = attachedPicture;
+        Likes = likes ?? [];
         LikesCount = likesCount;
     }
 
@@ -102,16 +125,15 @@ public class SpotPraise
         return new(praise, author, spot, attachment);
     }
 
-    public static async Task<List<SpotPraise>> GetPraisesFromFirebaseObject(List<IDocumentSnapshot<SpotPraise_Firebase>> documentSnapshots, Client? author = null, Spot? spot = null)
+    public static async Task<List<SpotPraise>> GetPraisesFromFirebaseObject(List<SpotPraise_Firebase> praises_Firebase, Client? author = null, Spot? spot = null)
     {
         List<SpotPraise> spotPraises = [];
 
-        List<IDocumentSnapshot<SpotPraise_Firebase>> documents = documentSnapshots;
-        foreach (var document in documents)
+        foreach (var praise_Firebase in praises_Firebase)
         {
-            if (document.Data != null)
+            if (praise_Firebase != null)
             {
-                SpotPraise_Firebase praise = document.Data;
+                SpotPraise_Firebase praise = praise_Firebase;
                 Client managed_author = author != null ? author : await DatabaseManager.GetClientDataAsync(praise.AuthorID);
                 Spot managed_spot = spot != null ? spot : await DatabaseManager.GetSpotDataAsync(praise.SpotID);
                 ImageSource? attachment = null;
@@ -129,6 +151,11 @@ public class SpotPraise
         }
 
         return spotPraises;
+    }
+
+    public async Task<bool?> LikeSwitch(string clientID)
+    {
+        return await DatabaseManager.UpdateLikeOnSpotPraise(clientID, this);
     }
 }
 
@@ -161,6 +188,9 @@ public class SpotPraise_Firebase
     [FirestoreProperty(nameof(AttachedPictureAddress))]
     public string AttachedPictureAddress { get; set; }
 
+    [FirestoreProperty(nameof(Likes))]
+    public IList<string> Likes { get; set; }
+
     [FirestoreProperty(nameof(LikesCount))]
     public int LikesCount { get; set; }
 
@@ -174,6 +204,7 @@ public class SpotPraise_Firebase
         CreationDate = DateTimeOffset.Now;
         Comment = "";
         AttachedPictureAddress = "";
+        Likes = [];
         LikesCount = 0;
     }
 
@@ -187,42 +218,7 @@ public class SpotPraise_Firebase
         CreationDate = spotPraise.CreationDate;
         Comment = spotPraise.Comment;
         AttachedPictureAddress = attachmentAddress;
+        Likes = spotPraise.Likes;
         LikesCount = spotPraise.LikesCount;
-    }
-
-    public SpotPraise_Firebase(string praiseID, string authorID, string spotID, FirebaseLocation spotLocation, DateTimeOffset creationDate, string comment, string attachedPictureAddress, int likesCount)
-    {
-        PraiseID = praiseID;
-        SearchCriteria_ID = [praiseID];
-        AuthorID = authorID;
-        SpotID = spotID;
-        SpotLocation = spotLocation;
-        CreationDate = creationDate;
-        Comment = comment;
-        AttachedPictureAddress = attachedPictureAddress;
-        LikesCount = likesCount;
-    }
-}
-
-public class PraiseLike_Firebase
-{
-    [FirestoreDocumentId]
-    public string ID {  get; set; }
-    [FirestoreProperty(nameof(ClientID))]
-    public string ClientID {  get; set; }
-    [FirestoreProperty(nameof(SpotID))]
-    public string SpotID {  get; set; }
-    public PraiseLike_Firebase()
-    {
-        ID = string.Empty;
-        ClientID = string.Empty;
-        SpotID = string.Empty;
-    }
-
-    public PraiseLike_Firebase(string client, string spot, string id = "")
-    {
-        ID = id;
-        ClientID = client;
-        SpotID = spot;
     }
 }

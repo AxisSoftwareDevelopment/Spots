@@ -88,14 +88,7 @@ public partial class CP_UserProfile : ContentPage
 
     private async void FollowedClientsView(object? sender, EventArgs e)
     {
-        List<FollowRegister> followRegisters = await DatabaseManager.FetchFollowRegisters(followerID: user.UserID);
-        List<string> folloewdIDs = [];
-        foreach (FollowRegister register in followRegisters)
-        {
-            folloewdIDs.Add(register.FollowedID);
-        }
-
-        List<Client> followedClients = await DatabaseManager.FetchClientsByID(folloewdIDs);
+        List<Client> followedClients = await DatabaseManager.FetchClientsByID(user.Followed);
         await Navigation.PushAsync(new CP_FollowedClientsView(followedClients));
     }
 
@@ -123,6 +116,33 @@ public partial class CP_UserProfile : ContentPage
             {
                 _btnFollow.IsVisible = true;
                 _btnUnfollow.IsVisible = false;
+            }
+        }
+    }
+
+    private async void InviteToTable_OnClicked(object sender, EventArgs e)
+    {
+        await Navigation.PushAsync(new CP_InviteUserToTable(user));
+    }
+
+    private async void LikeButtonClicked(object sender, EventArgs e)
+    {
+        if (SessionManager.CurrentSession?.Client != null)
+        {
+            bool? likedState = await ((SpotPraise)((Button)sender).BindingContext).LikeSwitch(SessionManager.CurrentSession.Client.UserID);
+
+            if (likedState != null )
+            {
+                if((bool)likedState)
+                {
+                    ((SpotPraise)((Button)sender).BindingContext).Likes.Add(SessionManager.CurrentSession.Client.UserID);
+                    ((SpotPraise)((Button)sender).BindingContext).LikesCount++;
+                }
+                else
+                {
+                    ((SpotPraise)((Button)sender).BindingContext).Likes.Remove(SessionManager.CurrentSession.Client.UserID);
+                    ((SpotPraise)((Button)sender).BindingContext).LikesCount--;
+                }
             }
         }
     }

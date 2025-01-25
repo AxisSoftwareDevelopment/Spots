@@ -56,6 +56,7 @@ public partial class CV_DiscoverFeed : ContentView
             LocationManager.UpdateLocationAsync().ConfigureAwait(false);
         }
         _cvMiniMap.HeightRequest = displayInfo.Height * 0.025;
+        _cvMiniMap.WidthRequest = displayInfo.Height * 0.05;
 
         // Filter zones
         _radioClientsFilter.CheckedChanged += _radioSubjectFilter_CheckedChanged;
