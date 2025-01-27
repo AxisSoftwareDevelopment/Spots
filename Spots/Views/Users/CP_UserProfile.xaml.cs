@@ -16,9 +16,12 @@ public partial class CP_UserProfile : ContentPage
         _colClientPraises.BindingContext = ClientPraisesContext;
 
         _colClientPraises.RemainingItemsThreshold = 1;
-        _colClientPraises.RemainingItemsThresholdReached += OnItemThresholdReached;
         _colClientPraises.SelectionChanged += _colClientPraises_SelectionChanged;
-        MainThread.BeginInvokeOnMainThread(async () => await RefreshFeed());
+        MainThread.BeginInvokeOnMainThread(async () =>
+        {
+            await RefreshFeed();
+            _colClientPraises.RemainingItemsThresholdReached += OnItemThresholdReached;
+        });
 
         _FrameProfilePicture.HeightRequest = profilePictureDimensions;
 		_FrameProfilePicture.WidthRequest = profilePictureDimensions;
@@ -50,26 +53,12 @@ public partial class CP_UserProfile : ContentPage
 
     private async Task RefreshFeed()
     {
-        try
-        {
-            ClientPraisesContext.RefreshFeed(await DatabaseManager.FetchSpotPraises_Filtered(author: user));
-        }
-        catch (Exception ex)
-        {
-            await UserInterface.DisplayPopUp_Regular("Unhandled Database Exception", ex.Message, "Ok");
-        }
+        ClientPraisesContext.RefreshFeed(await DatabaseManager.FetchSpotPraises_Filtered(author: user));
     }
 
     private async void OnItemThresholdReached(object? sender, EventArgs e)
     {
-        try
-        {
-            ClientPraisesContext.AddElements(await DatabaseManager.FetchSpotPraises_Filtered(author: user, lastPraise: ClientPraisesContext.LastItemFetched));
-        }
-        catch (Exception ex)
-        {
-            await UserInterface.DisplayPopUp_Regular("Unhandled Database Exception", ex.Message, "Ok");
-        }
+        ClientPraisesContext.AddElements(await DatabaseManager.FetchSpotPraises_Filtered(author: user, lastPraise: ClientPraisesContext.LastItemFetched));
     }
 
     private void _colClientPraises_SelectionChanged(object? sender, SelectionChangedEventArgs e)

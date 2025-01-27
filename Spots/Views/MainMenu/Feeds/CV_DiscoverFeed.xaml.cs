@@ -195,14 +195,7 @@ public partial class CV_DiscoverFeed : ContentView
         }
 
         SelectedLocation ??= CurrentLocation;
-        try
-        {
-            retVal = await DatabaseManager.FetchDiscoveryPageItems(Filters, CurrentLocation, SelectedLocation, bUseLastItem ? CurrentFeedContext.LastItemFetched : null);
-        }
-        catch (Exception ex)
-        {
-            await UserInterface.DisplayPopUp_Regular(ErrorLables[1], ex.Message, ErrorLables[3]);
-        }
+        retVal = await DatabaseManager.FetchDiscoveryPageItems(Filters, CurrentLocation, SelectedLocation, bUseLastItem ? CurrentFeedContext.LastItemFetched : null);
 
         return retVal;
     }

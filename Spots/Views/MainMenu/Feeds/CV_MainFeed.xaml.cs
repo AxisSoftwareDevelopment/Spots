@@ -61,16 +61,31 @@ public partial class CV_MainFeed : ContentView
 
 		if(SessionManager.CurrentSession?.Client != null)
 		{
-			try
-			{
-				retVal = await DatabaseManager.FetchSpotPraises_FromFollowedClients(SessionManager.CurrentSession.Client, lastItemFetched);
-			}
-			catch (Exception ex)
-			{
-				await UserInterface.DisplayPopUp_Regular("Unhandled Exeption", ex.Message, "Ok");
-			}
+			retVal = await DatabaseManager.FetchSpotPraises_FromFollowedClients(SessionManager.CurrentSession.Client, lastItemFetched);
         }
 
 		return retVal;
 	}
+
+    private async void LikeButtonClicked(object sender, EventArgs e)
+    {
+        if (SessionManager.CurrentSession?.Client != null)
+        {
+            bool? likedState = await ((SpotPraise)((Button)sender).BindingContext).LikeSwitch(SessionManager.CurrentSession.Client.UserID);
+
+            if (likedState != null)
+            {
+                if ((bool)likedState)
+                {
+                    ((SpotPraise)((Button)sender).BindingContext).Likes.Add(SessionManager.CurrentSession.Client.UserID);
+                    ((SpotPraise)((Button)sender).BindingContext).LikesCount++;
+                }
+                else
+                {
+                    ((SpotPraise)((Button)sender).BindingContext).Likes.Remove(SessionManager.CurrentSession.Client.UserID);
+                    ((SpotPraise)((Button)sender).BindingContext).LikesCount--;
+                }
+            }
+        }
+    }
 }

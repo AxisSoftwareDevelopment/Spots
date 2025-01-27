@@ -26,12 +26,14 @@
                             <ImageButton x:Name="_imgSpotImage" Aspect="AspectFill"/>
                         </Border>
                         <Border HorizontalOptions="FillAndExpand" StrokeThickness="0">
-                            <Label x:Name="_lblBrand" TextColor="{DynamicResource SecondaryAccent}" FontAttributes="Bold" Margin="0,20,0,0" VerticalOptions="Center"/>
+                            <Label x:Name="_lblBrand" TextColor="{DynamicResource SecondaryAccent}" FontAttributes="Bold" Margin="0,20,0,0" VerticalOptions="Center" FontSize="Medium"/>
                         </Border>
                     </StackLayout>
                     <!-- Review Comment -->
                     <Label Text="{DynamicResource lbl_Comment}" TextColor="{DynamicResource Tertiary}" HorizontalOptions="FillAndExpand" HorizontalTextAlignment="Start" Margin="15, 15, 0, 0"/>
-                    <Label x:Name="_lblComment" TextColor="{DynamicResource SecondaryAccent}" HorizontalOptions="Center" HorizontalTextAlignment="Start" Margin="15, 0, 15, 0"/>
+                    <Border StrokeShape="RoundRectangle 2">
+                        <Label x:Name="_lblComment" TextColor="{DynamicResource SecondaryAccent}" HorizontalOptions="Center" HorizontalTextAlignment="Start" Margin="15, 0, 15, 0"/>
+                    </Border>
                     <!-- Attachment Picture -->
                     <Image x:Name="_imgAttachmentImage" Aspect="AspectFit" VerticalOptions="StartAndExpand"  HorizontalOptions="CenterAndExpand" Margin="10, 10"/>
                 </StackLayout>

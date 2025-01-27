@@ -71,33 +71,26 @@ public partial class CP_SearchPage : ContentPage
 
     private async Task RefreshSearchResults(string? searchInput)
     {
-        try
+        string[] inputs = searchInput != null ? [searchInput.ToUpper().Trim()] : [];
+        if (inputs.Length > 0)
         {
-            string[] inputs = searchInput != null ? [searchInput.ToUpper().Trim()] : [];
-            if (inputs.Length > 0)
+            List<object> list = [];
+            if(CurrentFilterApplyed == ESearchFocus.CLIENT)
             {
-                List<object> list = [];
-                if(CurrentFilterApplyed == ESearchFocus.CLIENT)
-                {
-                    List<Client> spots = await DatabaseManager.FetchClients_Filtered(nameSearchTerms: inputs, currentUsrID_ToAvoid: SessionManager.CurrentSession?.Client?.UserID);
-                    spots.ForEach(list.Add);
-                }
-                else
-                {
-                    List<Spot> spots = await DatabaseManager.FetchSpots_Filtered(filterParams: inputs);
-                    spots.ForEach(list.Add);
-                }
-                
-                SearchResultsListContext.RefreshFeed(list);
+                List<Client> spots = await DatabaseManager.FetchClients_Filtered(nameSearchTerms: inputs, currentUsrID_ToAvoid: SessionManager.CurrentSession?.Client?.UserID);
+                spots.ForEach(list.Add);
             }
             else
             {
-                SearchResultsListContext.RefreshFeed([]);
+                List<Spot> spots = await DatabaseManager.FetchSpots_Filtered(filterParams: inputs);
+                spots.ForEach(list.Add);
             }
+
+            SearchResultsListContext.RefreshFeed(list);
         }
-        catch (Exception ex)
+        else
         {
-            await UserInterface.DisplayPopUp_Regular("Unhandled Error", ex.Message, "OK");
+            SearchResultsListContext.RefreshFeed([]);
         }
     }
 }
