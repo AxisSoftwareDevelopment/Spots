@@ -1,7 +1,7 @@
-﻿using Spots;
+﻿using Spots.Database;
 using System.ComponentModel;
 
-namespace Spots;
+namespace Spots.Models;
 
 public static class SessionManager
 {

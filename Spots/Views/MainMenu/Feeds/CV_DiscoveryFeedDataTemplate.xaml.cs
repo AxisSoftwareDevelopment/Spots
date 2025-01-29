@@ -1,3 +1,5 @@
+using Spots.Models;
+
 namespace Spots.DiscoveryPage;
 
 public partial class CV_DiscoveryFeedDataTemplate : ContentView

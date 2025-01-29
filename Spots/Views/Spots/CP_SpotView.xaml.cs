@@ -1,6 +1,8 @@
 using Microsoft.Maui.Controls.Maps;
 using Microsoft.Maui.Maps;
 
+using Spots.Models;
+
 namespace Spots;
 
 public partial class CP_SpotView : ContentPage

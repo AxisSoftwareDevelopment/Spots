@@ -1,4 +1,4 @@
-﻿namespace Spots;
+﻿namespace Spots.ResourceManager;
 
 public static class ImageManagement
 {
@@ -6,18 +6,18 @@ public static class ImageManagement
     {
         try
         {
-            FileResult result = await MediaPicker.PickPhotoAsync(new MediaPickerOptions
+            FileResult? result = await MediaPicker.PickPhotoAsync(new MediaPickerOptions
             {
                 // TODO: use dynamic resources
                 Title = "Select an image"
             });
 
-            if (result.ContentType == "image/pgn" ||
-                result.ContentType == "image/jpeg" ||
-                result.ContentType == "image/jpg" ||
-                result.ContentType == "pgn" ||
-                result.ContentType == "jpeg" ||
-                result.ContentType == "jpg")
+            if (result?.ContentType == "image/pgn" ||
+                result?.ContentType == "image/jpeg" ||
+                result?.ContentType == "image/jpg" ||
+                result?.ContentType == "pgn" ||
+                result?.ContentType == "jpeg" ||
+                result?.ContentType == "jpg")
             {
                 return await FileResultToImageFile(result);
             }

@@ -1,4 +1,4 @@
-﻿namespace Spots;
+﻿namespace Spots.ResourceManager;
 public class ImageFile
 {
     public bool Loaded { get; set; }

@@ -1,5 +1,5 @@
 ﻿
-namespace Spots;
+namespace Spots.ResourceManager;
     public static class ResourceManagement
     {
         public static string[] GetStringResources(ResourceDictionary? resources, string[] ids)

@@ -1,5 +1,9 @@
 using Microsoft.Maui.Controls.Maps;
 using Microsoft.Maui.Maps;
+using Spots.Database;
+using Spots.Models;
+using Spots.ResourceManager;
+using Spots.Utilities;
 
 namespace Spots;
 

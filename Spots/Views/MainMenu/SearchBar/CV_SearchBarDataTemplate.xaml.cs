@@ -1,3 +1,5 @@
+using Spots.Models;
+
 namespace Spots.SearchBar;
 
 public partial class CV_SearchBarDataTemplate : ContentView

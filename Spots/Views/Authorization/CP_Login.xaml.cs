@@ -1,5 +1,10 @@
 using Plugin.Firebase.Core.Exceptions;
 
+using Spots.Models;
+using Spots.Database;
+using Spots.Utilities;
+using Spots.ResourceManager;
+
 namespace Spots;
 
 public partial class CP_Login : ContentPage

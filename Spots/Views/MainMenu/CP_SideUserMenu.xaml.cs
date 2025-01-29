@@ -1,3 +1,7 @@
+using Spots.Models;
+using Spots.Utilities;
+using Spots.Database;
+
 namespace Spots;
 
 public partial class CP_SideUserMenu : ContentPage

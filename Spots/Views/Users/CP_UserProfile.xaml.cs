@@ -1,3 +1,6 @@
+using Spots.Models;
+using Spots.Database;
+
 namespace Spots;
 
 public partial class CP_UserProfile : ContentPage

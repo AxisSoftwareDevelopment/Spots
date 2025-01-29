@@ -1,4 +1,4 @@
-﻿namespace Spots;
+﻿namespace Spots.ResourceManager;
 
 public static class ThemeManager
 {

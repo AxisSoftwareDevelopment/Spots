@@ -1,3 +1,5 @@
+using Spots.Models;
+
 namespace Spots;
 
 public partial class CV_FlyoutUserNavigationBar : ContentView

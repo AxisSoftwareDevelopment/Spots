@@ -1,6 +1,6 @@
 ﻿using Plugin.Firebase.Firestore;
 
-namespace Spots
+namespace Spots.Firestore
 {
     public static class FirestoreManager
     {

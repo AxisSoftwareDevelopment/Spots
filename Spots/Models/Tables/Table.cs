@@ -1,6 +1,8 @@
 ﻿using Plugin.Firebase.Firestore;
 
-namespace Spots
+using Spots.Database;
+
+namespace Spots.Models
 {
     public class Table
     {

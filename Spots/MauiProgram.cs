@@ -3,6 +3,9 @@ using Microsoft.Maui.LifecycleEvents;
 using Plugin.Firebase.Auth;
 using Plugin.Firebase.Bundled.Shared;
 
+using Spots.Database;
+using Spots.Models;
+
 #if IOS
 using Plugin.Firebase.Bundled.Platforms.iOS;
 #else

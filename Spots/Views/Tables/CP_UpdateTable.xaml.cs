@@ -2,6 +2,11 @@ using Microsoft.Maui.Controls.Maps;
 using Microsoft.Maui.Maps;
 using System.Globalization;
 
+using Spots.Models;
+using Spots.ResourceManager;
+using Spots.Database;
+using Spots.Utilities;
+
 namespace Spots;
 
 public partial class CP_UpdateTable : ContentPage

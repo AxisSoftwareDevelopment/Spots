@@ -2,9 +2,13 @@ using Plugin.Firebase.Auth;
 using Plugin.Firebase.Firestore;
 using Plugin.Firebase.Core.Exceptions;
 using Plugin.Firebase.Storage;
-using static Google.Firestore.V1.StructuredQuery;
 
-namespace Spots;
+using Spots.Models;
+using Spots.Firestore;
+using Spots.Utilities;
+using Spots.ResourceManager;
+
+namespace Spots.Database;
 public static class DatabaseManager
 {
     private const string COLLECTION_USER_DATA = "UserData";

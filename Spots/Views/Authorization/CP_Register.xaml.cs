@@ -1,5 +1,8 @@
 using System.Text.RegularExpressions;
 
+using Spots.Database;
+using Spots.Utilities;
+
 namespace Spots;
 
 public partial class CP_Register : ContentPage

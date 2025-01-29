@@ -1,7 +1,10 @@
 ﻿using Geohash;
 using Plugin.Firebase.Firestore;
 
-namespace Spots;
+using Spots.ResourceManager;
+using Spots.Utilities;
+
+namespace Spots.Models;
 
 public static class LocationManager
 {

@@ -1,7 +1,9 @@
 ﻿using Plugin.Firebase.Firestore;
 using System.ComponentModel;
 
-namespace Spots;
+using Spots.Database;
+
+namespace Spots.Models;
 public class Client : INotifyPropertyChanged
 {
     public event PropertyChangedEventHandler? PropertyChanged;

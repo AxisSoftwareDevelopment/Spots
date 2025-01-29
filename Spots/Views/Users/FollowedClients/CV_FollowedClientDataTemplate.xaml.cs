@@ -1,4 +1,5 @@
-using Microsoft.Maui.Layouts;
+using Spots.Models;
+using Spots.Database;
 
 namespace Spots.FollowedClients;
 

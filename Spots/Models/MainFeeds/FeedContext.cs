@@ -1,7 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
 
-namespace Spots;
+namespace Spots.Models;
 
 public class FeedContext<T> : INotifyPropertyChanged
 {

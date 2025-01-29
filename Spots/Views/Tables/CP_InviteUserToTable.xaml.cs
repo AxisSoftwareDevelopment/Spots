@@ -1,3 +1,8 @@
+using Spots.Models;
+using Spots.ResourceManager;
+using Spots.Utilities;
+using Spots.Database;
+
 namespace Spots;
 
 public partial class CP_InviteUserToTable : ContentPage

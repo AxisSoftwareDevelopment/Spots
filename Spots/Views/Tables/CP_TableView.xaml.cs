@@ -1,6 +1,11 @@
 using Microsoft.Maui.Controls.Maps;
 using Microsoft.Maui.Maps;
 
+using Spots.Models;
+using Spots.ResourceManager;
+using Spots.Utilities;
+using Spots.Database;
+
 namespace Spots;
 
 public partial class CP_TableView : ContentPage

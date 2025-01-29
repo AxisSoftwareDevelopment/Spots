@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace Spots;
+namespace Spots.Utilities;
 
 public static class UserInterface
 {

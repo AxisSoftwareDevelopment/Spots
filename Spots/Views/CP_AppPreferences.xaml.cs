@@ -1,3 +1,5 @@
+using Spots.ResourceManager;
+
 namespace Spots;
 
 public partial class CP_AppPreferences : ContentPage
