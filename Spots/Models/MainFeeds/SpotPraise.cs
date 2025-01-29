@@ -155,7 +155,7 @@ public class SpotPraise : INotifyPropertyChanged
 
     public async Task<bool?> LikeSwitch(string clientID)
     {
-        return await DatabaseManager.UpdateLikeOnSpotPraise(clientID, this);
+        return await DatabaseManager.Transaction_UpdateLikeOnSpotPraise(clientID, this);
     }
 }
 

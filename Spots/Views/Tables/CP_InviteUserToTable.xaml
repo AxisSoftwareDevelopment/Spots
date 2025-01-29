@@ -31,10 +31,10 @@
                                 <ContentView>
                                     <Border Margin="5, 0, 5, 5" StrokeShape="RoundRectangle 5" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="{DynamicResource Secondary}">
                                         <StackLayout Orientation="Horizontal" BackgroundColor="{DynamicResource Secondary}" HorizontalOptions="FillAndExpand" Margin="5,5">
-                                            <Border StrokeShape="RoundRectangle 10" StrokeThickness="0">
-                                                <Image Source="{Binding TablePictureSource}" HeightRequest="75" WidthRequest="75"/>
+                                            <Border StrokeShape="RoundRectangle 5" StrokeThickness="0">
+                                                <Image Source="{Binding TablePictureSource}" Aspect="Fill" HeightRequest="75" WidthRequest="75"/>
                                             </Border>
-                                            <StackLayout Orientation="Vertical" HorizontalOptions="FillAndExpand" Margin="5,5" VerticalOptions="Center">
+                                            <StackLayout Orientation="Vertical" HorizontalOptions="FillAndExpand" Margin="10,5,5,5" VerticalOptions="Center">
                                                 <Label Text="{Binding TableName}" FontSize="Title" FontAttributes="Bold" TextColor="{DynamicResource SecondaryAccent}" MaxLines="2"/>
                                             </StackLayout>
                                         </StackLayout>

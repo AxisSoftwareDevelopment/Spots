@@ -6,6 +6,7 @@ public partial class CP_SpotPraise : ContentPage
 	public CP_SpotPraise(SpotPraise praise)
 	{
         _SpotPraise = praise;
+        BindingContext = _SpotPraise;
 
         DisplayInfo displayInfo = DeviceDisplay.MainDisplayInfo;
         double profilePictureDimensions = displayInfo.Height * 0.065;
@@ -23,8 +24,6 @@ public partial class CP_SpotPraise : ContentPage
         _btnEdit.Clicked += _btnEdit_Clicked;
         _imgAuthorPicture.Clicked += _imgAuthorPicture_Clicked;
         _imgSpotImage.Clicked += _imgSpotImage_Clicked;
-
-        LoadSpotPraiseInformation();
 
         if (praise.AuthorID == SessionManager.CurrentSession?.Client?.UserID)
         {
@@ -58,19 +57,6 @@ public partial class CP_SpotPraise : ContentPage
         Navigation.PushAsync(new CP_UpdateSpotPraise(_SpotPraise));
     }
 
-    private void LoadSpotPraiseInformation()
-	{
-		_lblAuthorName.Text = _SpotPraise.AuthorFullName;
-		_lblBrand.Text = _SpotPraise.SpotFullName;
-		_lblComment.Text = _SpotPraise.Comment;
-
-        _imgAuthorPicture.Source = _SpotPraise.AuthorProfilePicture;
-        _imgSpotImage.Source = _SpotPraise.SpotProfilePicture;
-        _imgAttachmentImage.Source = _SpotPraise.AttachedPicture;
-
-		_btnEdit.IsVisible = _SpotPraise.AuthorID.Equals(SessionManager.CurrentSession?.Client?.UserID);
-	}
-
     private void LockView()
     {
         _btnEdit.IsEnabled = false;
@@ -83,5 +69,27 @@ public partial class CP_SpotPraise : ContentPage
         _btnEdit.IsEnabled = true;
         _imgAuthorPicture.IsEnabled = true;
         _imgSpotImage.IsEnabled = true;
+    }
+
+    private async void LikeButtonClicked(object sender, EventArgs e)
+    {
+        if (SessionManager.CurrentSession?.Client != null)
+        {
+            bool? likedState = await ((SpotPraise)((Button)sender).BindingContext).LikeSwitch(SessionManager.CurrentSession.Client.UserID);
+
+            if (likedState != null)
+            {
+                if ((bool)likedState)
+                {
+                    ((SpotPraise)((Button)sender).BindingContext).Likes.Add(SessionManager.CurrentSession.Client.UserID);
+                    ((SpotPraise)((Button)sender).BindingContext).LikesCount++;
+                }
+                else
+                {
+                    ((SpotPraise)((Button)sender).BindingContext).Likes.Remove(SessionManager.CurrentSession.Client.UserID);
+                    ((SpotPraise)((Button)sender).BindingContext).LikesCount--;
+                }
+            }
+        }
     }
 }

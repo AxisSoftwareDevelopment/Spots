@@ -2,7 +2,7 @@ using Plugin.Firebase.Auth;
 using Plugin.Firebase.Firestore;
 using Plugin.Firebase.Core.Exceptions;
 using Plugin.Firebase.Storage;
-using Firebase.Firestore;
+using static Google.Firestore.V1.StructuredQuery;
 
 namespace Spots;
 public static class DatabaseManager
@@ -196,10 +196,7 @@ public static class DatabaseManager
 
     public async static Task<Client> GetClientDataAsync(string userID)
     {
-        IDocumentReference docRef = CrossFirebaseFirestore.Current
-            .GetCollection(COLLECTION_USER_DATA)
-            .GetDocument(userID);
-        Client_Firebase? clientFB = await Firebase_GetDocumentData<Client_Firebase>(docRef);
+        Client_Firebase? clientFB = await FirestoreManager.GetDocumentData<Client_Firebase>(COLLECTION_USER_DATA, userID);
 
         Client user = clientFB != null ? new(clientFB, await clientFB.GetImageSource()) : new() { UserID = userID };
 
@@ -208,10 +205,7 @@ public static class DatabaseManager
 
     public async static Task<Spot> GetSpotDataAsync(string spotID)
     {
-        IDocumentReference docRef = CrossFirebaseFirestore.Current
-            .GetCollection(COLLECTION_SPOTS)
-            .GetDocument(spotID);
-        Spot_Firebase? spotFB = await Firebase_GetDocumentData<Spot_Firebase>(docRef);
+        Spot_Firebase? spotFB = await FirestoreManager.GetDocumentData<Spot_Firebase>(COLLECTION_SPOTS, spotID);
 
         Spot spot = new() { SpotID = spotID };
         if (spotFB != null)
@@ -315,24 +309,16 @@ public static class DatabaseManager
     {
         List<Client> clients = [];
 
-        try
-           {
-            if (clientIDs.Count > 0)
-            {
-                IQuery query = CrossFirebaseFirestore.Current.GetCollection(COLLECTION_USER_DATA)
-                        .WhereArrayContainsAny(nameof(Client_Firebase.ClientID_ForSearch), clientIDs.ToArray());
-            
-                List<Client_Firebase>? clients_Firebase = await Firebase_GetGocumentsData<Client_Firebase>(query);
-
-                foreach (Client_Firebase client in clients_Firebase?? [])
-                {
-                    clients.Add(new(client, await client.GetImageSource()));
-                }
-            }
-        }
-        catch (Exception ex)
+        if (clientIDs.Count > 0)
         {
-            await UserInterface.DisplayPopUp_Regular("Unhandled Database Exception", ex.Message, "Ok");
+            Dictionary<string, object[]> arrayContainsAnyFilter = new Dictionary<string, object[]>() { { nameof(Client_Firebase.ClientID_ForSearch), clientIDs.ToArray() } };
+            
+            List<Client_Firebase> clients_Firebase = await FirestoreManager.QueryFiltered<Client_Firebase>(COLLECTION_USER_DATA, filters_ArrayContainsAny: arrayContainsAnyFilter);
+
+            foreach (Client_Firebase client in clients_Firebase?? [])
+            {
+                clients.Add(new(client, await client.GetImageSource()));
+            }
         }
 
         return clients;
@@ -341,6 +327,41 @@ public static class DatabaseManager
     public static async Task<List<Client>> FetchClients_Filtered(
         string[]? nameSearchTerms = null,
         string? currentUsrID_ToAvoid = null,
+        string? order = null,
+        Client? lastClient = null)
+    {
+        List<Client> retVal = [];
+
+        const int maxItemsToFetch = 25;
+        Dictionary<string, object[]>? arrayContainsAnyFilters = null;
+        string? lastItemFetchedID = lastClient?.UserID;
+        string? orderBy = order;
+
+        if (nameSearchTerms != null)
+        {
+            arrayContainsAnyFilters ??= [];
+            arrayContainsAnyFilters.Add(nameof(Client_Firebase.SearchTerms), nameSearchTerms);
+        }
+
+        List<Client_Firebase>? clients_Firebase = await FirestoreManager.QueryFiltered<Client_Firebase>(COLLECTION_USER_DATA,
+            maxItems: maxItemsToFetch,
+            filters_ArrayContainsAny: arrayContainsAnyFilters,
+            lastItemQueriedID: lastItemFetchedID,
+            filters_orderBy: orderBy);
+
+        foreach (var clientFB in clients_Firebase?? [])
+        {
+            if (currentUsrID_ToAvoid == null || clientFB.UserID != currentUsrID_ToAvoid)
+            {
+                retVal.Add(new(clientFB, await clientFB.GetImageSource()));
+            }
+        }
+
+        return retVal;
+    }
+
+    public static async Task<List<Client>> FetchClients_Filtered(
+        string? currentUsrID_ToAvoid = null,
         FirebaseLocation? referenceLocation = null,
         int? searchAreaInKm = null,
         string? order = null,
@@ -348,46 +369,32 @@ public static class DatabaseManager
     {
         List<Client> retVal = [];
 
-        try
+        const int maxItemsToFetch = 25;
+        Dictionary<string, object[]>? arrayContainsAnyFilters = null;
+        string? lastItemFetchedID = lastClient?.UserID;
+        string? orderBy = order;
+
+        if (referenceLocation != null && searchAreaInKm != null)
         {
-            IQuery query = CrossFirebaseFirestore.Current.GetCollection(COLLECTION_USER_DATA).LimitedTo(25);
-            if (nameSearchTerms != null)
-            {
-                query = query.WhereArrayContainsAny(nameof(Client_Firebase.SearchTerms), nameSearchTerms);
-            }
-            if (referenceLocation != null && searchAreaInKm != null)
-            {
-                List<string> geohashesNearby = GenerateGeohashSearchGrid(referenceLocation, (int)searchAreaInKm);
-                geohashesNearby.Add(referenceLocation.Geohash[0]);
+            arrayContainsAnyFilters ??= [];
+            List<string> geohashesNearby = GenerateGeohashSearchGrid(referenceLocation, (int)searchAreaInKm);
+            geohashesNearby.Add(referenceLocation.Geohash[0]);
 
-                query = query.WhereArrayContainsAny($"{nameof(Client_Firebase.LastLocation)}.Geohash", geohashesNearby.ToArray());
-            }
-            if (order != null)
-            {
-                query = query.OrderBy(order);
-            }
-            if (lastClient != null)
-            {
-                IDocumentSnapshot<Client_Firebase> docSnapshot = await CrossFirebaseFirestore.Current.GetCollection(COLLECTION_USER_DATA)
-                    .GetDocument(lastClient.UserID)
-                    .GetDocumentSnapshotAsync<Client_Firebase>();
-
-                query = query.StartingAfter(docSnapshot);
-            }
-
-            List<Client_Firebase>? clients_Firebase = await Firebase_GetGocumentsData<Client_Firebase>(query);
-
-            foreach (var clientFB in clients_Firebase?? [])
-            {
-                if (currentUsrID_ToAvoid == null || clientFB.UserID != currentUsrID_ToAvoid)
-                {
-                    retVal.Add(new(clientFB, await clientFB.GetImageSource()));
-                }
-            }
+            arrayContainsAnyFilters.Add($"{nameof(Client_Firebase.LastLocation)}.Geohash", geohashesNearby.ToArray());
         }
-        catch (Exception ex)
+
+        List<Client_Firebase>? clients_Firebase = await FirestoreManager.QueryFiltered<Client_Firebase>(COLLECTION_USER_DATA,
+            maxItems: maxItemsToFetch,
+            filters_ArrayContainsAny: arrayContainsAnyFilters,
+            lastItemQueriedID: lastItemFetchedID,
+            filters_orderBy: orderBy);
+
+        foreach (var clientFB in clients_Firebase ?? [])
         {
-            await UserInterface.DisplayPopUp_Regular("Unhandled Database Exception", ex.Message, "Ok");
+            if (currentUsrID_ToAvoid == null || clientFB.UserID != currentUsrID_ToAvoid)
+            {
+                retVal.Add(new(clientFB, await clientFB.GetImageSource()));
+            }
         }
 
         return retVal;
@@ -396,36 +403,25 @@ public static class DatabaseManager
     public static async Task<List<SpotPraise>> FetchSpotPraises_FromFollowedClients(Client client, SpotPraise? lastPraise = null)
     {
         List<SpotPraise> spotPraises = [];
-        try
+        // Show personal praises too
+        List<string> praiseAuthorIDs = client.Followed;
+        praiseAuthorIDs.Add(client.UserID);
+
+        // Query Filters
+        const int maxItemsToFetch = 25;
+        Dictionary<string, object[]>? arrayContainsAnyFilters =  new() { { nameof(SpotPraise_Firebase.AuthorID_Array), praiseAuthorIDs.ToArray() } };
+        string? lastItemFetchedID = lastPraise?.PraiseID;
+        string orderBy = nameof(SpotPraise_Firebase.CreationDate);
+
+        if (client.FollowedCount > 0)
         {
-            List<SpotPraise_Firebase>? praises_Firebase;
-            // Show personal praises too
-            List<string> praiseAuthorIDs = client.Followed;
-            praiseAuthorIDs.Add(client.UserID);
+            List<SpotPraise_Firebase> praises_Firebase = await FirestoreManager.QueryFiltered<SpotPraise_Firebase>(COLLECTION_PRAISES,
+                maxItems: maxItemsToFetch,
+                filters_ArrayContainsAny: arrayContainsAnyFilters,
+                lastItemQueriedID: lastItemFetchedID,
+                filters_orderBy: orderBy);
 
-            if (client.FollowedCount > 0)
-            {
-                IQuery query = CrossFirebaseFirestore.Current.GetCollection(COLLECTION_PRAISES)
-                    .LimitedTo(5)
-                    .OrderBy(nameof(SpotPraise_Firebase.CreationDate))
-                    .WhereArrayContainsAny(nameof(SpotPraise_Firebase.AuthorID_Array), praiseAuthorIDs.ToArray());
-                if (lastPraise != null)
-                {
-                    IDocumentSnapshot<SpotPraise_Firebase> docSnapshot = await CrossFirebaseFirestore.Current.GetCollection(COLLECTION_PRAISES)
-                        .GetDocument(lastPraise.PraiseID)
-                        .GetDocumentSnapshotAsync<SpotPraise_Firebase>();
-
-                    query = query.StartingAfter(docSnapshot);
-                }
-
-                praises_Firebase = await Firebase_GetGocumentsData<SpotPraise_Firebase>(query);
-
-                spotPraises = await SpotPraise.GetPraisesFromFirebaseObject(praises_Firebase?? []);
-            }
-        }
-        catch (Exception ex)
-        {
-            await UserInterface.DisplayPopUp_Regular("Unhandled Database Exception", ex.Message, "Ok");
+            spotPraises = await SpotPraise.GetPraisesFromFirebaseObject(praises_Firebase);
         }
 
         return spotPraises;
@@ -455,159 +451,163 @@ public static class DatabaseManager
         string? order = null,
         SpotPraise? lastPraise = null)
     {
-        List<SpotPraise> spotPraises = [];
-        try
+        List<SpotPraise> retVal = [];
+
+        const int maxItemsToFetch = 5;
+        Dictionary<string, object>? equalsToFilters = null;
+        Dictionary<string, object[]>? arrayContainsAnyFilters = null;
+        string? lastItemFetchedID = lastPraise?.PraiseID;
+        string? orderBy = order;
+
+        if (author != null ^ authorId != null)
         {
-            List<SpotPraise_Firebase>? praises_Firebase;
-            IQuery query = CrossFirebaseFirestore.Current.GetCollection(COLLECTION_PRAISES)
-                    .LimitedTo(5);
-
-            if (author != null || authorId != null)
-            {
-                author ??= await GetClientDataAsync(authorId);
-                query = query.WhereEqualsTo(nameof(SpotPraise_Firebase.AuthorID), author.UserID);
-            }
-            if (spot != null || spotId != null)
-            {
-                spot ??= await GetSpotDataAsync(spotId);
-                query = query.WhereEqualsTo(nameof(SpotPraise_Firebase.SpotID), spot.SpotID);
-            }
-            if (referenceLocation != null && searchAreaInKm != null)
-            {
-                List<string> geohashesNearby = GenerateGeohashSearchGrid(referenceLocation, (int)searchAreaInKm);
-                geohashesNearby.Add(referenceLocation.Geohash[0]);
-
-                query = query.WhereArrayContainsAny($"{nameof(SpotPraise_Firebase.SpotLocation)}.Geohash", geohashesNearby.ToArray());
-            }
-            if (order != null)
-            {
-                query = query.OrderBy(order);
-            }
-            else
-            {
-                query = query.OrderBy(nameof(SpotPraise_Firebase.CreationDate));
-            }
-            if (lastPraise != null)
-            {
-                IDocumentSnapshot<SpotPraise_Firebase> documentSnapshot = await CrossFirebaseFirestore.Current.GetCollection(COLLECTION_PRAISES)
-                    .GetDocument(lastPraise.PraiseID)
-                    .GetDocumentSnapshotAsync<SpotPraise_Firebase>();
-
-                query = query.StartingAfter(documentSnapshot);
-            }
-
-            praises_Firebase = await Firebase_GetGocumentsData<SpotPraise_Firebase>(query);
-
-            spotPraises = await SpotPraise.GetPraisesFromFirebaseObject(praises_Firebase ?? [], author: author, spot: spot);
+            equalsToFilters ??= [];
+            author ??= await GetClientDataAsync(authorId?? "");
+            equalsToFilters.Add(nameof(SpotPraise_Firebase.AuthorID), author.UserID);
         }
-        //catch(ObjectDisposedException) {/* Ignore Exception */}
-        catch (Exception ex)
+        if (spot != null || spotId != null)
         {
-            await UserInterface.DisplayPopUp_Regular("Unhandled Database Exception", ex.Message, "Ok");
+            equalsToFilters ??= [];
+            spot ??= await GetSpotDataAsync(spotId?? "");
+            equalsToFilters.Add(nameof(SpotPraise_Firebase.SpotID), spot.SpotID);
+        }
+        if (referenceLocation != null && searchAreaInKm != null)
+        {
+            arrayContainsAnyFilters ??= [];
+            List<string> geohashesNearby = GenerateGeohashSearchGrid(referenceLocation, (int)searchAreaInKm);
+            geohashesNearby.Add(referenceLocation.Geohash[0]);
+
+            arrayContainsAnyFilters.Add($"{nameof(SpotPraise_Firebase.SpotLocation)}.Geohash", geohashesNearby.ToArray());
         }
 
-        return spotPraises;
+        List<SpotPraise_Firebase> praises_Firebase = await FirestoreManager.QueryFiltered<SpotPraise_Firebase>(COLLECTION_PRAISES, maxItemsToFetch,
+            filters_EqualsTo: equalsToFilters,
+            filters_ArrayContainsAny: arrayContainsAnyFilters,
+            filters_orderBy: orderBy,
+            lastItemQueriedID: lastItemFetchedID);
+
+        retVal = await SpotPraise.GetPraisesFromFirebaseObject(praises_Firebase, author: author, spot: spot);
+
+        return retVal;
     }
 
-    public static async Task<List<Spot>> FetchSpots_Filtered(string[]? filterParams = null, FirebaseLocation? referenceLocation = null, int? searchAreaInKm = null, string? order = null, Spot? lastSpot = null)
+    public static async Task<List<Spot>> FetchSpots_Filtered(
+        FirebaseLocation? referenceLocation = null,
+        int? searchAreaInKm = null,
+        string? order = null,
+        Spot? lastSpot = null)
     {
         List<Spot> retVal = [];
-        try
+
+        const int maxItemsToFetch = 25;
+        Dictionary<string, object[]>? arrayContainsAnyFilters = null;
+        string? lastItemFetchedID = lastSpot?.SpotID;
+        string? orderBy = order;
+
+        if (referenceLocation != null && searchAreaInKm != null)
         {
-            List<Spot_Firebase>? spots_Firebase;
-            IQuery query = CrossFirebaseFirestore.Current.GetCollection(COLLECTION_SPOTS).LimitedTo(25);
-            if (filterParams != null)
-            {
-                query = query.WhereArrayContainsAny(nameof(Spot_Firebase.SearchTerms), filterParams);
-            }
-            if (referenceLocation != null && searchAreaInKm != null)
-            {
-                List<string> geohashesNearby = GenerateGeohashSearchGrid(referenceLocation, (int)searchAreaInKm);
-                geohashesNearby.Add(referenceLocation.Geohash[0]);
+            arrayContainsAnyFilters ??= [];
+            List<string> geohashesNearby = GenerateGeohashSearchGrid(referenceLocation, (int)searchAreaInKm);
+            geohashesNearby.Add(referenceLocation.Geohash[0]);
 
-                query = query.WhereArrayContainsAny($"{nameof(Spot_Firebase.Location)}.Geohash", geohashesNearby.ToArray());
-            }
-            if (order != null)
-            {
-                query = query.OrderBy(order);
-            }
-            if (lastSpot != null)
-            {
-                IDocumentSnapshot<Spot_Firebase> documentSnapshot = await CrossFirebaseFirestore.Current.GetCollection(COLLECTION_SPOTS)
-                .GetDocument(lastSpot.SpotID)
-                .GetDocumentSnapshotAsync<Spot_Firebase>();
-
-                query = query.StartingAfter(documentSnapshot);
-            }
-            spots_Firebase = await Firebase_GetGocumentsData<Spot_Firebase>(query);
-
-            foreach (var spot_Firebase in spots_Firebase?? [])
-            {
-                retVal.Add(new(spot_Firebase, await spot_Firebase.GetImageSource()));
-            }
+            arrayContainsAnyFilters.Add($"{nameof(Spot_Firebase.Location)}.Geohash", geohashesNearby.ToArray());
         }
-        catch (Exception ex)
+        
+        List<Spot_Firebase> spots_Firebase = await FirestoreManager.QueryFiltered<Spot_Firebase>(COLLECTION_SPOTS,
+            maxItems:maxItemsToFetch,
+            filters_ArrayContainsAny: arrayContainsAnyFilters,
+            lastItemQueriedID: lastItemFetchedID,
+            filters_orderBy: orderBy);
+
+        foreach (var spot_Firebase in spots_Firebase)
         {
-            await UserInterface.DisplayPopUp_Regular("Unhandled Database Exception", ex.Message, "Ok");
+            retVal.Add(new(spot_Firebase, await spot_Firebase.GetImageSource()));
         }
 
         return retVal ?? [];
     }
 
+    public static async Task<List<Spot>> FetchSpots_Filtered(
+        string[]? filterParams = null,
+        string? order = null,
+        Spot? lastSpot = null)
+    {
+        List<Spot> retVal = [];
+
+        const int maxItemsToFetch = 25;
+        Dictionary<string, object[]>? arrayContainsAnyFilters = null;
+        string? lastItemFetchedID = lastSpot?.SpotID;
+        string? orderBy = order;
+
+        if (filterParams != null)
+        {
+            arrayContainsAnyFilters ??= [];
+            arrayContainsAnyFilters.Add(nameof(Spot_Firebase.SearchTerms), filterParams);
+        }
+
+        List<Spot_Firebase> spots_Firebase = await FirestoreManager.QueryFiltered<Spot_Firebase>(COLLECTION_SPOTS,
+            maxItems: maxItemsToFetch,
+            filters_ArrayContainsAny: arrayContainsAnyFilters,
+            lastItemQueriedID: lastItemFetchedID,
+            filters_orderBy: orderBy);
+
+        foreach (var spot_Firebase in spots_Firebase)
+        {
+            retVal.Add(new(spot_Firebase, await spot_Firebase.GetImageSource()));
+        }
+
+        return retVal ?? [];
+    }
+
+    // TODO: Consider moving this method to the Discovery Page logic.
     public static async Task<List<object>> FetchDiscoveryPageItems(DiscoveryPageFilters filters, FirebaseLocation currentLocation, FirebaseLocation selectedLocation, object? lastItem = null)
     {
         List<object> retVal = [];
-        try
+
+        switch (filters.Subject)
         {
-            switch (filters.Subject)
-            {
-                case DiscoveryPageFilters.FILTER_SUBJECT.CLIENTS:
+            case DiscoveryPageFilters.FILTER_SUBJECT.CLIENTS:
+                {
+                    string orderCode = nameof(Client.FollowersCount);
+                    FirebaseLocation location = filters.Location == DiscoveryPageFilters.FILTER_LOCATION.CURRENT
+                        ? currentLocation : selectedLocation;
+                    List<Client> clients = await FetchClients_Filtered(referenceLocation: location, searchAreaInKm: (int)filters.Area, order: orderCode, lastClient: lastItem != null ? (Client)lastItem : null);
+                    foreach (Client client in clients)
                     {
-                        string orderCode = nameof(Client.FollowersCount);
-                        FirebaseLocation location = filters.Location == DiscoveryPageFilters.FILTER_LOCATION.CURRENT
-                            ? currentLocation : selectedLocation;
-                        List<Client> clients = await FetchClients_Filtered(referenceLocation: location, searchAreaInKm: (int)filters.Area, order: orderCode, lastClient: lastItem != null ? (Client)lastItem : null);
-                        foreach (Client client in clients)
-                        {
-                            retVal.Add(client);
-                        }
-                        break;
+                        retVal.Add(client);
                     }
-                case DiscoveryPageFilters.FILTER_SUBJECT.SPOTS:
-                    {
-                        string orderCode = nameof(Spot.PraiseCount);
-                        FirebaseLocation location = filters.Location == DiscoveryPageFilters.FILTER_LOCATION.CURRENT
-                            ? currentLocation : selectedLocation;
-                        List<Spot> spots = await FetchSpots_Filtered(referenceLocation: location, searchAreaInKm: (int)filters.Area, order: orderCode, lastSpot: lastItem != null ? (Spot)lastItem : null);
-                        foreach (Spot spot in spots)
-                        {
-                            retVal.Add(spot);
-                        }
-                        break;
-                    }
-                case DiscoveryPageFilters.FILTER_SUBJECT.SPOT_PRAISES:
-                    {
-                        string orderCode = filters.Order switch
-                        {
-                            DiscoveryPageFilters.FILTER_ORDER.POPULARITY => nameof(SpotPraise_Firebase.CreationDate),
-                            _ => nameof(SpotPraise_Firebase.LikesCount)
-                        };
-                        FirebaseLocation location = filters.Location == DiscoveryPageFilters.FILTER_LOCATION.CURRENT
-                            ? currentLocation : selectedLocation;
-                        List<SpotPraise> praises = await FetchSpotPraises_Filtered(referenceLocation: location, searchAreaInKm: (int)filters.Area, order: orderCode, lastPraise: lastItem != null ? (SpotPraise)lastItem : null);
-                        foreach (SpotPraise praise in praises)
-                        {
-                            retVal.Add(praise);
-                        }
-                        break;
-                    }
-                default:
                     break;
-            }
-        }
-        catch (Exception ex)
-        {
-            await UserInterface.DisplayPopUp_Regular("Unhandled Database Exception", ex.Message, "Ok");
+                }
+            case DiscoveryPageFilters.FILTER_SUBJECT.SPOTS:
+                {
+                    string orderCode = nameof(Spot.PraiseCount);
+                    FirebaseLocation location = filters.Location == DiscoveryPageFilters.FILTER_LOCATION.CURRENT
+                        ? currentLocation : selectedLocation;
+                    List<Spot> spots = await FetchSpots_Filtered(referenceLocation: location, searchAreaInKm: (int)filters.Area, order: orderCode, lastSpot: lastItem != null ? (Spot)lastItem : null);
+                    foreach (Spot spot in spots)
+                    {
+                        retVal.Add(spot);
+                    }
+                    break;
+                }
+            case DiscoveryPageFilters.FILTER_SUBJECT.SPOT_PRAISES:
+                {
+                    string orderCode = filters.Order switch
+                    {
+                        DiscoveryPageFilters.FILTER_ORDER.POPULARITY => nameof(SpotPraise_Firebase.CreationDate),
+                        _ => nameof(SpotPraise_Firebase.LikesCount)
+                    };
+                    FirebaseLocation location = filters.Location == DiscoveryPageFilters.FILTER_LOCATION.CURRENT
+                        ? currentLocation : selectedLocation;
+                    List<SpotPraise> praises = await FetchSpotPraises_Filtered(referenceLocation: location, searchAreaInKm: (int)filters.Area, order: orderCode, lastPraise: lastItem != null ? (SpotPraise)lastItem : null);
+                    foreach (SpotPraise praise in praises)
+                    {
+                        retVal.Add(praise);
+                    }
+                    break;
+                }
+            default:
+                break;
         }
 
         return retVal;
@@ -617,42 +617,30 @@ public static class DatabaseManager
     {
         List<Table> retVal = [];
 
-        try
-            {
-            List<Table_Firebase>? tables_Firebase;
-            IQuery query = CrossFirebaseFirestore.Current.GetCollection(COLLECTION_TABLES).LimitedTo(5);
-            if (tableOwnerID != null)
-            {
-                query = query.WhereArrayContains(nameof(Table_Firebase.TableMembers), tableOwnerID);
-            }
-            //if (order != null)
-            //{
-            //    query = query.OrderBy(order);
-            //}
-            if (lastItem != null)
-            {
-                IDocumentSnapshot<Table_Firebase> documentSnapshot = await CrossFirebaseFirestore.Current.GetCollection(COLLECTION_TABLES)
-                .GetDocument(lastItem.TableID)
-                .GetDocumentSnapshotAsync<Table_Firebase>();
+        const int maxItemsToFetch = 5;
+        Dictionary<string, object>? arrayContainsSingleFilters = null;
+        string? lastItemFetchedID = lastItem?.TableID;
+        //string? orderBy = order;
 
-                query = query.StartingAfter(documentSnapshot);
-            }
-            tables_Firebase = await Firebase_GetGocumentsData<Table_Firebase>(query);
-
-            foreach (var table_Firebase in tables_Firebase?? [])
-            {
-                retVal.Add(new(table_Firebase, await table_Firebase.GetImageSource()));
-            }
-        }
-        catch (Exception ex)
+        if (tableOwnerID != null)
         {
-            await UserInterface.DisplayPopUp_Regular("Unhandled Database Exception", ex.Message, "Ok");
+            arrayContainsSingleFilters ??= [];
+            arrayContainsSingleFilters.Add(nameof(Table_Firebase.TableMembers), tableOwnerID);
+        }
+        List<Table_Firebase> tables_Firebase = await FirestoreManager.QueryFiltered<Table_Firebase>(COLLECTION_TABLES,
+            maxItems: maxItemsToFetch,
+            filters_ArrayContainsSingle: arrayContainsSingleFilters,
+            lastItemQueriedID: lastItemFetchedID);
+
+        foreach (var table_Firebase in tables_Firebase)
+        {
+            retVal.Add(new(table_Firebase, await table_Firebase.GetImageSource()));
         }
 
         return retVal;
     }
 
-    public static async Task<bool?> UpdateLikeOnSpotPraise(string clientID, SpotPraise praise)
+    public static async Task<bool?> Transaction_UpdateLikeOnSpotPraise(string clientID, SpotPraise praise)
     {
         bool? retVal = null;
         IDocumentReference praiseDocument = CrossFirebaseFirestore.Current.GetCollection(COLLECTION_PRAISES).GetDocument(praise.PraiseID);
@@ -692,7 +680,7 @@ public static class DatabaseManager
         return retVal;
     }
 
-    public static async Task<bool> UpdateClientFollowedList(string followerID, string followedID, bool follow)
+    public static async Task<bool> Transaction_UpdateClientFollowedList(string followerID, string followedID, bool follow)
     {
         bool retVal = false;
 
@@ -731,68 +719,6 @@ public static class DatabaseManager
         });
 
         return retVal;
-    }
-    #endregion
-
-    #region Private Methods
-    private static async Task<T?> Firebase_GetDocumentData<T>(IDocumentReference docRef)
-    {
-        T? retval = default;
-        int retries = 0;
-
-        while (retval == null || retries < 3)
-        {
-            T? currVal = default;
-            try
-            {
-                currVal = (await docRef.GetDocumentSnapshotAsync<T>()).Data;
-            }
-            catch (Exception ex)
-            {
-                currVal = default;
-            }
-            finally
-            {
-                retries++;
-                retval = currVal;
-            }
-        }
-
-        return retval;
-    }
-
-    private static async Task<List<T>?> Firebase_GetGocumentsData<T>(IQuery query)
-    {
-        List<T>? retval = default;
-        int cont = 0;
-
-        while (retval == null || cont < 3)
-        {
-            List<T>? currVal = default;
-            try
-            {
-                currVal = [];
-                IQuerySnapshot<T> documentsReference = await query.GetDocumentsAsync<T>();
-                foreach (var document in documentsReference.Documents)
-                {
-                    if (document != null)
-                    {
-                        currVal.Add(document.Data);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                currVal = default;
-            }
-            finally
-            {
-                cont++;
-                retval = currVal;
-            }
-        }
-
-        return retval;
     }
     #endregion
 

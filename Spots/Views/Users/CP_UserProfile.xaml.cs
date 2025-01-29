@@ -87,7 +87,7 @@ public partial class CP_UserProfile : ContentPage
         string followedID = user.UserID;
         if (followerID.Length > 0)
         {
-            if (await DatabaseManager.UpdateClientFollowedList(followerID, followedID, true))
+            if (await DatabaseManager.Transaction_UpdateClientFollowedList(followerID, followedID, true))
             {
                 _btnFollow.IsVisible = false;
                 _btnUnfollow.IsVisible = true;
@@ -101,7 +101,7 @@ public partial class CP_UserProfile : ContentPage
         string followedID = user.UserID;
         if (followerID.Length > 0)
         {
-            if (await DatabaseManager.UpdateClientFollowedList(followerID, followedID, false))
+            if (await DatabaseManager.Transaction_UpdateClientFollowedList(followerID, followedID, false))
             {
                 _btnFollow.IsVisible = true;
                 _btnUnfollow.IsVisible = false;
