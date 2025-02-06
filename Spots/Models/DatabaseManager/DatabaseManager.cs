@@ -7,6 +7,7 @@ using Spots.Models;
 using Spots.Firestore;
 using Spots.Utilities;
 using Spots.ResourceManager;
+using Plugin.Firebase.CloudMessaging;
 
 namespace Spots.Database;
 public static class DatabaseManager
@@ -30,18 +31,21 @@ public static class DatabaseManager
         //if(!firebaseUser.IsEmailVerified)
         //    throw new FirebaseAuthException(FIRAuthError.UserDisabled, "Custon Exception -> Email not verified.");
 
-        Client user = new() { UserID = iFUser.Uid };
-        if (getUser)
+        Client user = await GetClientDataAsync(iFUser.Uid);
+        if (!user.UserDataRetrieved)
         {
-            user = await GetClientDataAsync(iFUser.Uid);
-            if (!user.UserDataRetrieved)
-                await LogOutAsync();
+            await LogOutAsync();
+            return user;
         }
+
+        SessionManager.StartSession(user);
 
         if (lastLocation != null)
         {
             await UpdateClientLocationAsync(iFUser.Uid, lastLocation);
         }
+
+        await UpdateCurrentUserFCMToken();
 
         return user;
     }
@@ -67,6 +71,7 @@ public static class DatabaseManager
             {
                 Client user = await GetClientDataAsync(CrossFirebaseAuth.Current.CurrentUser.Uid);
                 SessionManager.StartSession(user);
+                await UpdateCurrentUserFCMToken();
                 return true;
             }
         }
@@ -296,17 +301,26 @@ public static class DatabaseManager
         return imageStream;
     }
 
-    public async static Task UpdateClientLocationAsync(string userID, FirebaseLocation location)
+    public static Task UpdateClientLocationAsync(string userID, FirebaseLocation location)
     {
-        try
+        return FirestoreManager.UpdateData(COLLECTION_USER_DATA, userID, nameof(Client_Firebase.LastLocation), location);
+    }
+
+    public static async Task UpdateCurrentUserFCMToken()
+    {
+        string FCMToken = await CloudMessaging.CloudMessagingManager.GetFCMTokenAsync();
+        if (FCMToken.Length > 0
+            && SessionManager.CurrentSession?.Client != null
+            && SessionManager.CurrentSession.Client.FCMToken != FCMToken)
         {
-            await CrossFirebaseFirestore.Current
-            .GetCollection(COLLECTION_USER_DATA)
-            .GetDocument(userID)
-            .UpdateDataAsync((nameof(Client_Firebase.LastLocation), location))
-            .WaitAsync(TimeSpan.FromMilliseconds(150)); // I dont like this, but for some reason Firebase failed to return after updating the value succesfully.
+            SessionManager.CurrentSession.Client.FCMToken = FCMToken;
+            await UpdateClientFCMToken(SessionManager.CurrentSession.Client.UserID, FCMToken);
         }
-        catch { /* Try catch is necessary, because it throws an exception when hitting the timeout. */ } 
+    }
+
+    public static Task UpdateClientFCMToken(string userID, string FCMToken)
+    {
+        return FirestoreManager.UpdateData(COLLECTION_USER_DATA, userID, nameof(Client_Firebase.FCMToken), FCMToken);
     }
 
     public static async Task<List<Client>> FetchClientsByID(List<string> clientIDs)

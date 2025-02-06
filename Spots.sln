@@ -16,6 +16,7 @@ Global
 		{DEE40CAD-1693-41E8-820D-76F9DF286B21}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
 		{DEE40CAD-1693-41E8-820D-76F9DF286B21}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DEE40CAD-1693-41E8-820D-76F9DF286B21}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DEE40CAD-1693-41E8-820D-76F9DF286B21}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

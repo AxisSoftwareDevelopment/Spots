@@ -1,4 +1,5 @@
 ﻿using Plugin.Firebase.Firestore;
+using Spots.Models;
 
 namespace Spots.Firestore
 {
@@ -26,6 +27,19 @@ namespace Spots.Firestore
             }
 
             return retval;
+        }
+
+        public static async Task UpdateData(string Collection, string DocumentID, string VariableName, object NewData)
+        {
+            try
+            {
+                await CrossFirebaseFirestore.Current
+                .GetCollection(Collection)
+                .GetDocument(DocumentID)
+                .UpdateDataAsync((VariableName, NewData))
+                .WaitAsync(TimeSpan.FromMilliseconds(150)); // I dont like this, but for some reason Firebase failed to return after updating the value succesfully.
+            }
+            catch { /* Try catch is necessary, because it throws an exception when hitting the timeout. */ }
         }
 
         public static async Task<List<T>> QueryFiltered<T>(string collection,

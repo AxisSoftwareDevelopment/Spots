@@ -5,6 +5,8 @@ using Plugin.Firebase.Bundled.Shared;
 
 using Spots.Database;
 using Spots.Models;
+using Plugin.Firebase.CloudMessaging;
+
 
 #if IOS
 using Plugin.Firebase.Bundled.Platforms.iOS;
@@ -60,13 +62,13 @@ public static class MauiProgram
     private static CrossFirebaseSettings CreateCrossFirebaseSettings()
     {
         CrossFirebaseSettings settings = new(
-            isAnalyticsEnabled: true,
+            isAnalyticsEnabled: false,
             isAuthEnabled: true,
-            isCloudMessagingEnabled: false,
+            isCloudMessagingEnabled: true,
             isDynamicLinksEnabled: false,
             isFirestoreEnabled: true,
             isFunctionsEnabled: true,
-            isRemoteConfigEnabled: true,
+            isRemoteConfigEnabled: false,
             isStorageEnabled: true,
             googleRequestIdToken: "443931860533-lvbmdbnge1tdc2dmqpvmqg511ag25cv5.apps.googleusercontent.com");
 
@@ -86,9 +88,12 @@ public static class MauiProgram
                 }
                 
                 bool userSignedIn = await DatabaseManager.ValidateCurrentSession(); 
-                await LocationManager.UpdateLocationAsync(); 
+                await LocationManager.UpdateLocationAsync();
+                await CrossFirebaseCloudMessaging.Current.CheckIfValidAsync();
+                CrossFirebaseCloudMessaging.Current.TokenChanged += Current_TokenChanged;
                 //await ValidatePermissions(); 
-                if (userSignedIn && SessionManager.CurrentSession != null && SessionManager.CurrentSession.Client != null) 
+                if (userSignedIn && SessionManager.CurrentSession != null
+                    && SessionManager.CurrentSession.Client != null) 
                 {
                     if(LocationManager.CurrentLocation != null)
                     {
@@ -103,5 +108,10 @@ public static class MauiProgram
                 }
             }); 
         }); 
+    }
+
+    private static async void Current_TokenChanged(object? sender, Plugin.Firebase.CloudMessaging.EventArgs.FCMTokenChangedEventArgs e)
+    {
+        await DatabaseManager.UpdateCurrentUserFCMToken();
     }
 }

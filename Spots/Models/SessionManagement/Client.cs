@@ -22,6 +22,7 @@ public class Client : INotifyPropertyChanged
     private List<string>? _Followers;
     private List<string>? _Followed;
     private int? _LikesCount;
+    private string? _FCMToken;
     #endregion
 
     #region Public Parameters
@@ -171,6 +172,15 @@ public class Client : INotifyPropertyChanged
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(LikesCount)));
         }
     }
+    public string FCMToken
+    {
+        get => _FCMToken ?? "";
+        set
+        {
+            _FCMToken = value;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(FCMToken)));
+        }
+    }
     #endregion
     public Client()
     {
@@ -218,13 +228,14 @@ public class Client : INotifyPropertyChanged
         PhoneNumber = firebaseData.PhoneNumber;
         PhoneCountryCode = firebaseData.PhoneCountryCode;
         Description = firebaseData.Description;
+        LikesCount = firebaseData.LikesCount;
+        FCMToken = firebaseData.FCMToken;
         LastLocation = (firebaseData.LastLocation.Address.Length == 0
             && firebaseData.LastLocation.Latitude == 0
             && firebaseData.LastLocation.Longitude == 0)
             ? null : firebaseData.LastLocation;
         Followers = [.. firebaseData.Followers];
         Followed = [.. firebaseData.Followed];
-        LikesCount = firebaseData?.LikesCount ?? 0;
     }
 
     public void UpdateUserData(Client userData)
@@ -317,6 +328,9 @@ public class Client_Firebase
     [FirestoreProperty(nameof(LikesCount))]
     public int LikesCount { get; set; }
 
+    [FirestoreProperty(nameof(FCMToken))]
+    public string FCMToken { get; set; }
+
 
     public Client_Firebase()
     {
@@ -335,6 +349,7 @@ public class Client_Firebase
         ClientID_ForSearch = [];
         LastLocation = new("", 0, 0);
         LikesCount = 0;
+        FCMToken = "";
     }
 
     public Client_Firebase(Client userData, string profilePictureAddress)
@@ -354,6 +369,7 @@ public class Client_Firebase
         LastLocation = userData.LastLocation ?? new("", 0, 0);
         ClientID_ForSearch = [userData.UserID];
         LikesCount = userData.LikesCount;
+        FCMToken = userData.FCMToken;
     }
 
     private static List<string> GenerateSearchTerms(string firstName, string lastName)
