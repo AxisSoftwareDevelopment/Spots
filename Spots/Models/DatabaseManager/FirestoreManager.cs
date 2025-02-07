@@ -1,5 +1,7 @@
 ﻿using Plugin.Firebase.Firestore;
 using Spots.Models;
+using Spots.Utilities;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Spots.Firestore
 {
@@ -29,7 +31,29 @@ namespace Spots.Firestore
             return retval;
         }
 
-        public static async Task UpdateData(string Collection, string DocumentID, string VariableName, object NewData)
+        public static async Task<string> SetDocumentData(string Collection, object Document, string DocumentID = "")
+        {
+            IDocumentReference documentReference;
+            if (DocumentID.Length > 0)
+            {
+                documentReference = CrossFirebaseFirestore.Current.GetCollection(Collection).GetDocument(DocumentID);
+
+                await documentReference.SetDataAsync(Document);
+            }
+            else
+            {
+                documentReference = await CrossFirebaseFirestore.Current.GetCollection(Collection).AddDocumentAsync(Document);
+            }
+
+            return documentReference.Id;
+        }
+
+        public static Task DeleteDocument(string Collection, string DocumentID)
+        {
+            return CrossFirebaseFirestore.Current.GetCollection(Collection).GetDocument(DocumentID).DeleteDocumentAsync();
+        }
+
+        public static async Task UpdateSpecificData(string Collection, string DocumentID, string VariableName, object NewData)
         {
             try
             {
@@ -52,7 +76,7 @@ namespace Spots.Firestore
             List<T>? retVal = [];
             int globalRetries = 0;
 
-            while (globalRetries < 5)
+            while (globalRetries < MAXIMUM_RETRIES)
             {
                 try
                 {
@@ -125,6 +149,10 @@ namespace Spots.Firestore
                 catch (Exception ex)
                 {
                     globalRetries++;
+                    if(globalRetries >= MAXIMUM_RETRIES)
+                    {
+                        await UserInterface.DisplayPopUp_Regular("Unhandled Error", ex.Message, "Ok");
+                    }
                 }
             }
 
@@ -141,7 +169,7 @@ namespace Spots.Firestore
             List<T>? retVal = [];
             int globalRetries = 0;
 
-            while (globalRetries < 5)
+            while (globalRetries < MAXIMUM_RETRIES)
             {
                 try
                 {
@@ -214,6 +242,10 @@ namespace Spots.Firestore
                 catch (Exception ex)
                 {
                     globalRetries++;
+                    if (globalRetries >= MAXIMUM_RETRIES)
+                    {
+                        await UserInterface.DisplayPopUp_Regular("Unhandled Error", ex.Message, "Ok");
+                    }
                 }
             }
 

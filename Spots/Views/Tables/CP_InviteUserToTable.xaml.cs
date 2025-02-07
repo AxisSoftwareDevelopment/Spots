@@ -2,6 +2,7 @@ using Spots.Models;
 using Spots.ResourceManager;
 using Spots.Utilities;
 using Spots.Database;
+using Android.Media.TV;
 
 namespace Spots;
 
@@ -9,7 +10,7 @@ public partial class CP_InviteUserToTable : ContentPage
 {
     private readonly FeedContext<Table> CurrentFeedContext = new();
     private Client CachedClient;
-    private string[] ConfirmationLables = ["lbl_SendInvitation", "lbl_InvitationConfirmationMessage", "lbl_Ok", "lbl_Cancel"];
+    private string[] ConfirmationLables = ["lbl_InviteToTable", "txt_TableInvitationSendConfirmation", "lbl_Ok", "lbl_Cancel"];
 	public CP_InviteUserToTable(Client client)
 	{
 		CachedClient = client;
@@ -50,10 +51,14 @@ public partial class CP_InviteUserToTable : ContentPage
     {
         if (e.CurrentSelection.Count > 0)
         {
-            string formatedConfirmationMessage = string.Format(ConfirmationLables[1], CachedClient.FullName, ((Table)e.CurrentSelection[0]).TableName);
+            string tableID = ((Table)e.CurrentSelection[0]).TableID;
+            string tableName = ((Table)e.CurrentSelection[0]).TableName;
+            string formatedConfirmationMessage = string.Format(ConfirmationLables[1], CachedClient.FullName, tableName);
             if (await UserInterface.DisplayPopPup_Choice(ConfirmationLables[0], formatedConfirmationMessage, ConfirmationLables[2], ConfirmationLables[3]))
             {
                 // Send Invitation
+                Notification_TableInvite tableInvite = new("", DateTimeOffset.Now, Notification.NOTIFICATION_TYPE_TABLEINVITE, CachedClient.UserID, tableID, CachedClient.FullName, tableName);
+                await DatabaseManager.SaveNotificationData(tableInvite);
                 await Navigation.PopAsync();
             }
             _colTables.SelectedItem = null;

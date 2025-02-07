@@ -4,6 +4,7 @@ using Android.Content;
 using Plugin.Firebase.CloudMessaging;
 using Plugin.Firebase.DynamicLinks;
 using Android.OS;
+using Android;
 
 namespace Spots;
 
@@ -40,7 +41,7 @@ public class MainActivity : MauiAppCompatActivity
             CreateNotificationChannel();
         }
     }
-    private void CreateNotificationChannel()
+    private async void CreateNotificationChannel()
     {
         var channelId = $"{PackageName}.general";
         var notificationManager = (NotificationManager)GetSystemService(NotificationService)!;
@@ -48,5 +49,20 @@ public class MainActivity : MauiAppCompatActivity
         notificationManager.CreateNotificationChannel(channel);
         FirebaseCloudMessagingImplementation.ChannelId = channelId;
         //FirebaseCloudMessagingImplementation.SmallIconRef = Resource.Drawable.ic_push_small;
+        PermissionStatus status = await Permissions.RequestAsync<NotificationPermission>();
+    }
+
+    private class NotificationPermission : Permissions.BasePlatformPermission
+    {
+        public override (string androidPermission, bool isRuntime)[] RequiredPermissions
+        {
+            get
+            {
+                var result = new List<(string androidPermission, bool isRuntime)>();
+                if (OperatingSystem.IsAndroidVersionAtLeast(33))
+                    result.Add((Manifest.Permission.PostNotifications, true));
+                return result.ToArray();
+            }
+        }
     }
 }

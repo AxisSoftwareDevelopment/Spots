@@ -1,3 +1,4 @@
+using Spots.Notifications;
 using Spots.Models;
 
 namespace Spots;
@@ -18,6 +19,7 @@ public partial class CV_FlyoutUserNavigationBar : ContentView
         _FrameProfilePicture.HeightRequest = profilePictureDimensions;
         _FrameProfilePicture.WidthRequest = profilePictureDimensions;
 
+        _btnOpenNotifications.BindingContext = NotificationsManager.Handler;
         _btnOpenSearch.Clicked += _btnOpenSearch_Clicked;
     }
 

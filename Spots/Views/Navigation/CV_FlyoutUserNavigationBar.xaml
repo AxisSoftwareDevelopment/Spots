@@ -9,9 +9,12 @@
             <ImageButton x:Name="_ProfileImage" Aspect="AspectFill" Source="{Binding ProfilePictureSource}" Clicked="ProfilePictureOnClicked"/>
         </Border>
 
-        <Label Text="----- Spots -----" VerticalOptions="Center" HorizontalOptions="FillAndExpand" HorizontalTextAlignment="Center"/>
+        <Label Text="----- Spots -----" VerticalOptions="Center" HorizontalOptions="FillAndExpand" HorizontalTextAlignment="Center" Margin="43,0,0,0"/>
 
-        <ImageButton x:Name="_btnOpenSearch" Margin="30,0,10,0" HeightRequest="25" WidthRequest="25" Source="iconsearch.png"/>
+        <StackLayout Margin="30,0,10,0" Orientation="Horizontal">
+            <ImageButton x:Name="_btnOpenNotifications"  HeightRequest="27" WidthRequest="27" Source="{Binding NotificationsPageIcon}" Margin="0,0,10,0"/>
+            <ImageButton x:Name="_btnOpenSearch"  HeightRequest="25" WidthRequest="25" Source="iconsearch.png"/>
+        </StackLayout>
     </StackLayout>
 
 </ContentView>

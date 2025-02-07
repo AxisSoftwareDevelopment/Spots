@@ -158,7 +158,6 @@ public class SpotPraise : INotifyPropertyChanged
 
     public async Task<bool?> LikeSwitch(string clientID)
     {
-        await NotificationsManager.SendTableInvitation(SessionManager.CurrentSession?.Client?.FCMToken!, "TestUser", "TestTable");
         return await DatabaseManager.Transaction_UpdateLikeOnSpotPraise(clientID, this);
     }
 }

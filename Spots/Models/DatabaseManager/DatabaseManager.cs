@@ -7,7 +7,7 @@ using Spots.Models;
 using Spots.Firestore;
 using Spots.Utilities;
 using Spots.ResourceManager;
-using Plugin.Firebase.CloudMessaging;
+using static Google.Firestore.V1.StructuredQuery;
 
 namespace Spots.Database;
 public static class DatabaseManager
@@ -16,6 +16,7 @@ public static class DatabaseManager
     private const string COLLECTION_SPOTS = "Spots";
     private const string COLLECTION_PRAISES = "Praises";
     private const string COLLECTION_TABLES = "Tables";
+    private const string COLLECTION_NOTIFICATIONS = "Notifications";
     const long MAX_IMAGE_STREAM_DIMENSION = 1024;
 
     #region Public Methods
@@ -180,17 +181,15 @@ public static class DatabaseManager
                 {
                     profilePictureAddress = await SaveFile($"{COLLECTION_TABLES}/{table.TableID}", "TablePicture", imageFile);
                 }
-                await collectionReference.GetDocument(table.TableID).SetDataAsync(new Table_Firebase(table, profilePictureAddress));
+                await FirestoreManager.SetDocumentData(COLLECTION_TABLES, new Table_Firebase(table, profilePictureAddress), table.TableID);
             }
             else
             {
-                Table_Firebase table_Firebase = new(table, "");
-                IDocumentReference documentReference = await collectionReference.AddDocumentAsync(table_Firebase);
+                string tableID = await FirestoreManager.SetDocumentData(COLLECTION_TABLES, new Table_Firebase(table, ""));
                 if (imageFile != null)
                 {
-                    table_Firebase.TableID = documentReference.Id;
-                    table_Firebase.TablePictureAddress = await SaveFile($"{COLLECTION_TABLES}/{table.TableID}", "TablePicture", imageFile);
-                    await documentReference.SetDataAsync(table_Firebase);
+                    string tablePictureAddress = await SaveFile($"{COLLECTION_TABLES}/{table.TableID}", "TablePicture", imageFile);
+                    await FirestoreManager.UpdateSpecificData(COLLECTION_TABLES, tableID, nameof(Table_Firebase.TablePictureAddress), tablePictureAddress);
                 }
             }
         }
@@ -227,47 +226,51 @@ public static class DatabaseManager
 
     public static async Task<bool> SaveSpotPraiseData(SpotPraise praise, ImageFile? imageFile = null)
     {
-        try
+        SpotPraise_Firebase praise_Firebase = new(praise);
+
+        if (praise_Firebase.PraiseID.Length > 0)
         {
-            bool bAlreadySaved = false;
-            SpotPraise_Firebase praise_Firebase = new(praise);
-            IDocumentReference praiseDocumentReference;
-            if (praise_Firebase.PraiseID.Length > 0)
+            if (imageFile != null)
             {
-                praiseDocumentReference = CrossFirebaseFirestore.Current.GetCollection(COLLECTION_PRAISES).GetDocument(praise_Firebase.PraiseID);
+                praise_Firebase.AttachedPictureAddress = await SavePraiseAttachment(praise_Firebase.PraiseID, praise_Firebase.AuthorID, imageFile);
             }
-            else
-            {
-                praiseDocumentReference = await CrossFirebaseFirestore.Current.GetCollection(COLLECTION_PRAISES).AddDocumentAsync(praise_Firebase);
-                bAlreadySaved = true;
-            }
-
-            if (praiseDocumentReference.Id.Length > 0 && imageFile != null)
-            {
-                string attachmentAddress = await SavePraiseAttachment(praiseDocumentReference.Id, praise_Firebase.AuthorID, imageFile);
-                praise_Firebase.AttachedPictureAddress = attachmentAddress;
-            }
-
-            if ((praiseDocumentReference.Id.Length > 0) && (!bAlreadySaved || imageFile != null))
-            {
-                await praiseDocumentReference.SetDataAsync(praise_Firebase);
-            }
-
-            // We create dummy client and spot so the method doesnt call their info from db, as we dont need it.
-            List<SpotPraise> praises = await FetchSpotPraises_Filtered(author: new Client(praise.AuthorID, "", "", DateTime.Now, ""), spot: new Spot(praise.SpotID, "", ""));
-
-            await CrossFirebaseFirestore.Current
-                .GetCollection(COLLECTION_SPOTS)
-                .GetDocument(praise.SpotID)
-                .UpdateDataAsync(new Dictionary<object, object> { { nameof(Spot_Firebase.PraiseCount), praises.Count } });
-
-            return true;
+            await FirestoreManager.SetDocumentData(COLLECTION_PRAISES, praise_Firebase, praise_Firebase.PraiseID);
         }
-        catch (Exception ex)
+        else
         {
-            await UserInterface.DisplayPopUp_Regular("Unhandled Database Exception", ex.Message, "Ok");
-            return false;
+            string documentID = await FirestoreManager.SetDocumentData(COLLECTION_PRAISES, praise_Firebase);
+            if (imageFile != null)
+            {
+                string attachmentAddress = await SavePraiseAttachment(documentID, praise_Firebase.AuthorID, imageFile);
+                await FirestoreManager.UpdateSpecificData(COLLECTION_PRAISES, praise_Firebase.PraiseID, nameof(SpotPraise_Firebase.AttachedPictureAddress), attachmentAddress);
+            }
         }
+
+        // We create dummy client and spot so the method doesnt call their info from db, as we dont need it.
+        List<SpotPraise> praises = await FetchSpotPraises_Filtered(author: new Client(praise.AuthorID, "", "", DateTime.Now, ""), spot: new Spot(praise.SpotID, "", ""));
+
+        await FirestoreManager.UpdateSpecificData(COLLECTION_SPOTS, praise.SpotID, nameof(Spot_Firebase.PraiseCount), praises.Count);
+
+        return true;
+    }
+
+    public static async Task SaveNotificationData(Notification_TableInvite notification)
+    {
+        // Verify is a new Notification
+        if(notification.NotificationID.Length == 0)
+        {
+            // Verify there are no other invitations to the same user and to the same table.
+            List<INotification> notificationList = await FetchNotifications_Filtered(notification.OwnerID, notification.Type, notification.Metadata_TableID);
+            if (notificationList.Count == 0)
+            {
+                await FirestoreManager.SetDocumentData(COLLECTION_NOTIFICATIONS, new Notification_Firebase(notification));
+            }
+        }
+    }
+
+    public static Task DeleteNotificationData(INotification notification)
+    {
+        return FirestoreManager.DeleteDocument(COLLECTION_NOTIFICATIONS, notification.NotificationID);
     }
 
     public static async Task<string> SavePraiseAttachment(string praiseID, string userID, ImageFile imageFile)
@@ -303,7 +306,7 @@ public static class DatabaseManager
 
     public static Task UpdateClientLocationAsync(string userID, FirebaseLocation location)
     {
-        return FirestoreManager.UpdateData(COLLECTION_USER_DATA, userID, nameof(Client_Firebase.LastLocation), location);
+        return FirestoreManager.UpdateSpecificData(COLLECTION_USER_DATA, userID, nameof(Client_Firebase.LastLocation), location);
     }
 
     public static async Task UpdateCurrentUserFCMToken()
@@ -320,7 +323,7 @@ public static class DatabaseManager
 
     public static Task UpdateClientFCMToken(string userID, string FCMToken)
     {
-        return FirestoreManager.UpdateData(COLLECTION_USER_DATA, userID, nameof(Client_Firebase.FCMToken), FCMToken);
+        return FirestoreManager.UpdateSpecificData(COLLECTION_USER_DATA, userID, nameof(Client_Firebase.FCMToken), FCMToken);
     }
 
     public static async Task<List<Client>> FetchClientsByID(List<string> clientIDs)
@@ -577,6 +580,51 @@ public static class DatabaseManager
         return retVal ?? [];
     }
 
+    public static async Task<List<INotification>> FetchNotifications_Filtered(
+        string? ownerID = null,
+        string? type = null,
+        string? metadataToLookFor = null,
+        INotification? lastNotification = default)
+    {
+        List<INotification> retVal = [];
+
+        const int maxItemsToFetch = 25;
+        Dictionary<string, object>? equalsToFilters = null;
+        Dictionary<string, object>? arrayContainsSingleFilters = null;
+        string? lastItemFetchedID = lastNotification?.NotificationID;
+        string? orderBy = nameof(Notification_Firebase.CreationDate);
+
+        if (ownerID != null)
+        {
+            equalsToFilters ??= [];
+            equalsToFilters.Add(nameof(Notification_Firebase.OwnerID), ownerID);
+        }
+        if (type != null)
+        {
+            equalsToFilters ??= [];
+            equalsToFilters.Add(nameof(Notification_Firebase.Type), type);
+        }
+        if (metadataToLookFor != null)
+        {
+            arrayContainsSingleFilters ??= [];
+            arrayContainsSingleFilters.Add(nameof(Notification_Firebase.Metadata), metadataToLookFor);
+        }
+
+        List<Notification_Firebase> notifications_Firebase = await FirestoreManager.QueryFiltered<Notification_Firebase>(COLLECTION_NOTIFICATIONS,
+            maxItems: maxItemsToFetch,
+            filters_EqualsTo: equalsToFilters,
+            filters_ArrayContainsSingle: arrayContainsSingleFilters,
+            lastItemQueriedID: lastItemFetchedID,
+            filters_orderBy: orderBy);
+
+        foreach (var notificationFB in notifications_Firebase)
+        {
+            retVal.Add(notificationFB);
+        }
+
+        return retVal;
+    }
+
     // TODO: Consider moving this method to the Discovery Page logic.
     public static async Task<List<object>> FetchDiscoveryPageItems(DiscoveryPageFilters filters, FirebaseLocation currentLocation, FirebaseLocation selectedLocation, object? lastItem = null)
     {
@@ -737,6 +785,32 @@ public static class DatabaseManager
         });
 
         return retVal;
+    }
+
+    public static async Task Transaction_AddTableMember(string newMemberID, string tableID)
+    {
+        IDocumentReference tableDocument = CrossFirebaseFirestore.Current.GetCollection(COLLECTION_TABLES).GetDocument(tableID);
+
+        await CrossFirebaseFirestore.Current.RunTransactionAsync(transaction => {
+            bool retVal = false;
+
+            IDocumentSnapshot<Table_Firebase> table = transaction.GetDocument<Table_Firebase>(tableDocument);
+
+            if (table?.Data != null)
+            {
+                IList<string> membersList = table.Data.TableMembers;
+                if(!membersList.Contains(newMemberID))
+                {
+                    membersList.Add(newMemberID);
+                }
+                
+                transaction.UpdateData(tableDocument, (nameof(Table_Firebase.TableMembers), membersList));
+
+                retVal = true;
+            }
+
+            return retVal;
+        });
     }
     #endregion
 
