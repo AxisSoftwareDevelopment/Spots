@@ -20,6 +20,6 @@ public partial class TP_FeedViews : Microsoft.Maui.Controls.TabbedPage
 
         _Tab1.Content = new CV_MainFeed();
         _Tab2.Content = new CV_DiscoverFeed();
-        IconImageSource = "placeholder_logo.jpg";
+        IconImageSource = "logolong.png";
     }
 }

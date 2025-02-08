@@ -32,7 +32,7 @@ public class Spot : INotifyPropertyChanged
     }
     public ImageSource ProfilePictureSource
     {
-        get => _profilePictureSource ?? ImageSource.FromFile("placeholder_logo.jpg");
+        get => _profilePictureSource ?? ImageSource.FromFile("logolong.png");
         set
         {
             _profilePictureSource = value;
@@ -142,7 +142,7 @@ public class Spot : INotifyPropertyChanged
         SpotID = userID;
         BrandName = brandName;
         SpotName = businessName;
-        ProfilePictureSource = profilePictureSource ?? ImageSource.FromFile("placeholder_logo.jpg");
+        ProfilePictureSource = profilePictureSource ?? ImageSource.FromFile("logolong.png");
         PhoneNumber = phoneNumber;
         PhoneCountryCode = phoneCountryCode;
         Description = description;
@@ -186,7 +186,7 @@ public class Spot : INotifyPropertyChanged
         }
         else
         {
-            ProfilePictureSource = ImageSource.FromFile("placeholder_logo.jpg");
+            ProfilePictureSource = ImageSource.FromFile("logolong.png");
         }
     }
 }
@@ -300,7 +300,7 @@ public class Spot_Firebase
         }
         else
         {
-            return ImageSource.FromFile("placeholder_logo.jpg");
+            return ImageSource.FromFile("logolong.png");
         }
     }
 }

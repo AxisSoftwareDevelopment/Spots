@@ -9,7 +9,7 @@
             <ImageButton x:Name="_ProfileImage" Aspect="AspectFill" Source="{Binding ProfilePictureSource}" Clicked="ProfilePictureOnClicked"/>
         </Border>
 
-        <Label Text="----- Spots -----" VerticalOptions="Center" HorizontalOptions="FillAndExpand" HorizontalTextAlignment="Center" Margin="43,0,0,0"/>
+        <Image Source="logolong.png" VerticalOptions="Center" HorizontalOptions="FillAndExpand" Margin="43,0,0,0"/>
 
         <StackLayout Margin="30,0,10,0" Orientation="Horizontal">
             <ImageButton x:Name="_btnOpenNotifications"  HeightRequest="27" WidthRequest="27" Source="{Binding NotificationsPageIcon}" Margin="0,0,10,0"/>

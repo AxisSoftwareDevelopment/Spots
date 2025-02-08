@@ -21,6 +21,12 @@ public partial class CV_FlyoutUserNavigationBar : ContentView
 
         _btnOpenNotifications.BindingContext = NotificationsManager.Handler;
         _btnOpenSearch.Clicked += _btnOpenSearch_Clicked;
+        _btnOpenNotifications.Clicked += _btnOpenNotifications_Clicked;
+    }
+
+    private void _btnOpenNotifications_Clicked(object? sender, EventArgs e)
+    {
+        Navigation.PushAsync(new CP_Notifications());
     }
 
     private void _btnOpenSearch_Clicked(object? sender, EventArgs e)

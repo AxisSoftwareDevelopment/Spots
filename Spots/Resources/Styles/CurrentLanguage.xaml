@@ -119,6 +119,9 @@
     <x:String x:Key="lbl_InviteToTable">Invite to a Table</x:String> <!-- Label that indicates to Invite someone to a table -->
     <x:String x:Key="lbl_TableInvitation">Invitation to a Table</x:String> <!-- Label that indicates an invitation to a table -->
     <x:String x:Key="lbl_SendInvitation">Send Invitation</x:String> <!-- Label that indicates to send an invitation -->
+    <x:String x:Key="lbl_UserInvitedYouToTable">{0} invited you to a Table!</x:String> <!-- Formatable Label that indicates a user invited you to a table -->
+    <x:String x:Key="lbl_Decline">Decline!</x:String> <!-- Label that indicates to decline -->
+    <x:String x:Key="lbl_Notifications">Notifications</x:String> <!-- Label that indicates Notifications -->
 
     <x:String x:Key="txt_ConfirmLogOut">Are you sure you want to want to log out?</x:String> <!-- Text that questions the user if is sure of logout action -->
     <x:String x:Key="txt_LogIn">Log in to your account</x:String> <!-- Log in text -->
@@ -150,5 +153,7 @@
     <x:String x:Key="txt_TableAbandonConfirmationMessage">Abandoning the table means you will no longer have access to it, unless you receive an invitation by another member.</x:String> <!-- Information message displayed when the User tries to abandon a table -->
     <x:String x:Key="txt_SelectATableForInviteMessage">Select a table to send an invitation to:</x:String> <!-- Information message displayed when the User tries to send a table invitation -->
     <x:String x:Key="txt_TableInvitationSendConfirmation">Invite [{0}] to join table [{1}]?</x:String> <!-- Formatable Text that indicates to send an invitation from a specific user to a specific table -->
+    <x:String x:Key="txt_TableInvitationAcceptanceConfirmation">Accept {0}'s invitation to join table {1}?</x:String> <!-- Formatable Text that indicates to accept an invitation from a specific user to a specific table -->
+    <x:String x:Key="txt_UserInvitedYouToTable">The user {0} invited you to join table '{1}'.</x:String> <!-- Formatable Text that indicates a specific user invited you to a specific table -->
 
 </ResourceDictionary>

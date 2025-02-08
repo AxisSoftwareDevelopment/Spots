@@ -21,7 +21,7 @@ public class SpotPraise : INotifyPropertyChanged
     {
         get
         {
-            return _AuthorProfilePicture ?? ImageSource.FromFile("placeholder_logo.jpg");
+            return _AuthorProfilePicture ?? ImageSource.FromFile("logolong.png");
         }
 
         private set
@@ -35,7 +35,7 @@ public class SpotPraise : INotifyPropertyChanged
     {
         get
         {
-            return _SpotProfilePicture ?? ImageSource.FromFile("placeholder_logo.jpg");
+            return _SpotProfilePicture ?? ImageSource.FromFile("logolong.png");
         }
 
         private set

@@ -33,7 +33,7 @@ namespace Spots.Models
         {
             TableID = "";
             SittingMembers = [];
-            TablePictureSource = ImageSource.FromFile("placeholder_logo.jpg");
+            TablePictureSource = ImageSource.FromFile("logolong.png");
             TableName = "";
             Description = "";
             TableMembers = [];
@@ -62,7 +62,7 @@ namespace Spots.Models
             }
             else
             {
-                ImageSource.FromFile("placeholder_logo.jpg");
+                ImageSource.FromFile("logolong.png");
             }
         }
     }
@@ -123,7 +123,7 @@ namespace Spots.Models
             }
             else
             {
-                return ImageSource.FromFile("placeholder_logo.jpg");
+                return ImageSource.FromFile("logolong.png");
             }
         }
     }

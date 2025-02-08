@@ -57,7 +57,7 @@ public partial class CP_InviteUserToTable : ContentPage
             if (await UserInterface.DisplayPopPup_Choice(ConfirmationLables[0], formatedConfirmationMessage, ConfirmationLables[2], ConfirmationLables[3]))
             {
                 // Send Invitation
-                Notification_TableInvite tableInvite = new("", DateTimeOffset.Now, Notification.NOTIFICATION_TYPE_TABLEINVITE, CachedClient.UserID, tableID, CachedClient.FullName, tableName);
+                Notification_TableInvite tableInvite = new("", DateTimeOffset.Now, Notification.NOTIFICATION_TYPE_TABLEINVITE, CachedClient.UserID, tableID, CachedClient.FullName, tableName, SessionManager.CurrentSession?.Client?.FullName?? "");
                 await DatabaseManager.SaveNotificationData(tableInvite);
                 await Navigation.PopAsync();
             }
@@ -73,7 +73,7 @@ public partial class CP_InviteUserToTable : ContentPage
         {
             try
             {
-                retVal = await DatabaseManager.FetchTables_Filtered(tableOwnerID: SessionManager.CurrentSession.Client.UserID, lastItem: lastItemFetched);
+                retVal = await DatabaseManager.FetchTables_Filtered(tableMemberID: SessionManager.CurrentSession.Client.UserID, lastItem: lastItemFetched);
                 //return [new() { OnlineMembers= ["1", "2"], TableID = "1", TableMembers= ["1", "2", "3"], TableName="Test1" },
                 //new() { OnlineMembers= [], TableID = "2", TableMembers= ["1", "2", "3"], TableName="Test2" }];
             }

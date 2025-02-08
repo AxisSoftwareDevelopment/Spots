@@ -101,7 +101,7 @@ namespace Spots.Firestore
 
                         foreach (var arrayContainsSingleFilter in filters_ArrayContainsSingle)
                         {
-                            query.WhereArrayContains(arrayContainsSingleFilter.Key, arrayContainsSingleFilter.Value);
+                            query = query.WhereArrayContains(arrayContainsSingleFilter.Key, arrayContainsSingleFilter.Value);
                         }
                     }
 
@@ -194,7 +194,7 @@ namespace Spots.Firestore
 
                         foreach (var arrayContainsAnyFilter in filters_ArrayContainsAny)
                         {
-                            query.WhereArrayContainsAny(arrayContainsAnyFilter.Key, arrayContainsAnyFilter.Value);
+                            query = query.WhereArrayContainsAny(arrayContainsAnyFilter.Key, arrayContainsAnyFilter.Value);
                         }
                     }
 

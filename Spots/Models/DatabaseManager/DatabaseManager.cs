@@ -619,7 +619,14 @@ public static class DatabaseManager
 
         foreach (var notificationFB in notifications_Firebase)
         {
-            retVal.Add(notificationFB);
+            switch(notificationFB.Type)
+            {
+                case Notification.NOTIFICATION_TYPE_TABLEINVITE:
+                {
+                    retVal.Add(new Notification_TableInvite(notificationFB));
+                    break;
+                }
+            }
         }
 
         return retVal;
@@ -679,7 +686,7 @@ public static class DatabaseManager
         return retVal;
     }
 
-    public static async Task<List<Table>> FetchTables_Filtered(string? tableOwnerID = null, Table? lastItem = null)
+    public static async Task<List<Table>> FetchTables_Filtered(string? tableMemberID = null, Table? lastItem = null)
     {
         List<Table> retVal = [];
 
@@ -688,13 +695,13 @@ public static class DatabaseManager
         string? lastItemFetchedID = lastItem?.TableID;
         //string? orderBy = order;
 
-        if (tableOwnerID != null)
+        if (tableMemberID != null)
         {
             arrayContainsSingleFilters ??= [];
-            arrayContainsSingleFilters.Add(nameof(Table_Firebase.TableMembers), tableOwnerID);
+            arrayContainsSingleFilters.Add(nameof(Table_Firebase.TableMembers), tableMemberID);
         }
         List<Table_Firebase> tables_Firebase = await FirestoreManager.QueryFiltered<Table_Firebase>(COLLECTION_TABLES,
-            maxItems: maxItemsToFetch,
+            //maxItems: maxItemsToFetch,
             filters_ArrayContainsSingle: arrayContainsSingleFilters,
             lastItemQueriedID: lastItemFetchedID);
 

@@ -1,6 +1,6 @@
+using Spots.Database;
 using Spots.Models;
 using Spots.Utilities;
-using Spots.Database;
 
 namespace Spots;
 
@@ -34,13 +34,18 @@ public partial class CP_SideUserMenu : ContentPage
         _colTables.RemainingItemsThreshold = 1;
         _colTables.RemainingItemsThresholdReached += OnItemThresholdReached;
         _colTables.SelectionChanged += _colTables_SelectionChanged;
-        Task.Run(() =>
+
+        Task.Run(RefreshFeed);
+
+        if(FP_MainShell.MainFlyout != null)
         {
-            MainThread.BeginInvokeOnMainThread(async () =>
-            {
-                await RefreshFeed();
-            });
-        });
+            FP_MainShell.MainFlyout.Appearing += MainFlyout_Appearing; ;
+        }
+    }
+
+    private async void MainFlyout_Appearing(object? sender, EventArgs e)
+    {
+        await RefreshFeed();
     }
 
     private void AddTableOnClicked(object sender, EventArgs e)
@@ -83,31 +88,19 @@ public partial class CP_SideUserMenu : ContentPage
         CurrentFeedContext.RefreshFeed(await FetchTables());
     }
 
-    private void OnItemThresholdReached(object? sender, EventArgs e)
+    private async void OnItemThresholdReached(object? sender, EventArgs e)
     {
-        Task.Run(async () =>
-        {
-            CurrentFeedContext.AddElements(await FetchTables(CurrentFeedContext.LastItemFetched));
-        });
+        CurrentFeedContext.AddElements(await FetchTables(CurrentFeedContext.LastItemFetched));
     }
 
-    private static async Task<List<Table>> FetchTables(Table? lastItemFetched = null)
+    private async Task<List<Table>> FetchTables(Table? lastItemFetched = null)
     {
         List<Table> retVal = [];
+        string userID = ((Client)BindingContext).UserID;
 
-        if (SessionManager.CurrentSession?.Client != null)
+        if (userID.Length > 0)
         {
-            try
-            {
-                retVal = await DatabaseManager.FetchTables_Filtered(tableOwnerID: SessionManager.CurrentSession.Client.UserID, lastItem: lastItemFetched);
-                //return [new() { OnlineMembers= ["1", "2"], TableID = "1", TableMembers= ["1", "2", "3"], TableName="Test1" },
-                //new() { OnlineMembers= [], TableID = "2", TableMembers= ["1", "2", "3"], TableName="Test2" }];
-            }
-            catch (Exception ex)
-            {
-                await UserInterface.DisplayPopUp_Regular("Unhandled Error", ex.Message, "Ok");
-            }
-
+            retVal = await DatabaseManager.FetchTables_Filtered(tableMemberID: userID, lastItem: lastItemFetched);
         }
 
         return retVal;

@@ -32,10 +32,10 @@ public class Client : INotifyPropertyChanged
     }
     public ImageSource ProfilePictureSource
     {
-        get => _ProfilePictureSource ?? ImageSource.FromFile("placeholder_logo.jpg");
+        get => _ProfilePictureSource ?? ImageSource.FromFile("logoshort.png");
         set
         {
-            _ProfilePictureSource = value ?? ImageSource.FromFile("placeholder_logo.jpg");
+            _ProfilePictureSource = value ?? ImageSource.FromFile("logoshort.png");
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ProfilePictureSource)));
         }
     }
@@ -207,7 +207,7 @@ public class Client : INotifyPropertyChanged
         LastName = lastName;
         BirthDate = birthDate;
         Email = mail;
-        ProfilePictureSource = profilePictureSrc ?? ImageSource.FromFile("placeholder_logo.jpg");
+        ProfilePictureSource = profilePictureSrc ?? ImageSource.FromFile("logoshort.png");
         PhoneNumber = phoneNumber;
         PhoneCountryCode = phoneCountryCode;
         Description = description;
@@ -265,7 +265,7 @@ public class Client : INotifyPropertyChanged
         }
         else
         {
-            ImageSource.FromFile("placeholder_logo.jpg");
+            ImageSource.FromFile("logoshort.png");
         }
     }
 
@@ -423,7 +423,7 @@ public class Client_Firebase
         }
         else
         {
-            return ImageSource.FromFile("placeholder_logo.jpg");
+            return ImageSource.FromFile("logoshort.png");
         }
     }
 }

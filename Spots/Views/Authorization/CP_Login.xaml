@@ -13,7 +13,7 @@
                 <RowDefinition Height="7*"/>
                 <RowDefinition Height="13*"/>
             </Grid.RowDefinitions>
-            <Image Grid.Row="0" x:Name="_imgLogo" Margin="0,20,0,20" Source="placeholder_logo.jpg"/>
+            <Image Grid.Row="0" x:Name="_imgLogo" Margin="20,30" Source="logolong.png"/>
             <Border Grid.Row="1" x:Name="_frameEntries" Margin="20,30" StrokeShape="RoundRectangle 50" BackgroundColor="{DynamicResource Secondary}">
                 <Grid HorizontalOptions="Fill" 
                     VerticalOptions="CenterAndExpand"
