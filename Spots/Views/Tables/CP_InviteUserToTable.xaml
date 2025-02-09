@@ -17,7 +17,7 @@
                     <Border StrokeShape="RoundRectangle 500" StrokeThickness="0">
                         <Image Source="{Binding ProfilePictureSource}" Aspect="Fill" HeightRequest="35" WidthRequest="35" BackgroundColor="{DynamicResource Primary}"/>
                     </Border>
-                    <Label x:Name="_lblMainName" Text="{Binding FullName}" FontSize="Medium" FontAttributes="Bold" TextColor="{DynamicResource SecondaryAccent}" MaxLines="2" VerticalOptions="Center"/>
+                    <Label x:Name="_lblMainName" Text="{Binding FullName}" FontSize="Medium"  TextColor="{DynamicResource SecondaryAccent}" MaxLines="2" VerticalOptions="Center" Margin="5"/>
                 </StackLayout>
             </StackLayout>
 

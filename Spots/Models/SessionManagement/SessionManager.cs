@@ -1,4 +1,5 @@
 ﻿using Spots.Database;
+using Spots.Notifications;
 using System.ComponentModel;
 
 namespace Spots.Models;
@@ -7,8 +8,9 @@ public static class SessionManager
 {
     public static UserSession? CurrentSession;
 
-    public static bool StartSession(Client user)
+    public static async Task<bool> StartSessionAsync(Client user)
     {
+        await NotificationsManager.Handler.UpdateNotifications();
         if (CurrentSession == null)
         {
             CurrentSession = new(user);

@@ -6,7 +6,7 @@ namespace Spots;
 
 public partial class TP_FeedViews : Microsoft.Maui.Controls.TabbedPage
 {
-	public TP_FeedViews(FlyoutPage flyout)
+	public TP_FeedViews()
 	{
         InitializeComponent();
 
@@ -14,7 +14,7 @@ public partial class TP_FeedViews : Microsoft.Maui.Controls.TabbedPage
         On<Microsoft.Maui.Controls.PlatformConfiguration.Android>().SetToolbarPlacement(ToolbarPlacement.Bottom);
 #endif
 
-        NavigationPage.SetTitleView(this, new CV_FlyoutUserNavigationBar(flyout));
+        NavigationPage.SetTitleView(this, new CV_FlyoutUserNavigationBar());
 
         //while(SessionManager.CurrentSession == null || SessionManager.CurrentSession.Spot == null) { }
 

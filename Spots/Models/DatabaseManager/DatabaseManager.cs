@@ -39,7 +39,7 @@ public static class DatabaseManager
             return user;
         }
 
-        SessionManager.StartSession(user);
+        await SessionManager.StartSessionAsync(user);
 
         if (lastLocation != null)
         {
@@ -71,7 +71,7 @@ public static class DatabaseManager
             if (CrossFirebaseAuth.Current.CurrentUser != null)
             {
                 Client user = await GetClientDataAsync(CrossFirebaseAuth.Current.CurrentUser.Uid);
-                SessionManager.StartSession(user);
+                await SessionManager.StartSessionAsync(user);
                 await UpdateCurrentUserFCMToken();
                 return true;
             }
@@ -170,33 +170,35 @@ public static class DatabaseManager
 
     public static async Task<bool> SaveTableDataAsync(Table table, ImageFile? imageFile = null)
     {
-        try
+        if (table.TableID.Length > 0)
         {
-            ICollectionReference collectionReference = CrossFirebaseFirestore.Current.GetCollection(COLLECTION_TABLES);
-
-            if (table.TableID.Length > 0)
+            string profilePictureAddress = "";
+            if (imageFile != null)
             {
-                string profilePictureAddress = "";
-                if (imageFile != null)
-                {
-                    profilePictureAddress = await SaveFile($"{COLLECTION_TABLES}/{table.TableID}", "TablePicture", imageFile);
-                }
-                await FirestoreManager.SetDocumentData(COLLECTION_TABLES, new Table_Firebase(table, profilePictureAddress), table.TableID);
+                profilePictureAddress = await SaveFile($"{COLLECTION_TABLES}/{table.TableID}", "TablePicture", imageFile);
             }
-            else
+            await FirestoreManager.SetDocumentData(COLLECTION_TABLES, new Table_Firebase(table, profilePictureAddress), table.TableID);
+        }
+        else
+        {
+            string tableID = await FirestoreManager.SetDocumentData(COLLECTION_TABLES, new Table_Firebase(table, ""));
+            if (imageFile != null)
             {
-                string tableID = await FirestoreManager.SetDocumentData(COLLECTION_TABLES, new Table_Firebase(table, ""));
-                if (imageFile != null)
-                {
-                    string tablePictureAddress = await SaveFile($"{COLLECTION_TABLES}/{table.TableID}", "TablePicture", imageFile);
-                    await FirestoreManager.UpdateSpecificData(COLLECTION_TABLES, tableID, nameof(Table_Firebase.TablePictureAddress), tablePictureAddress);
-                }
+                string tablePictureAddress = await SaveFile($"{COLLECTION_TABLES}/{table.TableID}", "TablePicture", imageFile);
+                await FirestoreManager.UpdateSpecificData(COLLECTION_TABLES, tableID, nameof(Table_Firebase.TablePictureAddress), tablePictureAddress);
             }
         }
-        catch (Exception ex)
+
+        return true;
+    }
+
+    public static async Task<bool> DeleteTableDataAsync(string tableID)
+    {
+        ICollectionReference collectionReference = CrossFirebaseFirestore.Current.GetCollection(COLLECTION_TABLES);
+
+        if (tableID.Length > 0)
         {
-            await UserInterface.DisplayPopUp_Regular("Unhandled Database Exception", ex.Message, "Ok");
-            return false;
+            await FirestoreManager.DeleteDocument(COLLECTION_TABLES, tableID);
         }
 
         return true;
@@ -708,6 +710,43 @@ public static class DatabaseManager
         foreach (var table_Firebase in tables_Firebase)
         {
             retVal.Add(new(table_Firebase, await table_Firebase.GetImageSource()));
+        }
+
+        return retVal;
+    }
+
+    public static async Task<bool> Transaction_RemoveUserFromTable(string clientID, string tableID)
+    {
+        bool retVal = true;
+        IDocumentReference tableDocument = CrossFirebaseFirestore.Current.GetCollection(COLLECTION_TABLES).GetDocument(tableID);
+
+        bool isTableEmpty = await CrossFirebaseFirestore.Current.RunTransactionAsync<bool>(transaction => {
+            bool isTableEmpty = false;
+            IDocumentSnapshot<Table_Firebase> table = transaction.GetDocument<Table_Firebase>(tableDocument);
+
+            if (table?.Data != null)
+            {
+                if(table.Data.TableMembers.Contains(clientID))
+                {
+                    IList<string> newTableMembers = table.Data.TableMembers;
+                    newTableMembers.Remove(clientID);
+                    if (newTableMembers.Count == 0)
+                    {
+                        isTableEmpty = true;
+                    }
+                    else
+                    {
+                        transaction.UpdateData(tableDocument, (nameof(Table_Firebase.TableMembers), newTableMembers));
+                    }
+                }
+            }
+
+            return isTableEmpty;
+        });
+
+        if (isTableEmpty)
+        {
+            await DeleteTableDataAsync(tableID);
         }
 
         return retVal;

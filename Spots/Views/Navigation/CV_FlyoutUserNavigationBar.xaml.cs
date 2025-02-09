@@ -5,11 +5,8 @@ namespace Spots;
 
 public partial class CV_FlyoutUserNavigationBar : ContentView
 {
-	FlyoutPage _FlyoutPage;
-	public CV_FlyoutUserNavigationBar(FlyoutPage flyout)
+	public CV_FlyoutUserNavigationBar()
 	{
-		_FlyoutPage = flyout;
-
         DisplayInfo displayInfo = DeviceDisplay.MainDisplayInfo;
         double profilePictureDimensions = displayInfo.Height * 0.015;
 
@@ -36,6 +33,6 @@ public partial class CV_FlyoutUserNavigationBar : ContentView
 
     private void ProfilePictureOnClicked(object sender, EventArgs e)
     {
-        _FlyoutPage.IsPresented = !_FlyoutPage.IsPresented;
+        FP_MainShell.SetIsPresented(true);
     }
 }

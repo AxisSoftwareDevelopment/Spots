@@ -28,52 +28,43 @@ public partial class CP_SideUserMenu : ContentPage
         _colTables.BindingContext = CurrentFeedContext;
         _refreshView.Command = new Command(async () =>
         {
-            await RefreshFeed();
+            await RefreshTablesFeed();
             _refreshView.IsRefreshing = false;
         });
         _colTables.RemainingItemsThreshold = 1;
         _colTables.RemainingItemsThresholdReached += OnItemThresholdReached;
         _colTables.SelectionChanged += _colTables_SelectionChanged;
 
-        Task.Run(RefreshFeed);
+        Task.Run(RefreshTablesFeed);
 
-        if(FP_MainShell.MainFlyout != null)
-        {
-            FP_MainShell.MainFlyout.Appearing += MainFlyout_Appearing; ;
-        }
+        FP_MainShell.FlyoutPresentedChanged += FP_MainShell_FlyoutPresentedChanged; ;
     }
 
-    private async void MainFlyout_Appearing(object? sender, EventArgs e)
+    private async void FP_MainShell_FlyoutPresentedChanged()
     {
-        await RefreshFeed();
+        await RefreshTablesFeed();
+    }
+
+    public async Task RefreshTablesFeed()
+    {
+        CurrentFeedContext.RefreshFeed(await FetchTables());
     }
 
     private void AddTableOnClicked(object sender, EventArgs e)
     {
-        if (FP_MainShell.MainFlyout != null)
-        {
-            FP_MainShell.MainFlyout.IsPresented = false;
-        }
+        FP_MainShell.SetIsPresented(false);
         FP_MainShell.MainNavigation?.PushAsync(new CP_UpdateTable());
     }
 
     private void ProfilePictureOrMyProfileOnClicked(object sender, EventArgs e)
     {
-        if (FP_MainShell.MainFlyout != null)
-        {
-            FP_MainShell.MainFlyout.IsPresented = false;
-        }
-
+        FP_MainShell.SetIsPresented(false);
         SessionManager.CurrentSession?.Client?.OpenClientView(FP_MainShell.MainNavigation);
     }
 
     private void PreferencesOnClicked(object sender, EventArgs e)
     {
-        if (FP_MainShell.MainFlyout != null)
-        {
-            FP_MainShell.MainFlyout.IsPresented = false;
-        }
-
+        FP_MainShell.SetIsPresented(false);
         FP_MainShell.MainNavigation?.PushAsync(new CP_AppPreferences());
     }
 
@@ -81,11 +72,6 @@ public partial class CP_SideUserMenu : ContentPage
     {
         if (await UserInterface.DisplayPopPup_Choice("Log Out", "Are you sure?", "Yes", "Cancel"))
             SessionManager.CloseSession(shouldUpdateMainPage: true);
-    }
-
-    private async Task RefreshFeed()
-    {
-        CurrentFeedContext.RefreshFeed(await FetchTables());
     }
 
     private async void OnItemThresholdReached(object? sender, EventArgs e)
@@ -111,10 +97,7 @@ public partial class CP_SideUserMenu : ContentPage
         if (e.CurrentSelection.Count > 0)
         {
             FP_MainShell.MainNavigation?.PushAsync(new CP_TableView((Table)e.CurrentSelection[0]));
-            if (FP_MainShell.MainFlyout != null)
-            {
-                FP_MainShell.MainFlyout.IsPresented = false;
-            }
+            FP_MainShell.SetIsPresented(false);
             _colTables.SelectedItem = null;
         }
     }

@@ -71,10 +71,11 @@ public partial class CP_TableView : ContentPage
 
     private async void _btnAbandonTable_Clicked(object? sender, EventArgs e)
     {
-        if( await UserInterface.DisplayPopPup_Choice(DialogLables[0], DialogLables[1],
-            DialogLables[2], DialogLables[3]))
+        if( await UserInterface.DisplayPopPup_Choice(DialogLables[0], DialogLables[1], DialogLables[2], DialogLables[3])
+            && SessionManager.CurrentSession?.Client != null)
         {
-
+            await DatabaseManager.Transaction_RemoveUserFromTable(SessionManager.CurrentSession.Client.UserID, CachedTable.TableID);
+            await Navigation.PopAsync();
         }
     }
 

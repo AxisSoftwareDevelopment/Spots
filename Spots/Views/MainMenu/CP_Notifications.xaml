@@ -23,8 +23,8 @@
                                             <Image Source="iconnotificationsempty.png" Aspect="Fill" HeightRequest="75" WidthRequest="75"/>
                                         </Border>
                                         <StackLayout Orientation="Vertical" HorizontalOptions="FillAndExpand" Margin="10,5,5,5" VerticalOptions="Center">
-                                            <Label Text="{Binding Title}" FontSize="Title" FontAttributes="Bold" TextColor="{DynamicResource SecondaryAccent}" MaxLines="2"/>
-                                            <Label Text="{Binding Body}" FontSize="Body" LineBreakMode="WordWrap" TextColor="{DynamicResource SecondaryAccent}" MaxLines="2" Margin="10,0,10,0"/>
+                                            <Label Text="{Binding Title}" FontSize="Medium" FontAttributes="Bold" TextColor="{DynamicResource SecondaryAccent}" MaxLines="3"/>
+                                            <Label Text="{Binding Body}" FontSize="Small" LineBreakMode="WordWrap" TextColor="{DynamicResource SecondaryAccent}" MaxLines="2"/>
                                         </StackLayout>
                                     </StackLayout>
                                 </Border>

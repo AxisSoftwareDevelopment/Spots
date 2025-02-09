@@ -101,7 +101,6 @@ public static class MauiProgram
                     {
                         await DatabaseManager.UpdateClientLocationAsync(SessionManager.CurrentSession.Client.UserID, new(LocationManager.CurrentLocation));
                     }
-                    await NotificationsManager.Handler.UpdateNotifications();
                     Application.Current.Windows[0].Page = new FP_MainShell(SessionManager.CurrentSession.Client);
                 }
                 else
