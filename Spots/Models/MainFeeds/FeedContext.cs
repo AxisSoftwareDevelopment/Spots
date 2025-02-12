@@ -10,6 +10,7 @@ public class FeedContext<T> : INotifyPropertyChanged
     public event PropertyChangedEventHandler? PropertyChanged;
     public ObservableCollection<T> ItemSource { get; }
     public T? LastItemFetched { get; private set; }
+    public Func<T, bool>? RuleToShowItemOnFeed { get; set; } = default;
 
     public FeedContext()
     {
@@ -22,7 +23,11 @@ public class FeedContext<T> : INotifyPropertyChanged
         {
             foreach (T element in elements)
             {
-                ItemSource.Add(element);
+                if(RuleToShowItemOnFeed == null
+                    || (RuleToShowItemOnFeed != null && RuleToShowItemOnFeed(element)))
+                {
+                    ItemSource.Add(element);
+                }
                 LastItemFetched = element;
             }
 
@@ -39,7 +44,11 @@ public class FeedContext<T> : INotifyPropertyChanged
 
             foreach (T element in elements)
             {
-                ItemSource.Add(element);
+                if (RuleToShowItemOnFeed == null
+                    || (RuleToShowItemOnFeed != null && RuleToShowItemOnFeed(element)))
+                {
+                    ItemSource.Add(element);
+                }
                 LastItemFetched = element;
             }
 

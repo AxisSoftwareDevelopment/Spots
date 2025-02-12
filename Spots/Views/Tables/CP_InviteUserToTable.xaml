@@ -22,14 +22,14 @@
             </StackLayout>
 
             <Border x:Name="_frameSearchResults" Margin="10,0,10,10" StrokeShape="RoundRectangle 5" BackgroundColor="{DynamicResource BackgroundGrey}" VerticalOptions="FillAndExpand">
-                <StackLayout Orientation="Vertical" Margin="5,10,5,5">
+                <StackLayout Orientation="Vertical" Margin="5,5,5,5">
                     <!-- Users Search Results -->
                     <CollectionView x:Name="_colTables" HorizontalOptions="FillAndExpand" HorizontalScrollBarVisibility="Never" VerticalScrollBarVisibility="Never" SelectionMode="Single"
                                                 ItemsSource="{Binding ItemSource}">
                         <CollectionView.ItemTemplate>
                             <DataTemplate>
                                 <ContentView>
-                                    <Border Margin="5, 0, 5, 5" StrokeShape="RoundRectangle 5" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="{DynamicResource Secondary}">
+                                    <Border Margin="5, 5, 5, 5" StrokeShape="RoundRectangle 5" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="{DynamicResource Secondary}">
                                         <StackLayout Orientation="Horizontal" BackgroundColor="{DynamicResource Secondary}" HorizontalOptions="FillAndExpand" Margin="5,5">
                                             <Border StrokeShape="RoundRectangle 5" StrokeThickness="0">
                                                 <Image Source="{Binding TablePictureSource}" Aspect="Fill" HeightRequest="75" WidthRequest="75"/>

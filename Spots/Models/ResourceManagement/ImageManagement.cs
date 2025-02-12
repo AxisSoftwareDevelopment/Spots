@@ -1,7 +1,11 @@
-﻿namespace Spots.ResourceManager;
+﻿using Microsoft.Maui.Graphics.Platform;
+
+namespace Spots.ResourceManager;
 
 public static class ImageManagement
 {
+    const long MAX_IMAGE_STREAM_DIMENSION = 1024;
+
     public static async Task<ImageFile?> PickImageFromInternalStorage()
     {
         try
@@ -72,7 +76,11 @@ public static class ImageManagement
 
     private static async Task<Stream?> FileResultToStream(FileResult file)
     {
-        return await file.OpenReadAsync();
+        // We first resize the image
+        Stream fullImageStream = await file.OpenReadAsync();
+        Microsoft.Maui.Graphics.IImage image = PlatformImage.FromStream(fullImageStream);
+        
+        return image.Downsize(MAX_IMAGE_STREAM_DIMENSION, true).AsStream();
     }
     #endregion
 }

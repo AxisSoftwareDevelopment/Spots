@@ -20,6 +20,11 @@ public partial class CP_InviteUserToTable : ContentPage
 
         BindingContext = CachedClient;
 
+        CurrentFeedContext.RuleToShowItemOnFeed = (obj) =>
+        {
+            return !obj.TableMembers.Contains(CachedClient.UserID);
+        };
+
         // Tables Collection view
         _colTables.BindingContext = CurrentFeedContext;
         _colTables.RemainingItemsThreshold = 1;

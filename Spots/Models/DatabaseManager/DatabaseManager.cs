@@ -1,13 +1,13 @@
 using Plugin.Firebase.Auth;
 using Plugin.Firebase.Firestore;
 using Plugin.Firebase.Core.Exceptions;
-using Plugin.Firebase.Storage;
 
 using Spots.Models;
 using Spots.Firestore;
 using Spots.Utilities;
 using Spots.ResourceManager;
-using static Google.Firestore.V1.StructuredQuery;
+using Spots.FirebaseStorage;
+using Plugin.Firebase.Storage;
 
 namespace Spots.Database;
 public static class DatabaseManager
@@ -17,9 +17,20 @@ public static class DatabaseManager
     private const string COLLECTION_PRAISES = "Praises";
     private const string COLLECTION_TABLES = "Tables";
     private const string COLLECTION_NOTIFICATIONS = "Notifications";
-    const long MAX_IMAGE_STREAM_DIMENSION = 1024;
 
-    #region Public Methods
+    #region Externalizing Storage Methods
+    public static Task<string> GetImageDownloadLink(string path)
+    {
+        return FirebaseStorageManager.GetImageDownloadLink(path);
+    }
+
+    public static Task<string> SaveFile(string path, string fileName, ImageFile imageFile)
+    {
+        return FirebaseStorageManager.SaveFile(path, fileName, imageFile);
+    }
+    #endregion
+
+    #region Session Management
     public static async Task<Client> LogInUserAsync(string email, string password, FirebaseLocation? lastLocation = null, bool getUser = true)
     {
         string[] userSignInMethods = await CrossFirebaseAuth.Current.FetchSignInMethodsAsync(email);
@@ -53,15 +64,24 @@ public static class DatabaseManager
 
     public static async Task<bool> CreateUserAsync(string email, string password)
     {
+        bool retVal;
         await CrossFirebaseAuth.Current.CreateUserAsync(email, password);
-        await SaveUserDataAsync(new Client() { UserID = CrossFirebaseAuth.Current.CurrentUser.Uid, Email = email });
 
         string? id = CrossFirebaseAuth.Current.CurrentUser?.Uid;
-        if (id == null || id.Length == 0)
-            throw new FirebaseAuthException(FIRAuthError.Undefined, "Custom Exception -> Unhandled exception: User not registered correctly.");
+        if (id != null && id.Length > 0)
+        {
+            await FirestoreManager.SetDocumentData(COLLECTION_USER_DATA,
+                new Client_Firebase() { UserID = id, Email = email },
+                DocumentID: id);
+            retVal = true;
+        }
+        else
+        {
+            retVal = false;
+        }
 
         await LogOutAsync();
-        return true;
+        return retVal;
     }
 
     public static async Task<bool> ValidateCurrentSession()
@@ -92,118 +112,9 @@ public static class DatabaseManager
         }
         await CrossFirebaseAuth.Current.SignOutAsync();
     }
+    #endregion
 
-    public static async Task<bool> SaveUserDataAsync(Client user, string profilePictureAddress = "")
-    {
-        try
-        {
-            IDocumentReference documentReference = CrossFirebaseFirestore.Current.GetCollection(COLLECTION_USER_DATA).GetDocument(user.UserID);
-            await documentReference.SetDataAsync(new Client_Firebase(user, profilePictureAddress));
-        }
-        catch (Exception ex)
-        {
-            await UserInterface.DisplayPopUp_Regular("Unhandled Database Exception", ex.Message, "Ok");
-            return false;
-        }
-
-        return true;
-    }
-
-    public static async Task<bool> SaveSpotDataAsync(Spot spot, string profilePictureAddress)
-    {
-        try
-        {
-            if (spot.SpotID.Length > 0)
-            {
-                IDocumentReference documentReference = CrossFirebaseFirestore.Current.GetCollection(COLLECTION_SPOTS).GetDocument(spot.SpotID);
-                await documentReference.SetDataAsync(new Spot_Firebase(spot, profilePictureAddress));
-            }
-            else
-            {
-                IDocumentReference documentReference = await CrossFirebaseFirestore.Current.GetCollection(COLLECTION_SPOTS).AddDocumentAsync(new Spot_Firebase(spot, profilePictureAddress));
-            }
-        }
-        catch (Exception ex)
-        {
-            await UserInterface.DisplayPopUp_Regular("Unhandled Database Exception", ex.Message, "Ok");
-            return false;
-        }
-
-        return true;
-    }
-
-    public static async Task<bool> SaveSpotDataAsync(Spot spot, ImageFile? imageFile = null)
-    {
-        try
-        {
-            ICollectionReference collectionReference = CrossFirebaseFirestore.Current.GetCollection(COLLECTION_SPOTS);
-
-            if (spot.SpotID.Length > 0)
-            {
-                string profilePictureAddress = "";
-                if (imageFile != null)
-                {
-                    profilePictureAddress = await SaveFile($"{COLLECTION_SPOTS}/{spot.SpotID}", "SpotPicture", imageFile);
-                }
-                await collectionReference.GetDocument(spot.SpotID).SetDataAsync(new Spot_Firebase(spot, profilePictureAddress));
-            }
-            else
-            {
-                Spot_Firebase spot_Firebase = new(spot, "");
-                IDocumentReference documentReference = await collectionReference.AddDocumentAsync(spot_Firebase);
-                if (imageFile != null)
-                {
-                    spot_Firebase.SpotID = documentReference.Id;
-                    spot_Firebase.ProfilePictureAddress = await SaveFile($"{COLLECTION_SPOTS}/{spot.SpotID}", "SpotsPicture", imageFile);
-                    await documentReference.SetDataAsync(spot_Firebase);
-                }
-            }
-        }
-        catch (Exception ex)
-        {
-            await UserInterface.DisplayPopUp_Regular("Unhandled Database Exception", ex.Message, "Ok");
-            return false;
-        }
-
-        return true;
-    }
-
-    public static async Task<bool> SaveTableDataAsync(Table table, ImageFile? imageFile = null)
-    {
-        if (table.TableID.Length > 0)
-        {
-            string profilePictureAddress = "";
-            if (imageFile != null)
-            {
-                profilePictureAddress = await SaveFile($"{COLLECTION_TABLES}/{table.TableID}", "TablePicture", imageFile);
-            }
-            await FirestoreManager.SetDocumentData(COLLECTION_TABLES, new Table_Firebase(table, profilePictureAddress), table.TableID);
-        }
-        else
-        {
-            string tableID = await FirestoreManager.SetDocumentData(COLLECTION_TABLES, new Table_Firebase(table, ""));
-            if (imageFile != null)
-            {
-                string tablePictureAddress = await SaveFile($"{COLLECTION_TABLES}/{table.TableID}", "TablePicture", imageFile);
-                await FirestoreManager.UpdateSpecificData(COLLECTION_TABLES, tableID, nameof(Table_Firebase.TablePictureAddress), tablePictureAddress);
-            }
-        }
-
-        return true;
-    }
-
-    public static async Task<bool> DeleteTableDataAsync(string tableID)
-    {
-        ICollectionReference collectionReference = CrossFirebaseFirestore.Current.GetCollection(COLLECTION_TABLES);
-
-        if (tableID.Length > 0)
-        {
-            await FirestoreManager.DeleteDocument(COLLECTION_TABLES, tableID);
-        }
-
-        return true;
-    }
-
+    #region Gets
     public async static Task<Client> GetClientDataAsync(string userID)
     {
         Client_Firebase? clientFB = await FirestoreManager.GetDocumentData<Client_Firebase>(COLLECTION_USER_DATA, userID);
@@ -225,6 +136,63 @@ public static class DatabaseManager
 
         return spot;
     }
+    #endregion
+
+    #region Saves
+    public static async Task<bool> SaveUserDataAsync(Client user, string profilePictureAddress = "")
+    {
+        await FirestoreManager.SetDocumentData(COLLECTION_USER_DATA, new Client_Firebase(user, profilePictureAddress), DocumentID: user.UserID);
+
+        return true;
+    }
+
+    public static async Task<bool> SaveSpotDataAsync(Spot spot, ImageFile? imageFile = null)
+    {
+        if (spot.SpotID.Length > 0)
+        {
+            string profilePictureAddress = "";
+            if (imageFile != null)
+            {
+                profilePictureAddress = await FirebaseStorageManager.SaveFile($"{COLLECTION_SPOTS}/{spot.SpotID}", "SpotPicture", imageFile);
+            }
+            await FirestoreManager.SetDocumentData(COLLECTION_SPOTS, new Spot_Firebase(spot, profilePictureAddress), DocumentID: spot.SpotID);
+        }
+        else
+        {
+            spot.SpotID = await FirestoreManager.SetDocumentData(COLLECTION_SPOTS, new Spot_Firebase(spot, ""));
+            if (imageFile != null)
+            {
+                string tablePictureAddress = await FirebaseStorageManager.SaveFile($"{COLLECTION_SPOTS}/{spot.SpotID}", "SpotsPicture", imageFile);
+                await FirestoreManager.UpdateSpecificData(COLLECTION_SPOTS, spot.SpotID, nameof(Spot_Firebase.ProfilePictureAddress), tablePictureAddress);
+            }
+        }
+
+        return true;
+    }
+
+    public static async Task<bool> SaveTableDataAsync(Table table, ImageFile? imageFile = null)
+    {
+        if (table.TableID.Length > 0)
+        {
+            string profilePictureAddress = "";
+            if (imageFile != null)
+            {
+                profilePictureAddress = await FirebaseStorageManager.SaveFile($"{COLLECTION_TABLES}/{table.TableID}", "TablePicture", imageFile);
+            }
+            await FirestoreManager.SetDocumentData(COLLECTION_TABLES, new Table_Firebase(table, profilePictureAddress), table.TableID);
+        }
+        else
+        {
+            string tableID = await FirestoreManager.SetDocumentData(COLLECTION_TABLES, new Table_Firebase(table, ""));
+            if (imageFile != null)
+            {
+                string tablePictureAddress = await FirebaseStorageManager.SaveFile($"{COLLECTION_TABLES}/{table.TableID}", "TablePicture", imageFile);
+                await FirestoreManager.UpdateSpecificData(COLLECTION_TABLES, tableID, nameof(Table_Firebase.TablePictureAddress), tablePictureAddress);
+            }
+        }
+
+        return true;
+    }
 
     public static async Task<bool> SaveSpotPraiseData(SpotPraise praise, ImageFile? imageFile = null)
     {
@@ -234,7 +202,7 @@ public static class DatabaseManager
         {
             if (imageFile != null)
             {
-                praise_Firebase.AttachedPictureAddress = await SavePraiseAttachment(praise_Firebase.PraiseID, praise_Firebase.AuthorID, imageFile);
+                praise_Firebase.AttachedPictureAddress = await SaveFile($"Users/{praise_Firebase.AuthorID}/PraiseAttachments", praise_Firebase.PraiseID, imageFile);
             }
             await FirestoreManager.SetDocumentData(COLLECTION_PRAISES, praise_Firebase, praise_Firebase.PraiseID);
         }
@@ -243,7 +211,7 @@ public static class DatabaseManager
             string documentID = await FirestoreManager.SetDocumentData(COLLECTION_PRAISES, praise_Firebase);
             if (imageFile != null)
             {
-                string attachmentAddress = await SavePraiseAttachment(documentID, praise_Firebase.AuthorID, imageFile);
+                string attachmentAddress = await SaveFile($"Users/{praise_Firebase.AuthorID}/PraiseAttachments", praise_Firebase.PraiseID, imageFile);
                 await FirestoreManager.UpdateSpecificData(COLLECTION_PRAISES, praise_Firebase.PraiseID, nameof(SpotPraise_Firebase.AttachedPictureAddress), attachmentAddress);
             }
         }
@@ -269,43 +237,16 @@ public static class DatabaseManager
             }
         }
     }
+    #endregion
 
+    #region Deletes
     public static Task DeleteNotificationData(INotification notification)
     {
         return FirestoreManager.DeleteDocument(COLLECTION_NOTIFICATIONS, notification.NotificationID);
     }
+    #endregion
 
-    public static async Task<string> SavePraiseAttachment(string praiseID, string userID, ImageFile imageFile)
-    {
-        string[] imageContentTypeArgs = imageFile.ContentType?.Split('/') ?? [];
-        string filePath = $"Users/{userID}/PraiseAttachments/{praiseID}.{imageContentTypeArgs[imageContentTypeArgs.Length - 1] ?? ""}";
-
-        IStorageReference storageRef = CrossFirebaseStorage.Current.GetReferenceFromPath(filePath);
-
-        //await storageRef.DeleteAsync();
-        await storageRef.PutBytes(imageFile.Bytes).AwaitAsync();
-        return filePath;
-    }
-
-    public static async Task<string> SaveFile(string path, string fileName, ImageFile imageFile)
-    {
-        string filePath = $"{path}/{fileName}.{imageFile.ContentType?.Replace("image/", "") ?? ""}";
-
-        IStorageReference storageRef = CrossFirebaseStorage.Current.GetReferenceFromPath(filePath);
-
-        //await storageRef.DeleteAsync();
-        await storageRef.PutBytes(imageFile.Bytes).AwaitAsync();
-        return filePath;
-    }
-
-    public static async Task<string> GetImageDownloadLink(string path)
-    {
-        IStorageReference storageRef = CrossFirebaseStorage.Current.GetReferenceFromPath(path);
-        string imageStream = await storageRef.GetDownloadUrlAsync();
-
-        return imageStream;
-    }
-
+    #region Updates
     public static Task UpdateClientLocationAsync(string userID, FirebaseLocation location)
     {
         return FirestoreManager.UpdateSpecificData(COLLECTION_USER_DATA, userID, nameof(Client_Firebase.LastLocation), location);
@@ -327,7 +268,9 @@ public static class DatabaseManager
     {
         return FirestoreManager.UpdateSpecificData(COLLECTION_USER_DATA, userID, nameof(Client_Firebase.FCMToken), FCMToken);
     }
+    #endregion
 
+    #region Fetches
     public static async Task<List<Client>> FetchClientsByID(List<string> clientIDs)
     {
         List<Client> clients = [];
@@ -449,20 +392,6 @@ public static class DatabaseManager
 
         return spotPraises;
     }
-
-    //public static async Task<List<SpotPraise>> FetchSpotPraises_Filtered(Client? author = null, string? spot = null, SpotPraise? lastPraise = null)
-    //{
-    //    Spot? spot_object = spot != null ? await GetSpotDataAsync(spot) : null;
-
-    //    return await FetchSpotPraises_Filtered(author: author, spot: spot_object, lastPraise);
-    //}
-
-    //public static async Task<List<SpotPraise>> FetchSpotPraises_Filtered(string? author = null, Spot? spot = null, SpotPraise? lastPraise = null)
-    //{
-    //    Client? client_object = author != null ? await GetClientDataAsync(author) : null;
-
-    //    return await FetchSpotPraises_Filtered(author: client_object, spot: spot, lastPraise);
-    //}
 
     public static async Task<List<SpotPraise>> FetchSpotPraises_Filtered(
         string? authorId = null,
@@ -703,7 +632,7 @@ public static class DatabaseManager
             arrayContainsSingleFilters.Add(nameof(Table_Firebase.TableMembers), tableMemberID);
         }
         List<Table_Firebase> tables_Firebase = await FirestoreManager.QueryFiltered<Table_Firebase>(COLLECTION_TABLES,
-            //maxItems: maxItemsToFetch,
+            maxItems: maxItemsToFetch,
             filters_ArrayContainsSingle: arrayContainsSingleFilters,
             lastItemQueriedID: lastItemFetchedID);
 
@@ -711,6 +640,30 @@ public static class DatabaseManager
         {
             retVal.Add(new(table_Firebase, await table_Firebase.GetImageSource()));
         }
+
+        return retVal;
+    }
+    #endregion
+
+    #region Transactions
+    public static async Task<bool> Transaction_DeleteTableAsync(string tableID)
+    {
+        bool retVal = false;
+        IDocumentReference tableDocument = CrossFirebaseFirestore.Current.GetCollection(COLLECTION_TABLES).GetDocument(tableID);
+
+        await CrossFirebaseFirestore.Current.RunTransactionAsync(async transaction => {
+            IDocumentSnapshot<Table_Firebase> table = transaction.GetDocument<Table_Firebase>(tableDocument);
+
+            if (table?.Data != null)
+            {
+                if (table.Data.TablePictureAddress.Length > 0)
+                {
+                    await FirebaseStorageManager.DeleteFile(table.Data.TablePictureAddress);
+                }
+                transaction.DeleteDocument(tableDocument);
+                retVal = true;
+            }
+        });
 
         return retVal;
     }
@@ -746,7 +699,7 @@ public static class DatabaseManager
 
         if (isTableEmpty)
         {
-            await DeleteTableDataAsync(tableID);
+            await Transaction_DeleteTableAsync(tableID);
         }
 
         return retVal;
@@ -799,7 +752,7 @@ public static class DatabaseManager
         IDocumentReference followedDocument = CrossFirebaseFirestore.Current.GetCollection(COLLECTION_USER_DATA).GetDocument(followedID);
         IDocumentReference followerDocument = CrossFirebaseFirestore.Current.GetCollection(COLLECTION_USER_DATA).GetDocument(followerID);
 
-        bool bDataRetrivalWorked = await CrossFirebaseFirestore.Current.RunTransactionAsync(transaction => {
+        await CrossFirebaseFirestore.Current.RunTransactionAsync(transaction => {
             bool retVal = false;
 
             IDocumentSnapshot<Client_Firebase> followed = transaction.GetDocument<Client_Firebase>(followedDocument);
