@@ -1,9 +1,9 @@
 using Microsoft.Maui.Controls.Maps;
 using Microsoft.Maui.Maps;
 
-using Spots.Models;
+using eatMeet.Models;
 
-namespace Spots;
+namespace eatMeet;
 
 public partial class CP_SpotView : ContentPage
 {

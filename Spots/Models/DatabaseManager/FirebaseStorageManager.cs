@@ -1,7 +1,7 @@
 ﻿using Plugin.Firebase.Storage;
-using Spots.ResourceManager;
+using eatMeet.ResourceManager;
 
-namespace Spots.FirebaseStorage
+namespace eatMeet.FirebaseStorage
 {
     public static class FirebaseStorageManager
     {

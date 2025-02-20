@@ -1,9 +1,9 @@
-using Spots.Database;
-using Spots.Models;
-using Spots.ResourceManager;
-using Spots.Utilities;
+using eatMeet.Database;
+using eatMeet.Models;
+using eatMeet.ResourceManager;
+using eatMeet.Utilities;
 
-namespace Spots;
+namespace eatMeet;
 
 public partial class CP_Notifications : ContentPage
 {

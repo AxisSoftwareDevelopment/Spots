@@ -1,7 +1,7 @@
-using Spots.Models;
-using Spots.Database;
+using eatMeet.Models;
+using eatMeet.Database;
 
-namespace Spots;
+namespace eatMeet;
 
 public partial class CP_UserProfile : ContentPage
 {

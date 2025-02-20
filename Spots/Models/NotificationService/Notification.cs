@@ -1,10 +1,10 @@
 ﻿using Plugin.Firebase.Firestore;
-using Spots.Database;
-using Spots.Notifications;
-using Spots.ResourceManager;
-using Spots.Utilities;
+using eatMeet.Database;
+using eatMeet.Notifications;
+using eatMeet.ResourceManager;
+using eatMeet.Utilities;
 
-namespace Spots.Models
+namespace eatMeet.Models
 {
     public static class Notification
     {

@@ -1,6 +1,6 @@
-using Spots.Models;
+using eatMeet.Models;
 
-namespace Spots.SearchBar;
+namespace eatMeet.SearchBar;
 
 public partial class CV_SearchBarDataTemplate : ContentView
 {

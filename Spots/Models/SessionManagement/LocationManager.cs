@@ -1,10 +1,10 @@
 ﻿using Geohash;
 using Plugin.Firebase.Firestore;
 
-using Spots.ResourceManager;
-using Spots.Utilities;
+using eatMeet.ResourceManager;
+using eatMeet.Utilities;
 
-namespace Spots.Models;
+namespace eatMeet.Models;
 
 public static class LocationManager
 {

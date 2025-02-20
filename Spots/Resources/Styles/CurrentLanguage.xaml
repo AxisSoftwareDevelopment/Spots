@@ -122,6 +122,8 @@
     <x:String x:Key="lbl_UserInvitedYouToTable">{0} invited you to a Table!</x:String> <!-- Formatable Label that indicates a user invited you to a table -->
     <x:String x:Key="lbl_Decline">Decline!</x:String> <!-- Label that indicates to decline -->
     <x:String x:Key="lbl_Notifications">Notifications</x:String> <!-- Label that indicates Notifications -->
+    <x:String x:Key="lbl_Resend">Resend</x:String> <!-- Label that indicates Resend -->
+    <x:String x:Key="lbl_EmailNotVeirified">Email not verified.</x:String> <!-- Label that indicates Resend -->
 
     <x:String x:Key="txt_ConfirmLogOut">Are you sure you want to want to log out?</x:String> <!-- Text that questions the user if is sure of logout action -->
     <x:String x:Key="txt_LogIn">Log in to your account</x:String> <!-- Log in text -->
@@ -155,5 +157,6 @@
     <x:String x:Key="txt_TableInvitationSendConfirmation">Invite [{0}] to join table [{1}]?</x:String> <!-- Formatable Text that indicates to send an invitation from a specific user to a specific table -->
     <x:String x:Key="txt_TableInvitationAcceptanceConfirmation">Accept {0}'s invitation to join table {1}?</x:String> <!-- Formatable Text that indicates to accept an invitation from a specific user to a specific table -->
     <x:String x:Key="txt_UserInvitedYouToTable">The user {0} invited you to join table '{1}'.</x:String> <!-- Formatable Text that indicates a specific user invited you to a specific table -->
+    <x:String x:Key="txt_LogInError_UserDisabled">The email has not been verified yet. Please make sure to do so, or resend the verification email if necessary.</x:String> <!-- Text that indicates a specific user is not email verified -->
 
 </ResourceDictionary>

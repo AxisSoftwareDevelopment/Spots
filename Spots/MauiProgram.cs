@@ -3,10 +3,10 @@ using Microsoft.Maui.LifecycleEvents;
 using Plugin.Firebase.Auth;
 using Plugin.Firebase.Bundled.Shared;
 
-using Spots.Database;
-using Spots.Models;
+using eatMeet.Database;
+using eatMeet.Models;
 using Plugin.Firebase.CloudMessaging;
-using Spots.Notifications;
+using eatMeet.Notifications;
 
 
 
@@ -16,7 +16,7 @@ using Plugin.Firebase.Bundled.Platforms.iOS;
 using Plugin.Firebase.Bundled.Platforms.Android;
 #endif
 
-namespace Spots;
+namespace eatMeet;
 
 public static class MauiProgram
 {

@@ -1,7 +1,7 @@
-using Spots.Models;
-using Spots.Database;
+using eatMeet.Models;
+using eatMeet.Database;
 
-namespace Spots.FollowedClients;
+namespace eatMeet.FollowedClients;
 
 public partial class CV_FollowedClientDataTemplate : ContentView
 {

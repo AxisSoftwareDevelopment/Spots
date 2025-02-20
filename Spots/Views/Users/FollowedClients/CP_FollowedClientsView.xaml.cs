@@ -1,6 +1,6 @@
-using Spots.Models;
+using eatMeet.Models;
 
-namespace Spots;
+namespace eatMeet;
 
 public partial class CP_FollowedClientsView : ContentPage
 {

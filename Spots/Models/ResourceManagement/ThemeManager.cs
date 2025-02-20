@@ -1,4 +1,4 @@
-﻿namespace Spots.ResourceManager;
+﻿namespace eatMeet.ResourceManager;
 
 public static class ThemeManager
 {

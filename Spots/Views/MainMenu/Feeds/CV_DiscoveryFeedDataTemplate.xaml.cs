@@ -1,6 +1,6 @@
-using Spots.Models;
+using eatMeet.Models;
 
-namespace Spots.DiscoveryPage;
+namespace eatMeet.DiscoveryPage;
 
 public partial class CV_DiscoveryFeedDataTemplate : ContentView
 {

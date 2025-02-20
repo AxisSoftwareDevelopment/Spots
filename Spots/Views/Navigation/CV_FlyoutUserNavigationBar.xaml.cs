@@ -1,7 +1,7 @@
-using Spots.Notifications;
-using Spots.Models;
+using eatMeet.Notifications;
+using eatMeet.Models;
 
-namespace Spots;
+namespace eatMeet;
 
 public partial class CV_FlyoutUserNavigationBar : ContentView
 {

@@ -1,6 +1,6 @@
 ﻿using Microsoft.Maui.Graphics.Platform;
 
-namespace Spots.ResourceManager;
+namespace eatMeet.ResourceManager;
 
 public static class ImageManagement
 {

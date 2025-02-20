@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace Spots.Utilities;
+namespace eatMeet.Utilities;
 
 public static class UserInterface
 {

@@ -1,9 +1,9 @@
-using Spots.Models;
-using Spots.ResourceManager;
-using Spots.Utilities;
-using Spots.Database;
+using eatMeet.Models;
+using eatMeet.ResourceManager;
+using eatMeet.Utilities;
+using eatMeet.Database;
 
-namespace Spots;
+namespace eatMeet;
 
 public partial class CP_InviteUserToTable : ContentPage
 {

@@ -1,6 +1,6 @@
 ﻿using Plugin.Firebase.Functions;
 
-namespace Spots.CloudFunctions
+namespace eatMeet.CloudFunctions
 {
     public static class CloudFunctionsManager
     {

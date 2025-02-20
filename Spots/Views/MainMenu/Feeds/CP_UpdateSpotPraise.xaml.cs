@@ -1,9 +1,9 @@
-using Spots.Models;
-using Spots.ResourceManager;
-using Spots.Database;
-using Spots.Utilities;
+using eatMeet.Models;
+using eatMeet.ResourceManager;
+using eatMeet.Database;
+using eatMeet.Utilities;
 
-namespace Spots;
+namespace eatMeet;
 
 public partial class CP_UpdateSpotPraise : ContentPage
 {

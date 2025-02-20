@@ -1,6 +1,6 @@
-using Spots.ResourceManager;
+using eatMeet.ResourceManager;
 
-namespace Spots;
+namespace eatMeet;
 
 public partial class CP_AppPreferences : ContentPage
 {

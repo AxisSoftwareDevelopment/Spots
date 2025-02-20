@@ -1,8 +1,8 @@
-﻿using Spots.Database;
-using Spots.Notifications;
+﻿using eatMeet.Database;
+using eatMeet.Notifications;
 using System.ComponentModel;
 
-namespace Spots.Models;
+namespace eatMeet.Models;
 
 public static class SessionManager
 {

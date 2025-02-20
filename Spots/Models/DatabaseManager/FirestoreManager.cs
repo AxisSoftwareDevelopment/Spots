@@ -1,7 +1,7 @@
 ﻿using Plugin.Firebase.Firestore;
-using Spots.Utilities;
+using eatMeet.Utilities;
 
-namespace Spots.Firestore
+namespace eatMeet.Firestore
 {
     public static class FirestoreManager
     {

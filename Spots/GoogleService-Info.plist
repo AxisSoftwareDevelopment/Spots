@@ -3,9 +3,9 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>443931860533-01q72iupljsan0fr3ti8h5ffcoodi8ht.apps.googleusercontent.com</string>
+	<string>443931860533-qvbr5rtfbiuj38igse012ouu05d2qd3h.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.443931860533-01q72iupljsan0fr3ti8h5ffcoodi8ht</string>
+	<string>com.googleusercontent.apps.443931860533-qvbr5rtfbiuj38igse012ouu05d2qd3h</string>
 	<key>API_KEY</key>
 	<string>AIzaSyCkoEqZYJLnLpIF6vkqgxKQXABooHvlwEo</string>
 	<key>GCM_SENDER_ID</key>
@@ -13,7 +13,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.axissoftwaredevelopment.Spots</string>
+	<string>com.axissoftwaredevelopment.eatMeet</string>
 	<key>PROJECT_ID</key>
 	<string>spotsv01</string>
 	<key>STORAGE_BUCKET</key>
@@ -29,6 +29,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:443931860533:ios:9bbfae01c3f49e16b69b7c</string>
+	<string>1:443931860533:ios:f2c562f591e6dd16b69b7c</string>
 </dict>
 </plist>

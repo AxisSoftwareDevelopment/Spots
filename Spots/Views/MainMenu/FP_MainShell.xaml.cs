@@ -1,7 +1,7 @@
-using Spots.Models;
+using eatMeet.Models;
 using System.Runtime.CompilerServices;
 
-namespace Spots;
+namespace eatMeet;
 
 public partial class FP_MainShell : FlyoutPage
 {

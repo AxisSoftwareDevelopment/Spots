@@ -1,11 +1,11 @@
 using Plugin.Firebase.Core.Exceptions;
 
-using Spots.Models;
-using Spots.Database;
-using Spots.Utilities;
-using Spots.ResourceManager;
+using eatMeet.Models;
+using eatMeet.Database;
+using eatMeet.Utilities;
+using eatMeet.ResourceManager;
 
-namespace Spots;
+namespace eatMeet;
 
 public partial class CP_Login : ContentPage
 {
@@ -71,12 +71,27 @@ public partial class CP_Login : ContentPage
                 FIRAuthError.WrongPassword => "txt_LogInError_WrongCredentials_User",
                 FIRAuthError.InvalidCredential => "txt_LogInError_InvalidCredential",
                 FIRAuthError.UserNotFound => "txt_LogInError_WrongCredentials_User",
+                FIRAuthError.UserDisabled => "txt_LogInError_UserDisabled",
                 FIRAuthError.EmailAlreadyInUse => ex.Message.Split("->")[0].Trim(),
                 _ => "txt_LogInError_Undefined",
             };
             #endregion
 
-            DisplayErrorSection(errorID);
+            if(ex.Reason == FIRAuthError.UserDisabled)
+            {
+                string[] strings = ["lbl_EmailNotVeirified", "txt_LogInError_UserDisabled", "lbl_Resend", "lbl_Cancel"];
+                strings = ResourceManagement.GetStringResources(Resources, strings);
+                if(await UserInterface.DisplayPopPup_Choice(strings[0], strings[1], strings[2], strings[3]))
+                {
+                    await DatabaseManager.ResendEmailVerificationAsync();
+                }
+            }
+            else
+            {
+                DisplayErrorSection(errorID);
+            }
+
+            await DatabaseManager.LogOutAsync(skipLocationUpdate: true);
         }
         catch (Exception ex)
         {

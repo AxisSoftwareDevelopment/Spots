@@ -1,4 +1,4 @@
-namespace Spots;
+namespace eatMeet;
 
 public partial class CP_WaitForValidation : ContentPage
 {

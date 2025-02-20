@@ -1,8 +1,8 @@
 ﻿using Plugin.Firebase.Firestore;
 
-using Spots.Database;
+using eatMeet.Database;
 
-namespace Spots.Models
+namespace eatMeet.Models
 {
     public class Table
     {

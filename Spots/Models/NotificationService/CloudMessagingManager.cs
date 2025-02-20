@@ -2,10 +2,10 @@
 using System.Text.Json.Serialization;
 using System.Text.Json;
 
-using Spots.CloudFunctions;
+using eatMeet.CloudFunctions;
 using Plugin.Firebase.CloudMessaging.EventArgs;
 
-namespace Spots.CloudMessaging
+namespace eatMeet.CloudMessaging
 {
     public static class CloudMessagingManager
     {

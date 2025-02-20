@@ -1,5 +1,5 @@
 ﻿
-namespace Spots.ResourceManager;
+namespace eatMeet.ResourceManager;
     public static class ResourceManagement
     {
         public static string[] GetStringResources(ResourceDictionary? resources, string[] ids)

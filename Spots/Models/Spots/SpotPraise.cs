@@ -1,10 +1,10 @@
 ﻿using Plugin.Firebase.Firestore;
 using System.ComponentModel;
 
-using Spots.Database;
-using Spots.Notifications;
+using eatMeet.Database;
+using eatMeet.Notifications;
 
-namespace Spots.Models;
+namespace eatMeet.Models;
 
 public class SpotPraise : INotifyPropertyChanged
 {

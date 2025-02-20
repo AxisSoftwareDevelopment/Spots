@@ -2,13 +2,13 @@ using Plugin.Firebase.Auth;
 using Plugin.Firebase.Firestore;
 using Plugin.Firebase.Core.Exceptions;
 
-using Spots.Models;
-using Spots.Firestore;
-using Spots.Utilities;
-using Spots.ResourceManager;
-using Spots.FirebaseStorage;
+using eatMeet.Models;
+using eatMeet.Firestore;
+using eatMeet.Utilities;
+using eatMeet.ResourceManager;
+using eatMeet.FirebaseStorage;
 
-namespace Spots.Database;
+namespace eatMeet.Database;
 public static class DatabaseManager
 {
     private const string COLLECTION_USER_DATA = "UserData";
@@ -39,13 +39,15 @@ public static class DatabaseManager
 
         IFirebaseUser iFUser = await CrossFirebaseAuth.Current.SignInWithEmailAndPasswordAsync(email, password, false);
 
-        //if(!firebaseUser.IsEmailVerified)
-        //    throw new FirebaseAuthException(FIRAuthError.UserDisabled, "Custon Exception -> Email not verified.");
+        if (!iFUser.IsEmailVerified)
+        {
+            throw new FirebaseAuthException(FIRAuthError.UserDisabled, "Custon Exception -> Email not verified.");
+        }
 
         Client user = await GetClientDataAsync(iFUser.Uid);
         if (!user.UserDataRetrieved)
         {
-            await LogOutAsync();
+            await LogOutAsync(skipLocationUpdate: true);
             return user;
         }
 
@@ -61,17 +63,22 @@ public static class DatabaseManager
         return user;
     }
 
+    public static Task ResendEmailVerificationAsync()
+    {
+        return CrossFirebaseAuth.Current.CurrentUser.SendEmailVerificationAsync();
+    }
+
     public static async Task<bool> CreateUserAsync(string email, string password)
     {
         bool retVal;
         await CrossFirebaseAuth.Current.CreateUserAsync(email, password);
 
-        string? id = CrossFirebaseAuth.Current.CurrentUser?.Uid;
-        if (id != null && id.Length > 0)
+        if (CrossFirebaseAuth.Current.CurrentUser?.Uid != null && CrossFirebaseAuth.Current.CurrentUser.Uid.Length > 0)
         {
+            await CrossFirebaseAuth.Current.CurrentUser.SendEmailVerificationAsync();
             await FirestoreManager.SetDocumentData(COLLECTION_USER_DATA,
-                new Client_Firebase() { UserID = id, Email = email },
-                DocumentID: id);
+                new Client_Firebase() { UserID = CrossFirebaseAuth.Current.CurrentUser.Uid, Email = email },
+                DocumentID: CrossFirebaseAuth.Current.CurrentUser.Uid);
             retVal = true;
         }
         else
@@ -103,9 +110,9 @@ public static class DatabaseManager
         return false;
     }
 
-    public static async Task LogOutAsync(FirebaseLocation? lastLocation = null)
+    public static async Task LogOutAsync(FirebaseLocation? lastLocation = null, bool skipLocationUpdate = false)
     {
-        if (lastLocation != null)
+        if (!skipLocationUpdate && lastLocation != null)
         {
             await UpdateClientLocationAsync(CrossFirebaseAuth.Current.CurrentUser.Uid, lastLocation);
         }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="Spots.FollowedClients.CV_FollowedClientDataTemplate">
+             x:Class="eatMeet.FollowedClients.CV_FollowedClientDataTemplate">
     
     <StackLayout Orientation="Horizontal" BackgroundColor="{DynamicResource Secondary}" HorizontalOptions="FillAndExpand" Margin="5,5">
         <Image Source="{Binding ProfilePictureSource}" HeightRequest="50" WidthRequest="50" BackgroundColor="{DynamicResource Primary}"/>

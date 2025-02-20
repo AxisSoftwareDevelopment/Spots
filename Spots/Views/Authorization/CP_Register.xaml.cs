@@ -1,9 +1,9 @@
 using System.Text.RegularExpressions;
 
-using Spots.Database;
-using Spots.Utilities;
+using eatMeet.Database;
+using eatMeet.Utilities;
 
-namespace Spots;
+namespace eatMeet;
 
 public partial class CP_Register : ContentPage
 {

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:discoveryPage="clr-namespace:Spots.DiscoveryPage"
+             xmlns:discoveryPage="clr-namespace:eatMeet.DiscoveryPage"
              xmlns:maps="clr-namespace:Microsoft.Maui.Controls.Maps;assembly=Microsoft.Maui.Controls.Maps"
-             x:Class="Spots.CV_DiscoverFeed"
+             x:Class="eatMeet.CV_DiscoverFeed"
              BackgroundColor="{DynamicResource BackgroundGrey}">
 
     <RefreshView x:Name="_refreshView" Margin="0,5,0,0">

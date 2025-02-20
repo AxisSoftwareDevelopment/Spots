@@ -2,7 +2,7 @@
 using AndroidX.AppCompat.App;
 #endif
 
-namespace Spots;
+namespace eatMeet;
 
 public partial class App : Application
 {

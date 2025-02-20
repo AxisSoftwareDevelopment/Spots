@@ -1,8 +1,8 @@
-using Spots.Database;
-using Spots.Models;
-using Spots.Utilities;
+using eatMeet.Database;
+using eatMeet.Models;
+using eatMeet.Utilities;
 
-namespace Spots;
+namespace eatMeet;
 
 public partial class CP_SideUserMenu : ContentPage
 {

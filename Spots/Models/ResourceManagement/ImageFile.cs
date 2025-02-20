@@ -1,4 +1,4 @@
-﻿namespace Spots.ResourceManager;
+﻿namespace eatMeet.ResourceManager;
 public class ImageFile
 {
     public bool Loaded { get; set; }

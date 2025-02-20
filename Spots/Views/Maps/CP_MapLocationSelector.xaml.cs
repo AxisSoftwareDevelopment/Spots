@@ -1,7 +1,7 @@
 using Microsoft.Maui.Controls.Maps;
 using Microsoft.Maui.Maps;
 
-namespace Spots;
+namespace eatMeet;
 
 public partial class CP_MapLocationSelector : ContentPage
 {

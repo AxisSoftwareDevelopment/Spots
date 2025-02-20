@@ -2,7 +2,7 @@
 using Microsoft.Maui.Controls.PlatformConfiguration.AndroidSpecific;
 #endif
 
-namespace Spots;
+namespace eatMeet;
 
 public partial class TP_FeedViews : Microsoft.Maui.Controls.TabbedPage
 {

@@ -1,9 +1,9 @@
-﻿using Spots.CloudMessaging;
-using Spots.Database;
-using Spots.Models;
+﻿using eatMeet.CloudMessaging;
+using eatMeet.Database;
+using eatMeet.Models;
 using System.ComponentModel;
 
-namespace Spots.Notifications
+namespace eatMeet.Notifications
 {
     public static class NotificationsManager
     {
