@@ -2,7 +2,6 @@ using Spots.Models;
 using Spots.ResourceManager;
 using Spots.Utilities;
 using Spots.Database;
-using Android.Media.TV;
 
 namespace Spots;
 

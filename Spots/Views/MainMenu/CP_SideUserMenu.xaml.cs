@@ -37,7 +37,7 @@ public partial class CP_SideUserMenu : ContentPage
 
         Task.Run(RefreshTablesFeed);
 
-        FP_MainShell.FlyoutPresentedChanged += FP_MainShell_FlyoutPresentedChanged; ;
+        FP_MainShell.FlyoutPresentedChanged += FP_MainShell_FlyoutPresentedChanged;
     }
 
     private async void FP_MainShell_FlyoutPresentedChanged()

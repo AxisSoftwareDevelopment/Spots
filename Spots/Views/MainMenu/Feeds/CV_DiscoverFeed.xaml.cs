@@ -74,19 +74,16 @@ public partial class CV_DiscoverFeed : ContentView
         _colFeed.BindingContext = CurrentFeedContext;
         _refreshView.Command = new Command(async () =>
         {
-            await Task.Run(RefreshFeed);
+            await RefreshFeed();
             _refreshView.IsRefreshing = false;
         });
         _colFeed.RemainingItemsThreshold = 1;
         _colFeed.RemainingItemsThresholdReached += OnItemThresholdReached;
         _colFeed.SelectionChanged += _colFeed_SelectionChanged;
 
-        Task.Run(() =>
+        MainThread.BeginInvokeOnMainThread(async () =>
         {
-            MainThread.BeginInvokeOnMainThread(async () =>
-            {
-                await RefreshFeed();
-            });
+            await RefreshFeed();
         });
         #endregion
     }

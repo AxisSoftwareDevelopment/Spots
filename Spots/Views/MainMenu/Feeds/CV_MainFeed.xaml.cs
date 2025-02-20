@@ -20,12 +20,10 @@ public partial class CV_MainFeed : ContentView
 		_colFeed.RemainingItemsThreshold = 1;
 		_colFeed.RemainingItemsThresholdReached += OnItemThresholdReached;
         _colFeed.SelectionChanged += _colFeed_SelectionChanged;
-        Task.Run(() =>
+
+        MainThread.BeginInvokeOnMainThread(async () =>
         {
-            MainThread.BeginInvokeOnMainThread(async () =>
-            {
-                await RefreshFeed();
-            });
+            await RefreshFeed();
         });
     }
 
@@ -48,12 +46,9 @@ public partial class CV_MainFeed : ContentView
 		CurrentFeedContext.RefreshFeed(await FetchPraises());
     }
 
-	private void OnItemThresholdReached(object? sender, EventArgs e)
+	private async void OnItemThresholdReached(object? sender, EventArgs e)
 	{
-		Task.Run(async () =>
-		{
-			CurrentFeedContext.AddElements(await FetchPraises(CurrentFeedContext.LastItemFetched));
-		});
+        CurrentFeedContext.AddElements(await FetchPraises(CurrentFeedContext.LastItemFetched));
     }
 
 	private async Task<List<SpotPraise>> FetchPraises(SpotPraise? lastItemFetched = null)

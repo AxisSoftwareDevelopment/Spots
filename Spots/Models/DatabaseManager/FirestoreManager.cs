@@ -1,7 +1,5 @@
 ﻿using Plugin.Firebase.Firestore;
-using Spots.Models;
 using Spots.Utilities;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Spots.Firestore
 {

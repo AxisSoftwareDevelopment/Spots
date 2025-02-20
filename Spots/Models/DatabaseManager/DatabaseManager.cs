@@ -7,7 +7,6 @@ using Spots.Firestore;
 using Spots.Utilities;
 using Spots.ResourceManager;
 using Spots.FirebaseStorage;
-using Plugin.Firebase.Storage;
 
 namespace Spots.Database;
 public static class DatabaseManager
